@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Accesos e Inventario</title>
+    <title>Control de Accesos e Inventario - Bomberos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
@@ -34,7 +34,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Botón de Acceso / Login de Cargos -->
                 <button onclick="openLoginModal()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg border border-slate-300 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-user-circle text-lg text-indigo-600"></i>
                     <span id="loginBtnText" class="hidden sm:inline">Acceso Cargos</span>
@@ -163,20 +162,79 @@
         </section>
     </main>
 
-    <!-- VISTA 2: PANEL DE INVENTARIO TENIENTE SEGUNDO -->
+    <!-- VISTA 2: SELECCIÓN DE CARROS Y BODEGA (TENIENTE SEGUNDO) -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Segundo</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1">Inventario de Material Menor</h2>
-                <p class="text-sm text-slate-500">Gestión y control de equipos, herramientas y material de rescate.</p>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1">Selección de Unidades y Bodega</h2>
+                <p class="text-sm text-slate-500">Seleccione el carro o la bodega para gestionar su inventario independiente.</p>
+            </div>
+            <button onclick="logout()" class="flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-700 px-4 py-2.5 rounded-lg font-medium text-sm border border-rose-200 transition-colors">
+                <i class="ph ph-sign-out text-lg"></i> Cerrar Sesión
+            </button>
+        </div>
+
+        <!-- Tarjetas de Carros y Bodega -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- RH-2 -->
+            <div onclick="openCarro('RH2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-truck"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">RH-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Camioneta de Rescate</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- B-2 -->
+            <div onclick="openCarro('B2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-fire-extinguisher"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">B-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro de Bomberos (Agua)</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BX-2 -->
+            <div onclick="openCarro('BX2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-car"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">BX-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro Portaescala / Aljibe</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BODEGA -->
+            <div onclick="openCarro('Bodega')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-warehouse"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">Bodega</h3>
+                <p class="text-xs text-slate-500 mt-1">Pañol y Material General</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA 3: INTERFAZ DE INVENTARIO ESPECÍFICA POR UNIDAD / BODEGA -->
+    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-center gap-4">
+                <button onclick="backToCarros()" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                    <i class="ph ph-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <span id="carroBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Unidad</span>
+                    <h2 id="carroTitle" class="text-2xl font-bold text-slate-900 mt-1">Inventario de Material Menor</h2>
+                    <p class="text-sm text-slate-500">Listado independiente de equipos asignados a esta sección.</p>
+                </div>
             </div>
             <div class="flex items-center gap-3 w-full md:w-auto">
                 <button onclick="openItemModal()" class="w-full md:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-plus text-lg"></i> Agregar Material
-                </button>
-                <button onclick="logout()" class="flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-700 px-4 py-2.5 rounded-lg font-medium text-sm border border-rose-200 transition-colors">
-                    <i class="ph ph-sign-out text-lg"></i> Salir
                 </button>
             </div>
         </div>
@@ -192,7 +250,7 @@
                 <table class="w-full text-left border-collapse whitespace-nowrap min-w-[650px]">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
-                            <th class="px-6 py-3.5">Código / Nombre</th>
+                            <th class="px-6 py-3.5">Nombre del Equipo</th>
                             <th class="px-6 py-3.5">Categoría</th>
                             <th class="px-6 py-3.5 text-center">Cantidad</th>
                             <th class="px-6 py-3.5 text-center">Estado</th>
@@ -200,7 +258,7 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTableBody" class="divide-y divide-slate-100 text-sm">
-                        <!-- Se llena con JS -->
+                        <!-- Se llena dinámicamente -->
                     </tbody>
                 </table>
             </div>
@@ -218,11 +276,11 @@
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material o Equipo</label>
-                    <input type="text" id="itemName" required placeholder="Ej. Manguera 50mm / Eslinga" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="itemName" required placeholder="Ej. Cuerda / Manguera / EPP" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
-                    <input type="text" id="itemCategory" required placeholder="Ej. Agua, Rescate, Herramientas" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="itemCategory" required placeholder="Ej. Agua, Rescate, EPP" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad</label>
@@ -259,11 +317,24 @@
         };
 
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
-        let inventory = JSON.parse(localStorage.getItem('inventario_teniente2')) || [
-            { id: 1, name: "Cuerda Semiestática 50m", category: "Rescate", quantity: 2, status: "Operativo" },
-            { id: 2, name: "Manguera 70mm", category: "Agua", quantity: 6, status: "Operativo" },
-            { id: 3, name: "Arnés de Rescate H-A9550", category: "Protección", quantity: 4, status: "Operativo" }
-        ];
+        
+        let currentCarro = localStorage.getItem('active_carro') || null;
+        
+        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
+            "RH2": [
+                { id: 101, name: "Cuerda Semiestática 50m", category: "Rescate", quantity: 2, status: "Operativo" }
+            ],
+            "B2": [
+                { id: 201, name: "Manguera 70mm", category: "Agua", quantity: 6, status: "Operativo" }
+            ],
+            "BX2": [
+                { id: 301, name: "Escala de Fibra", category: "Escala", quantity: 2, status: "Operativo" }
+            ],
+            "Bodega": [
+                { id: 401, name: "Casco Estructural de Repuesto", category: "EPP", quantity: 5, status: "Operativo" },
+                { id: 402, name: "Ln. Guantes Cabritilla", category: "EPP", quantity: 10, status: "Operativo" }
+            ]
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('saved_nombre')) {
@@ -276,15 +347,19 @@
             }
 
             const activeCargo = localStorage.getItem('active_cargo');
-            if (activeCargo) {
+            if (activeCargo === 'Tenientesegundo') {
+                if (currentCarro) {
+                    activateCarroView(currentCarro);
+                } else {
+                    activateSession(activeCargo);
+                }
+            } else if (activeCargo) {
                 activateSession(activeCargo);
             }
             
             saveAndRenderVisitors();
         });
 
-        
-   // Reloj en tiempo real
         setInterval(() => {
             const timeString = new Date().toLocaleTimeString('es-CL');
             const clock = document.getElementById('currentTime');
@@ -323,40 +398,67 @@
             if(btnText) btnText.textContent = cargo;
             
             if (cargo === 'Tenientesegundo') {
-                const accessView = document.getElementById('accessView');
-                const t2View = document.getElementById('tenienteSegundoView');
-                const navTitle = document.getElementById('navTitle');
-                const csvBtn = document.getElementById('exportCsvBtn');
-                const qrBtn = document.getElementById('openQrBtn');
-
-                if(accessView) accessView.classList.add('hidden');
-                if(t2View) t2View.classList.remove('hidden');
-                if(navTitle) navTitle.textContent = "Panel Teniente 2°";
-                if(csvBtn) csvBtn.style.display = 'none';
-                if(qrBtn) qrBtn.style.display = 'none';
-                renderInventory();
+                document.getElementById('accessView').classList.add('hidden');
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+                document.getElementById('carroInventoryView').classList.add('hidden');
+                document.getElementById('navTitle').textContent = "Panel Teniente 2°";
+                document.getElementById('exportCsvBtn').style.display = 'none';
+                document.getElementById('openQrBtn').style.display = 'none';
             } else {
                 alert(`Sesión iniciada con éxito como: ${cargo}`);
             }
         }
 
+        function openCarro(carroCode) {
+            currentCarro = carroCode;
+            localStorage.setItem('active_carro', carroCode);
+            activateCarroView(carroCode);
+        }
+
+        function activateCarroView(carroCode) {
+            const badge = document.getElementById('activeUserBadge');
+            if(badge) badge.textContent = `(Teniente Segundo - ${carroCode})`;
+            
+            document.getElementById('accessView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.remove('hidden');
+            
+            document.getElementById('carroBadge').textContent = `${carroCode}`;
+            document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
+            document.getElementById('navTitle').textContent = `Panel ${carroCode}`;
+            
+            renderInventory();
+        }
+
+        function backToCarros() {
+            currentCarro = null;
+            localStorage.removeItem('active_carro');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Panel Teniente 2°";
+            const badge = document.getElementById('activeUserBadge');
+            if(badge) badge.textContent = `(Tenientesegundo)`;
+        }
+
         function logout() {
             localStorage.removeItem('active_cargo');
+            localStorage.removeItem('active_carro');
             window.location.reload();
         }
 
-        // --- INVENTARIO TENIENTE SEGUNDO ---
         function renderInventory() {
+            if (!currentCarro) return;
             const tbody = document.getElementById('inventoryTableBody');
             const searchInput = document.getElementById('searchInventory');
             if(!tbody) return;
             const search = searchInput ? searchInput.value.toLowerCase() : '';
             tbody.innerHTML = '';
 
-            const filtered = inventory.filter(i => i.name.toLowerCase().includes(search) || i.category.toLowerCase().includes(search));
+            const carroList = inventories[currentCarro] || [];
+            const filtered = carroList.filter(i => i.name.toLowerCase().includes(search) || i.category.toLowerCase().includes(search));
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No se encontraron materiales registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados en esta sección.</td></tr>`;
                 return;
             }
 
@@ -384,7 +486,7 @@
         function openItemModal() {
             document.getElementById('itemId').value = '';
             document.getElementById('itemForm').reset();
-            document.getElementById('itemModalTitle').textContent = "Nuevo Material";
+            document.getElementById('itemModalTitle').textContent = `Nuevo Material (${currentCarro})`;
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
@@ -394,42 +496,46 @@
 
         function saveInventoryItem(e) {
             e.preventDefault();
+            if (!currentCarro) return;
             const id = document.getElementById('itemId').value;
             const name = document.getElementById('itemName').value.trim();
             const category = document.getElementById('itemCategory').value.trim();
             const quantity = parseInt(document.getElementById('itemQuantity').value);
             const status = document.getElementById('itemStatus').value;
 
+            if (!inventories[currentCarro]) inventories[currentCarro] = [];
+
             if (id) {
-                const idx = inventory.findIndex(i => i.id == id);
+                const idx = inventories[currentCarro].findIndex(i => i.id == id);
                 if (idx !== -1) {
-                    inventory[idx] = { id: Number(id), name, category, quantity, status };
+                    inventories[currentCarro][idx] = { id: Number(id), name, category, quantity, status };
                 }
             } else {
-                inventory.push({ id: Date.now(), name, category, quantity, status });
+                inventories[currentCarro].push({ id: Date.now(), name, category, quantity, status });
             }
 
-            localStorage.setItem('inventario_teniente2', JSON.stringify(inventory));
+            localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
             closeItemModal();
             renderInventory();
         }
 
         function editItem(id) {
-            const item = inventory.find(i => i.id === id);
+            const carroList = inventories[currentCarro] || [];
+            const item = carroList.find(i => i.id === id);
             if (!item) return;
             document.getElementById('itemId').value = item.id;
             document.getElementById('itemName').value = item.name;
             document.getElementById('itemCategory').value = item.category;
             document.getElementById('itemQuantity').value = item.quantity;
             document.getElementById('itemStatus').value = item.status;
-            document.getElementById('itemModalTitle').textContent = "Editar Material";
+            document.getElementById('itemModalTitle').textContent = `Editar Material (${currentCarro})`;
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
         function deleteItem(id) {
-            if (confirm("¿Estás seguro de eliminar este material del inventario?")) {
-                inventory = inventory.filter(i => i.id !== id);
-                localStorage.setItem('inventario_teniente2', JSON.stringify(inventory));
+            if (confirm("¿Estás seguro de eliminar este material?")) {
+                inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id);
+                localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
                 renderInventory();
             }
         }
