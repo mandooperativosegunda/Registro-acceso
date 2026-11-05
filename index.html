@@ -44,10 +44,10 @@
                     <span id="profileBtnText">Perfil</span>
                 </button>
 
-                <!-- Botones exclusivos para la Ayudante -->
+                <!-- Botones exclusivos para la Ayudante (Lista y Fichas) -->
                 <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-2 rounded-lg border border-amber-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-list-checks text-lg"></i>
-                    <span class="hidden sm:inline">Lista y Asistencia</span>
+                    <span class="hidden sm:inline">Lista de Asistencia</span>
                 </button>
 
                 <button id="fichaBtnContainer" onclick="openFichasView()" class="hidden flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-lg border border-blue-200 font-medium text-sm transition-colors shadow-sm">
@@ -58,7 +58,7 @@
                 <!-- Botón de Remoción de Restricción (Visible para Oficiales Operativos) -->
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-2 rounded-lg border border-rose-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-lock-open text-lg"></i>
-                    <span class="hidden sm:inline">Remoción de Restricción</span>
+                    <span class="hidden sm:inline">Remoción</span>
                 </button>
 
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 font-medium text-sm transition-colors shadow-sm">
@@ -184,40 +184,40 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar Miembro -->
+    <!-- Modal para Agregar Miembro (Voluntarios, Aspirantes, Mártires, Honorarios) -->
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 id="memberModalTitle" class="text-lg font-semibold text-slate-800">Agregar Miembro a la Lista</h3>
+                <h3 id="memberModalTitle" class="text-lg font-semibold text-slate-800">Agregar Personal a la Lista</h3>
                 <button onclick="closeMemberModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
             </div>
             <form id="memberForm" onsubmit="saveMember(event)" class="p-6 space-y-4">
                 <input type="hidden" id="memberId">
                 <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Categoría / Sección</label>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
                     <select id="memberCategory" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="Mártires">Mártires</option>
-                        <option value="Honorarios">Honorarios</option>
-                        <option value="Oficiales administrativos">Oficiales administrativos</option>
-                        <option value="Oficiales operativo">Oficiales operativo</option>
                         <option value="Voluntario">Voluntario</option>
                         <option value="Aspirante">Aspirante</option>
+                        <option value="Honorario">Honorario</option>
+                        <option value="Mártir">Mártir</option>
+                        <option value="Oficiales administrativos">Oficiales administrativos</option>
+                        <option value="Oficiales operativo">Oficiales operativo</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Cargo / Grado</label>
-                    <input type="text" id="memberRole" required placeholder="Ej. Capitán, Bombero..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="memberRole" required placeholder="Ej. Bombero, Aspirante, Teniente..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Nombre Completo</label>
-                    <input type="text" id="memberName" required placeholder="Ej. Bastian Cuevas" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="memberName" required placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Motivo / Detalle de Asistencia</label>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Motivo / Detalle Inicial</label>
                     <input type="text" id="memberReason" placeholder="Ej. Asistencia a ejercicio..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="pt-2">
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Miembro</button>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Personal</button>
                 </div>
             </form>
         </div>
@@ -280,8 +280,7 @@
                 </div>
             </form>
         </div>
-    </div>
-    <!-- VISTA 1: CONTROL DE ACCESOS -->
+    </div    <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -422,7 +421,8 @@
             </div>
         </div>
     </div>
-        <!-- VISTA 3: INTERFAZ DE INVENTARIO (CON GAVETAS Y CANTIDAD) -->
+    
+    <!-- VISTA 3: INTERFAZ DE INVENTARIO -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -483,7 +483,7 @@
         </div>
     </div>
 
-    <!-- VISTA 4: LISTA DE ASISTENCIA SEMANAL Y HORAS (EXCLUSIVO AYUDANTE) -->
+    <!-- VISTA 4: LISTA DE ASISTENCIA (EXCLUSIVO AYUDANTE) -->
     <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -560,7 +560,7 @@
             </div>
         </div>
     </div>
-       <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
+        <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -770,7 +770,7 @@
             const profileData = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
             document.getElementById('profileBtnText').textContent = profileData.name;
 
-            // Enrutamiento de paneles según el cargo
+            // Enrutamiento de paneles según el rol (Ayudante vs Teniente Segundo)
             if (cargo === 'Ayudante') {
                 document.getElementById('accessView').classList.add('hidden');
                 document.getElementById('tenienteSegundoView').classList.add('hidden');
@@ -1214,7 +1214,7 @@
         function openMemberModal() {
             document.getElementById('memberId').value = '';
             document.getElementById('memberForm').reset();
-            document.getElementById('memberModalTitle').textContent = "Agregar Miembro a la Lista";
+            document.getElementById('memberModalTitle').textContent = "Agregar Personal a la Lista";
             document.getElementById('memberModal').classList.remove('hidden');
         }
 
@@ -1403,7 +1403,6 @@
         function renderInventory() {
             if (!currentCarro) return;
             const tbody = document.getElementById('inventoryTableBody');
-            const searchInput = document.getElementById('searchInventory');
             const gavetaFilter = document.getElementById('gavetaFilter');
             if(!tbody) return;
             
@@ -1418,7 +1417,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados en esta gaveta.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados.</td></tr>`;
                 return;
             }
 
