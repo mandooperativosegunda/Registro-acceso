@@ -245,16 +245,31 @@
         });
 
         window.markDeparture = function(id) {
-            const index = visitors.findIndex(v => v.id === id);
-            if (index !== -1) {
-                const endTimestamp = Date.now();
-                visitors[index].status = 'departed';
-                visitors[index].exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
-                visitors[index].duration = formatDuration(endTimestamp - visitors[index].startTimestamp);
-                showNotification('Salida registrada.');
-                saveAndRender();
-            }
+    const index = visitors.findIndex(v => v.id === id);
+    if (index !== -1) {
+        const endTimestamp = Date.now();
+        visitors[index].status = 'departed';
+        visitors[index].exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+        visitors[index].duration = formatDuration(endTimestamp - visitors[index].startTimestamp);
+        
+        showNotification('Salida registrada.');
+        saveAndRender();
+
+        if (GOOGLE_SCRIPT_URL) {
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: "updateExit",
+                    rut: visitors[index].documentId,
+                    salida: visitors[index].exitTime,
+                    duracion: visitors[index].duration
+                })
+            }).catch(err => console.log(err));
         }
+    }
+}
 
         window.exportarExcel = function() {
             if (visitors.length === 0) { alert("No hay datos."); return; }
