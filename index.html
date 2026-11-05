@@ -55,7 +55,7 @@
                     <span class="hidden sm:inline">Ficha Voluntarios</span>
                 </button>
 
-                <!-- Botón de Remoción de Restricción (Visible para Capitán y Oficiales Operativos / Teniente 2°) -->
+                <!-- Botón de Remoción de Restricción (Visible para Oficiales Operativos) -->
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-2 rounded-lg border border-rose-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-lock-open text-lg"></i>
                     <span class="hidden sm:inline">Remoción de Restricción</span>
@@ -227,7 +227,7 @@
     <div id="fichaEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="text-lg font-semibold text-slate-800">Editar Ficha de Voluntario</h3>
+                <h3 id="fichaEditIdTitle" class="text-lg font-semibold text-slate-800">Editar Ficha de Voluntario</h3>
                 <button onclick="closeFichaEditModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
             </div>
             <form id="fichaEditForm" onsubmit="saveFichaEdit(event)" class="p-6 space-y-4">
@@ -257,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Modal para Remover Restricción indicando Nombre del Voluntario y Motivo -->
+    <!-- Modal para Remover Restricción -->
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -273,7 +273,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Motivo de la Remoción</label>
-                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Autorizado por Teniente 2° por llamado de comandancia..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Autorizado por Oficial Operativo..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-rose-500"></textarea>
                 </div>
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Enviar y Desbloquear Acceso</button>
@@ -281,7 +281,7 @@
             </form>
         </div>
     </div>
-        <!-- VISTA 1: CONTROL DE ACCESOS -->
+    <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -422,7 +422,7 @@
             </div>
         </div>
     </div>
-        <!-- VISTA 3: INTERFAZ DE INVENTARIO -->
+        <!-- VISTA 3: INTERFAZ DE INVENTARIO (CON GAVETAS Y CANTIDAD) -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -469,7 +469,7 @@
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
                             <th class="px-6 py-3.5">Nombre del Equipo</th>
                             <th class="px-6 py-3.5">Modelo / Marca</th>
-                            <th class="px-6 py-3.5">Categoría / Ubicación</th>
+                            <th class="px-6 py-3.5">Categoría / Gaveta</th>
                             <th class="px-6 py-3.5 text-center">Cantidad</th>
                             <th class="px-6 py-3.5 text-center">Estado</th>
                             <th class="px-6 py-3.5 text-right">Acciones</th>
@@ -560,7 +560,7 @@
             </div>
         </div>
     </div>
-        <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
+       <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -594,7 +594,7 @@
         </div>
     </div>
 
-    <!-- Modal para Inventario (Corregido) -->
+    <!-- Modal para Agregar Material con Cantidad y Gavetas -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -605,7 +605,7 @@
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material o Equipo</label>
-                    <input type="text" id="itemName" required placeholder="Ej. Manguera" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera / Pitón" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Modelo / Marca</label>
@@ -614,6 +614,29 @@
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
                     <input type="text" id="itemCategory" required placeholder="Ej. Agua" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div id="modalGavetaField" class="hidden">
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Gaveta / Compartimiento (B-2)</label>
+                    <select id="itemGaveta" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Gaveta 1">Gaveta 1</option>
+                        <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                        <option value="Gaveta 2">Gaveta 2</option>
+                        <option value="Gaveta 3">Gaveta 3</option>
+                        <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                        <option value="Gaveta trasera">Gaveta trasera</option>
+                        <option value="Gaveta 4">Gaveta 4</option>
+                        <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                        <option value="Gaveta 5">Gaveta 5</option>
+                        <option value="Gaveta 6">Gaveta 6</option>
+                        <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                        <option value="Techo">Techo</option>
+                        <option value="Techo C-1">Techo C-1</option>
+                        <option value="Techo C-2">Techo C-2</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad</label>
+                    <input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Material</button>
@@ -722,7 +745,7 @@
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             
-            // Permitir botón de remoción a oficiales operativos
+            // Botón de remoción para oficiales operativos
             if (operativosRoles.includes(cargo)) {
                 const remBtn = document.getElementById('remorsionBtnContainer');
                 if (remBtn) remBtn.classList.remove('hidden');
@@ -731,30 +754,35 @@
                 if (remBtn) remBtn.classList.add('hidden');
             }
 
-            // Exclusivo para la Ayudante (o Secretaria) ver Lista y Fichas
-            if (cargo === 'Ayudante' || cargo === 'Secretaria') {
-                document.getElementById('listBtnContainer').classList.remove('hidden');
-                document.getElementById('fichaBtnContainer').classList.remove('hidden');
+            // EXCLUSIVO PARA LA AYUDANTE: Ver Lista y Ficha de Voluntarios
+            if (cargo === 'Ayudante') {
+                const listBtn = document.getElementById('listBtnContainer');
+                const fichaBtn = document.getElementById('fichaBtnContainer');
+                if (listBtn) listBtn.classList.remove('hidden');
+                if (fichaBtn) fichaBtn.classList.remove('hidden');
             } else {
-                document.getElementById('listBtnContainer').classList.add('hidden');
-                document.getElementById('fichaBtnContainer').classList.add('hidden');
+                const listBtn = document.getElementById('listBtnContainer');
+                const fichaBtn = document.getElementById('fichaBtnContainer');
+                if (listBtn) listBtn.classList.add('hidden');
+                if (fichaBtn) fichaBtn.classList.add('hidden');
             }
 
             const profileData = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
             document.getElementById('profileBtnText').textContent = profileData.name;
 
-            if (cargo === 'Ayudante' || cargo === 'Secretaria') {
+            // Enrutamiento de paneles según el cargo
+            if (cargo === 'Ayudante') {
                 document.getElementById('accessView').classList.add('hidden');
                 document.getElementById('tenienteSegundoView').classList.add('hidden');
                 document.getElementById('carroInventoryView').classList.add('hidden');
                 document.getElementById('rosterView').classList.remove('hidden');
                 document.getElementById('fichasView').classList.add('hidden');
                 document.getElementById('remorsionView').classList.add('hidden');
-                document.getElementById('navTitle').textContent = `Panel ${cargo}`;
+                document.getElementById('navTitle').textContent = `Panel Ayudantía`;
                 document.getElementById('exportCsvBtn').style.display = 'none';
                 document.getElementById('openQrBtn').style.display = 'none';
                 renderRoster();
-            } else if (cargo === 'Tenientesegundo' || cargo === 'Tenienteprimero' || cargo === 'Tenientetercero' || cargo === 'Capitan') {
+            } else if (operativosRoles.includes(cargo)) {
                 document.getElementById('accessView').classList.add('hidden');
                 document.getElementById('tenienteSegundoView').classList.remove('hidden');
                 document.getElementById('carroInventoryView').classList.add('hidden');
@@ -838,6 +866,17 @@
             document.getElementById('carroBadge').textContent = `${carroCode}`;
             document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
             document.getElementById('navTitle').textContent = `Panel ${carroCode}`;
+
+            const gavetasContainer = document.getElementById('gavetasContainer');
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (carroCode === 'B2') {
+                if(gavetasContainer) gavetasContainer.classList.remove('hidden');
+                if(modalGavetaField) modalGavetaField.classList.remove('hidden');
+            } else {
+                if(gavetasContainer) gavetasContainer.classList.add('hidden');
+                if(modalGavetaField) modalGavetaField.classList.add('hidden');
+            }
+
             renderInventory();
         }
 
@@ -851,8 +890,8 @@
             document.getElementById('tenienteSegundoView').classList.remove('hidden');
             document.getElementById('navTitle').textContent = "Panel de Control";
         }
-            </script>
-            <!-- Script General - Parte 2 -->
+    </script>
+        <!-- Script General - Parte 2 -->
     <script>
         function openRemoverRestriccionModal() {
             const activeCargo = localStorage.getItem('active_cargo');
@@ -892,7 +931,6 @@
             const motivo = document.getElementById('motivoRemorsion').value.trim();
             const autor = localStorage.getItem('temp_remorsion_author') || "Oficial Operativo";
 
-            // Limpiar restricción local de 2 horas
             localStorage.removeItem('last_departure_timestamp');
 
             remorsionesLog.push({
@@ -1360,32 +1398,43 @@
             link.click();
         }
 
-        // --- GESTIÓN DE INVENTARIO (CORREGIDA) ---
         let currentInventoryItem = null;
 
         function renderInventory() {
             if (!currentCarro) return;
             const tbody = document.getElementById('inventoryTableBody');
+            const searchInput = document.getElementById('searchInventory');
+            const gavetaFilter = document.getElementById('gavetaFilter');
             if(!tbody) return;
+            
+            const selectedGaveta = (currentCarro === 'B2' && gavetaFilter) ? gavetaFilter.value : 'Todos';
             tbody.innerHTML = '';
 
             let carroList = inventories[currentCarro] || [];
-            if (carroList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados.</td></tr>`;
+            
+            const filtered = carroList.filter(i => {
+                const matchGaveta = (selectedGaveta === 'Todos' || !i.gaveta || i.gaveta === selectedGaveta);
+                return matchGaveta;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados en esta gaveta.</td></tr>`;
                 return;
             }
 
-            carroList.forEach(item => {
+            filtered.forEach(item => {
                 let badgeColor = "bg-emerald-100 text-emerald-700";
                 if (item.status === 'Revision') badgeColor = "bg-amber-100 text-amber-700";
                 if (item.status === 'Dañado') badgeColor = "bg-rose-100 text-rose-700";
+
+                const ubicacionText = item.gaveta ? `<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${item.gaveta}</span>` : item.category;
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors";
                 tr.innerHTML = `
                     <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
                     <td class="px-6 py-4 text-slate-600 font-mono text-xs">${item.model || 'N/D'}</td>
-                    <td class="px-6 py-4 text-slate-600">${item.category}</td>
+                    <td class="px-6 py-4 text-slate-600">${ubicacionText}</td>
                     <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
                     <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status || 'Operativo'}</span></td>
                     <td class="px-6 py-4 text-right space-x-2">
@@ -1400,6 +1449,14 @@
             document.getElementById('itemId').value = '';
             document.getElementById('itemForm').reset();
             document.getElementById('itemModalTitle').textContent = `Nuevo Material (${currentCarro})`;
+            
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (currentCarro === 'B2') {
+                if(modalGavetaField) modalGavetaField.classList.remove('hidden');
+            } else {
+                if(modalGavetaField) modalGavetaField.classList.add('hidden');
+            }
+
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
@@ -1413,10 +1470,12 @@
             const name = document.getElementById('itemName').value.trim();
             const model = document.getElementById('itemModel').value.trim();
             const category = document.getElementById('itemCategory').value.trim();
+            const quantity = parseInt(document.getElementById('itemQuantity').value) || 1;
+            const gaveta = (currentCarro === 'B2') ? document.getElementById('itemGaveta').value : null;
 
             if (!inventories[currentCarro]) inventories[currentCarro] = [];
 
-            inventories[currentCarro].push({ id: Date.now(), name, model, category, quantity: 1, status: "Operativo" });
+            inventories[currentCarro].push({ id: Date.now(), name, model, category, gaveta, quantity, status: "Operativo" });
             localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
             closeItemModal();
             renderInventory();
