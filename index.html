@@ -161,8 +161,7 @@
             </div>
         </section>
     </main>
-
-    <!-- VISTA 2: SELECCIÓN DE CARROS Y BODEGA (TENIENTE SEGUNDO) -->
+        <!-- VISTA 2: SELECCIÓN DE CARROS Y BODEGA (TENIENTE SEGUNDO) -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -176,7 +175,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- RH-2 (Camioneta Personalizada) -->
+            <!-- RH-2 -->
             <div onclick="openCarro('RH2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
                 <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
                     <img src="42795.png" alt="Camioneta RH-2" class="w-full h-full object-contain">
@@ -218,7 +217,7 @@
         </div>
     </div>
 
-    <!-- VISTA 3: INTERFAZ DE INVENTARIO ESPECÍFICA -->
+    <!-- VISTA 3: INTERFAZ DE INVENTARIO (CON GAVETAS PARA B-2 Y MODELO/MARCA) -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -238,19 +237,42 @@
             </div>
         </div>
 
+        <!-- Filtro de Gavetas exclusivo para B-2 -->
+        <div id="gavetasContainer" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Filtrar por Compartimiento / Gaveta:</label>
+            <select id="gavetaFilter" onchange="renderInventory()" class="w-full md:w-72 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Todos">📦 Ver Todas las Gavetas / Techo</option>
+                <option value="Gaveta 1">Gaveta 1</option>
+                <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                <option value="Gaveta 2">Gaveta 2</option>
+                <option value="Gaveta 3">Gaveta 3</option>
+                <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                <option value="Gaveta trasera">Gaveta trasera</option>
+                <option value="Gaveta 4">Gaveta 4</option>
+                <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                <option value="Gaveta 5">Gaveta 5</option>
+                <option value="Gaveta 6">Gaveta 6</option>
+                <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                <option value="Techo">Techo</option>
+                <option value="Techo C-1">Techo C-1</option>
+                <option value="Techo C-2">Techo C-2</option>
+            </select>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4">
                 <div class="relative flex-1 max-w-sm">
                     <i class="ph ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
-                    <input type="text" id="searchInventory" onkeyup="renderInventory()" placeholder="Buscar material..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="searchInventory" onkeyup="renderInventory()" placeholder="Buscar material, modelo o marca..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
             </div>
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse whitespace-nowrap min-w-[650px]">
+                <table class="w-full text-left border-collapse whitespace-nowrap min-w-[750px]">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
                             <th class="px-6 py-3.5">Nombre del Equipo</th>
-                            <th class="px-6 py-3.5">Categoría</th>
+                            <th class="px-6 py-3.5">Modelo / Marca</th>
+                            <th class="px-6 py-3.5">Categoría / Ubicación</th>
                             <th class="px-6 py-3.5 text-center">Cantidad</th>
                             <th class="px-6 py-3.5 text-center">Estado</th>
                             <th class="px-6 py-3.5 text-right">Acciones</th>
@@ -264,7 +286,7 @@
         </div>
     </div>
 
- <!-- Modal para Agregar/Editar Material -->
+    <!-- Modal para Agregar/Editar Material -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -275,11 +297,35 @@
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material o Equipo</label>
-                    <input type="text" id="itemName" required placeholder="Ej. Cuerda / Manguera / EPP" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera / Pitón / Cuerda" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Modelo / Marca</label>
+                    <input type="text" id="itemModel" required placeholder="Ej. Akron / FirePro / Petzl" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
                     <input type="text" id="itemCategory" required placeholder="Ej. Agua, Rescate, EPP" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <!-- Selector de Gaveta (Solo visible si está en B-2) -->
+                <div id="modalGavetaField" class="hidden">
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Gaveta / Compartimiento (B-2)</label>
+                    <select id="itemGaveta" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Gaveta 1">Gaveta 1</option>
+                        <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                        <option value="Gaveta 2">Gaveta 2</option>
+                        <option value="Gaveta 3">Gaveta 3</option>
+                        <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                        <option value="Gaveta trasera">Gaveta trasera</option>
+                        <option value="Gaveta 4">Gaveta 4</option>
+                        <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                        <option value="Gaveta 5">Gaveta 5</option>
+                        <option value="Gaveta 6">Gaveta 6</option>
+                        <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                        <option value="Techo">Techo</option>
+                        <option value="Techo C-1">Techo C-1</option>
+                        <option value="Techo C-2">Techo C-2</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad</label>
@@ -299,7 +345,7 @@
             </form>
         </div>
     </div>
-        <!-- Script General -->
+       <!-- Script General -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpDZdRys1pxaMcR4uASEFFaeqCVGudbzPXQ_Rqhz9zpgrXgMa7dt9Pbi1al5KmLhQpdQ/exec"; 
 
@@ -319,16 +365,16 @@
         
         let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
             "RH2": [
-                { id: 101, name: "Cuerda Semiestática 50m", category: "Rescate", quantity: 2, status: "Operativo" }
+                { id: 101, name: "Cuerda Semiestática 50m", model: "Petzl 50m", category: "Rescate", quantity: 2, status: "Operativo" }
             ],
             "B2": [
-                { id: 201, name: "Manguera 70mm", category: "Agua", quantity: 6, status: "Operativo" }
+                { id: 201, name: "Manguera 70mm", model: "Angus Fire", category: "Agua", gaveta: "Gaveta 1", quantity: 6, status: "Operativo" }
             ],
             "BX2": [
-                { id: 301, name: "Escala de Fibra", category: "Escala", quantity: 2, status: "Operativo" }
+                { id: 301, name: "Escala de Fibra", model: "Alaco", category: "Escala", quantity: 2, status: "Operativo" }
             ],
             "Bodega": [
-                { id: 401, name: "Casco Estructural de Repuesto", category: "EPP", quantity: 5, status: "Operativo" }
+                { id: 401, name: "Casco Estructural", model: "MSA Gallet F1SF", category: "EPP", quantity: 5, status: "Operativo" }
             ]
         };
 
@@ -422,6 +468,13 @@
             document.getElementById('carroBadge').textContent = `${carroCode}`;
             document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
             document.getElementById('navTitle').textContent = `Panel ${carroCode}`;
+
+            const gavetasContainer = document.getElementById('gavetasContainer');
+            if (carroCode === 'B2') {
+                gavetasContainer.classList.remove('hidden');
+            } else {
+                gavetasContainer.classList.add('hidden');
+            }
             
             renderInventory();
         }
@@ -446,15 +499,27 @@
             if (!currentCarro) return;
             const tbody = document.getElementById('inventoryTableBody');
             const searchInput = document.getElementById('searchInventory');
+            const gavetaFilter = document.getElementById('gavetaFilter');
             if(!tbody) return;
+            
             const search = searchInput ? searchInput.value.toLowerCase() : '';
+            const selectedGaveta = (currentCarro === 'B2' && gavetaFilter) ? gavetaFilter.value : 'Todos';
+            
             tbody.innerHTML = '';
 
-            const carroList = inventories[currentCarro] || [];
-            const filtered = carroList.filter(i => i.name.toLowerCase().includes(search) || i.category.toLowerCase().includes(search));
+            let carroList = inventories[currentCarro] || [];
+            
+            const filtered = carroList.filter(i => {
+                const matchSearch = i.name.toLowerCase().includes(search) || 
+                                    (i.model && i.model.toLowerCase().includes(search)) || 
+                                    i.category.toLowerCase().includes(search);
+                
+                const matchGaveta = (selectedGaveta === 'Todos' || !i.gaveta || i.gaveta === selectedGaveta);
+                return matchSearch && matchGaveta;
+            });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados en esta sección.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados con estos filtros.</td></tr>`;
                 return;
             }
 
@@ -463,11 +528,14 @@
                 if (item.status === 'Revision') badgeColor = "bg-amber-100 text-amber-700";
                 if (item.status === 'Dañado') badgeColor = "bg-rose-100 text-rose-700";
 
+                const ubicacionText = item.gaveta ? `<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${item.gaveta}</span>` : item.category;
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors";
                 tr.innerHTML = `
                     <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
-                    <td class="px-6 py-4 text-slate-600">${item.category}</td>
+                    <td class="px-6 py-4 text-slate-600 font-mono text-xs">${item.model || 'N/D'}</td>
+                    <td class="px-6 py-4 text-slate-600">${ubicacionText}</td>
                     <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
                     <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status}</span></td>
                     <td class="px-6 py-4 text-right space-x-2">
@@ -483,6 +551,14 @@
             document.getElementById('itemId').value = '';
             document.getElementById('itemForm').reset();
             document.getElementById('itemModalTitle').textContent = `Nuevo Material (${currentCarro})`;
+            
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (currentCarro === 'B2') {
+                modalGavetaField.classList.remove('hidden');
+            } else {
+                modalGavetaField.classList.add('hidden');
+            }
+
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
@@ -495,19 +571,21 @@
             if (!currentCarro) return;
             const id = document.getElementById('itemId').value;
             const name = document.getElementById('itemName').value.trim();
+            const model = document.getElementById('itemModel').value.trim();
             const category = document.getElementById('itemCategory').value.trim();
             const quantity = parseInt(document.getElementById('itemQuantity').value);
             const status = document.getElementById('itemStatus').value;
+            const gaveta = (currentCarro === 'B2') ? document.getElementById('itemGaveta').value : null;
 
             if (!inventories[currentCarro]) inventories[currentCarro] = [];
 
             if (id) {
                 const idx = inventories[currentCarro].findIndex(i => i.id == id);
                 if (idx !== -1) {
-                    inventories[currentCarro][idx] = { id: Number(id), name, category, quantity, status };
+                    inventories[currentCarro][idx] = { id: Number(id), name, model, category, gaveta, quantity, status };
                 }
             } else {
-                inventories[currentCarro].push({ id: Date.now(), name, category, quantity, status });
+                inventories[currentCarro].push({ id: Date.now(), name, model, category, gaveta, quantity, status });
             }
 
             localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
@@ -519,11 +597,22 @@
             const carroList = inventories[currentCarro] || [];
             const item = carroList.find(i => i.id === id);
             if (!item) return;
+            
             document.getElementById('itemId').value = item.id;
             document.getElementById('itemName').value = item.name;
+            document.getElementById('itemModel').value = item.model || '';
             document.getElementById('itemCategory').value = item.category;
             document.getElementById('itemQuantity').value = item.quantity;
             document.getElementById('itemStatus').value = item.status;
+
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (currentCarro === 'B2') {
+                modalGavetaField.classList.remove('hidden');
+                document.getElementById('itemGaveta').value = item.gaveta || 'Gaveta 1';
+            } else {
+                modalGavetaField.classList.add('hidden');
+            }
+
             document.getElementById('itemModalTitle').textContent = `Editar Material (${currentCarro})`;
             document.getElementById('itemModal').classList.remove('hidden');
         }
