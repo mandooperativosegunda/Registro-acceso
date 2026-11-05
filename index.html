@@ -44,7 +44,7 @@
                     <span id="profileBtnText">Perfil</span>
                 </button>
 
-                <!-- Botones exclusivos para la Ayudante -->
+                <!-- Botones exclusivos de la Ayudante -->
                 <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-2 rounded-lg border border-amber-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-list-checks text-lg"></i>
                     <span class="hidden sm:inline">Lista de Asistencia</span>
@@ -184,7 +184,7 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar Personal (Ayudante) -->
+    <!-- Modal para Agregar Personal -->
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -281,43 +281,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal para Agregar/Editar Inmueble o Elemento de Aseo (Teniente 3°) -->
-    <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 id="cuartelModalTitle" class="text-lg font-semibold text-slate-800">Agregar Elemento</h3>
-                <button onclick="closeCuartelItemModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
-            </div>
-            <form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-6 space-y-4">
-                <input type="hidden" id="cuartelItemId">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Inmueble / Artículo de Aseo</label>
-                    <input type="text" id="cuartelItemName" required placeholder="Ej. Sillas salón / Cloro 5L" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Ubicación / Detalle</label>
-                    <input type="text" id="cuartelItemUbicacion" required placeholder="Ej. Sala de Sesiones / Bodega de Aseo" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad</label>
-                    <input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Estado</label>
-                    <select id="cuartelItemStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="Operativo / Bueno">Operativo / Bueno</option>
-                        <option value="En revisión / Por reponer">En revisión / Por reponer</option>
-                        <option value="Dañado / Agotado">Dañado / Agotado</option>
-                    </select>
-                </div>
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Elemento</button>
-                </div>
-            </form>
-        </div>
-    </div>
-      <!-- VISTA 1: CONTROL DE ACCESOS -->
+        <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -406,39 +370,151 @@
         </section>
     </main>
 
-    <!-- VISTA 2: PANEL EXCLUSIVO DE LA TENIENTE TERCERO (ORNATO Y ASEO) -->
+    <!-- VISTA 2: PANEL EXCLUSIVO DEL TENIENTE SEGUNDO (MATERIAL MENOR DE CARROS) -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Tercero</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1">Gestión de Cuartel, Ornato y Aseo</h2>
-                <p class="text-sm text-slate-500">Administre el inventario de inmuebles y el stock de elementos de limpieza.</p>
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Segundo</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1">Material Menor de los Carros</h2>
+                <p class="text-sm text-slate-500">Seleccione el carro o la bodega para gestionar su inventario independiente.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- RH-2 -->
+            <div onclick="openCarro('RH2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42795.png" alt="Camioneta RH-2" class="w-full h-full object-contain">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">RH-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Camioneta de Rescate</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- B-2 -->
+            <div onclick="openCarro('B2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro B-2" class="w-full h-full object-contain">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">B-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro de Bomberos</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BX-2 -->
+            <div onclick="openCarro('BX2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro BX-2" class="w-full h-full object-contain">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">BX-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro Portaescala / Aljibe</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BODEGA -->
+            <div onclick="openCarro('Bodega')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-warehouse"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">Bodega</h3>
+                <p class="text-xs text-slate-500 mt-1">Pañol y Material General</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA 2.5: PANEL EXCLUSIVO DE LA TENIENTE TERCERO (ASEO Y ORNATO) -->
+    <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Tercero</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1">Gestión de Aseo, Ornato e Inmuebles</h2>
+                <p class="text-sm text-slate-500">Administre el inventario del cuartel y los elementos de limpieza.</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <!-- INVENTARIO INMUEBLES -->
             <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
                 <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                     <i class="ph ph-house-line"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-slate-900">Inmuebles de la Compañía</h3>
-                <p class="text-sm text-slate-500 mt-1">Muebles, infraestructura y ornato del cuartel</p>
-                <span class="mt-6 text-xs font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Gestionar Inmuebles &rarr;</span>
+                <h3 class="text-2xl font-bold text-slate-900">Inmuebles y Ornato</h3>
+                <p class="text-sm text-slate-500 mt-1">Muebles y bienes de la compañía</p>
+                <span class="mt-6 text-xs font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
             </div>
 
-            <!-- ELEMENTOS DE ASEO -->
             <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
                 <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                     <i class="ph ph-sparkle"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-slate-900">Elementos de Aseo</h3>
-                <p class="text-sm text-slate-500 mt-1">Control de stock de artículos de limpieza</p>
-                <span class="mt-6 text-xs font-semibold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">Gestionar Aseo &rarr;</span>
+                <p class="text-sm text-slate-500 mt-1">Stock y control de limpieza</p>
+                <span class="mt-6 text-xs font-semibold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">Ver Elementos &rarr;</span>
             </div>
         </div>
     </div>
-     <!-- VISTA 3: INVENTARIO ESPECÍFICO DE LA TENIENTE TERCERO (INMUEBLES O ASEO) -->
+        <!-- VISTA 3: INVENTARIO DE CARROS (TENIENTE 2°) -->
+    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-center gap-4">
+                <button onclick="backToCarros()" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                    <i class="ph ph-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <span id="carroBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Unidad</span>
+                    <h2 id="carroTitle" class="text-2xl font-bold text-slate-900 mt-1">Inventario de Material Menor</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="openItemModal()" class="w-full md:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    <i class="ph ph-plus text-lg"></i> Agregar Material
+                </button>
+            </div>
+        </div>
+
+        <div id="gavetasContainer" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Filtrar por Compartimiento / Gaveta:</label>
+            <select id="gavetaFilter" onchange="renderInventory()" class="w-full md:w-72 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Todos">📦 Ver Todas las Gavetas / Techo</option>
+                <option value="Gaveta 1">Gaveta 1</option>
+                <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                <option value="Gaveta 2">Gaveta 2</option>
+                <option value="Gaveta 3">Gaveta 3</option>
+                <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                <option value="Gaveta trasera">Gaveta trasera</option>
+                <option value="Gaveta 4">Gaveta 4</option>
+                <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                <option value="Gaveta 5">Gaveta 5</option>
+                <option value="Gaveta 6">Gaveta 6</option>
+                <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                <option value="Techo">Techo</option>
+                <option value="Techo C-1">Techo C-1</option>
+                <option value="Techo C-2">Techo C-2</option>
+            </select>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse whitespace-nowrap min-w-[750px]">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                            <th class="px-6 py-3.5">Nombre del Equipo</th>
+                            <th class="px-6 py-3.5">Modelo / Marca</th>
+                            <th class="px-6 py-3.5">Categoría / Gaveta</th>
+                            <th class="px-6 py-3.5 text-center">Cantidad</th>
+                            <th class="px-6 py-3.5 text-center">Estado</th>
+                            <th class="px-6 py-3.5 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA 3.5: INVENTARIO DE CUARTEL (TENIENTE TERCERO) -->
     <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -446,7 +522,7 @@
                     <i class="ph ph-arrow-left text-lg"></i>
                 </button>
                 <div>
-                    <span id="cuartelBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Cuartel</span>
+                    <span id="cuartelBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Sección</span>
                     <h2 id="cuartelTitle" class="text-2xl font-bold text-slate-900 mt-1">Gestión de Inventario</h2>
                 </div>
             </div>
@@ -543,8 +619,7 @@
                 </table>
             </div>
         </div>
-    </div>
-    <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
+    </div>    <!-- VISTA 5: FICHA DE VOLUNTARIOS MODIFICABLE (EXCLUSIVO AYUDANTE) -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -560,8 +635,8 @@
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
                             <th class="px-6 py-3.5">Nombre Completo</th>
                             <th class="px-6 py-3.5">Grado / Cargo</th>
-                            <th class="px-6 py-3.5 text-center">Asistencia (3 Meses)[span_3](start_span)[span_3](end_span)</th>
-                            <th class="px-6 py-3.5 text-center">Asistencia (Anual)[span_4](start_span)[span_4](end_span)</th>
+                            <th class="px-6 py-3.5 text-center">Asistencia (3 Meses)</th>
+                            <th class="px-6 py-3.5 text-center">Asistencia (Anual)</th>
                             <th class="px-6 py-3.5 text-right">Modificar Ficha</th>
                         </tr>
                     </thead>
@@ -572,7 +647,93 @@
             </div>
         </div>
     </div>
-        <!-- Script General - Parte 1 -->
+
+    <!-- Modal para Agregar Material de Carros (Teniente 2°) -->
+    <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="itemModalTitle" class="text-lg font-semibold text-slate-800">Nuevo Material</h3>
+                <button onclick="closeItemModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
+            </div>
+            <form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-6 space-y-4">
+                <input type="hidden" id="itemId">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material o Equipo</label>
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera / Pitón" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Modelo / Marca</label>
+                    <input type="text" id="itemModel" required placeholder="Ej. Akron" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
+                    <input type="text" id="itemCategory" required placeholder="Ej. Agua" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div id="modalGavetaField" class="hidden">
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Gaveta / Compartimiento (B-2)</label>
+                    <select id="itemGaveta" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Gaveta 1">Gaveta 1</option>
+                        <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                        <option value="Gaveta 2">Gaveta 2</option>
+                        <option value="Gaveta 3">Gaveta 3</option>
+                        <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                        <option value="Gaveta trasera">Gaveta trasera</option>
+                        <option value="Gaveta 4">Gaveta 4</option>
+                        <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                        <option value="Gaveta 5">Gaveta 5</option>
+                        <option value="Gaveta 6">Gaveta 6</option>
+                        <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                        <option value="Techo">Techo</option>
+                        <option value="Techo C-1">Techo C-1</option>
+                        <option value="Techo C-2">Techo C-2</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad</label>
+                    <input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Material</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Elemento de Cuartel / Aseo (Teniente 3°) -->
+    <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="cuartelModalTitle" class="text-lg font-semibold text-slate-800">Agregar Elemento</h3>
+                <button onclick="closeCuartelItemModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
+            </div>
+            <form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-6 space-y-4">
+                <input type="hidden" id="cuartelItemId">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Artículo</label>
+                    <input type="text" id="cuartelItemName" required placeholder="Ej. Sillas / Cloro" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Ubicación / Detalle</label>
+                    <input type="text" id="cuartelItemUbicacion" required placeholder="Ej. Sala de Sesiones / Bodega" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad / Stock</label>
+                    <input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Estado</label>
+                    <select id="cuartelItemStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Operativo / Bueno">Operativo / Bueno</option>
+                        <option value="En revisión / Por reponer">En revisión / Por reponer</option>
+                        <option value="Dañado / Agotado">Dañado / Agotado</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Elemento</button>
+                </div>
+            </form>
+        </div>
+    </div>    <!-- Script General - Parte 1 -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpDZdRys1pxaMcR4uASEFFaeqCVGudbzPXQ_Rqhz9zpgrXgMa7dt9Pbi1al5KmLhQpdQ/exec"; 
 
@@ -612,24 +773,28 @@
 
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
+        let currentCarro = localStorage.getItem('active_carro') || null;
         let currentCuartelSeccion = localStorage.getItem('active_cuartel_seccion') || null;
 
+        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
+            "RH2": [{ id: 101, name: "Cuerda Semiestática 50m", model: "Petzl 50m", category: "Rescate", quantity: 2, status: "Operativo" }],
+            "B2": [{ id: 201, name: "Manguera 70mm", model: "Angus Fire", category: "Agua", gaveta: "Gaveta 1", quantity: 6, status: "Operativo" }],
+            "BX2": [{ id: 301, name: "Escala de Fibra", model: "Alaco", category: "Escala", quantity: 2, status: "Operativo" }],
+            "Bodega": [{ id: 401, name: "Casco Estructural", model: "MSA Gallet F1SF", category: "EPP", quantity: 5, status: "Operativo" }]
+        };
+
         let cuartelInventarios = JSON.parse(localStorage.getItem('cuartel_inventarios')) || {
-            "Inmuebles": [
-                { id: 101, name: "Mesas de Reunión", ubicacion: "Sala de Sesiones", quantity: 5, status: "Operativo / Bueno" },
-                { id: 102, name: "Sillas Ejecutivas", ubicacion: "Oficina de Oficiales", quantity: 12, status: "Operativo / Bueno" }
-            ],
-            "Aseo": [
-                { id: 201, name: "Cloro Bidón 5L", ubicacion: "Bodega de Aseo", quantity: 3, status: "Operativo / Bueno" },
-                { id: 202, name: "Escobillón de Piso", ubicacion: "Cuarto de Limpieza", quantity: 2, status: "En revisión / Por reponer" }
-            ]
+            "Inmuebles": [{ id: 101, name: "Mesas de Reunión", ubicacion: "Sala de Sesiones", quantity: 5, status: "Operativo / Bueno" }],
+            "Aseo": [{ id: 201, name: "Cloro Bidón 5L", ubicacion: "Bodega de Aseo", quantity: 3, status: "Operativo / Bueno" }]
         };
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
             if (activeCargo) {
                 activateSession(activeCargo, false);
-                if (activeCargo === 'Tenientetercero' && currentCuartelSeccion) {
+                if (activeCargo === 'Tenientesegundo' && currentCarro) {
+                    activateCarroView(currentCarro);
+                } else if (activeCargo === 'Tenientetercero' && currentCuartelSeccion) {
                     activateCuartelView(currentCuartelSeccion);
                 }
             }
@@ -670,6 +835,7 @@
             }
         }
 
+        // --- ENRUTAMIENTO Y SEPARACIÓN ESTRICTA DE INTERFACES ---
         function activateSession(cargo, showAlert = false) {
             const badge = document.getElementById('activeUserBadge');
             if(badge) badge.textContent = `(${cargo})`;
@@ -700,25 +866,30 @@
             const profileData = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
             document.getElementById('profileBtnText').textContent = profileData.name;
 
+            // Ocultar todas las vistas principales por defecto
+            document.getElementById('accessView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('cuartelInventoryView').classList.add('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
+            document.getElementById('fichasView').classList.add('hidden');
+            document.getElementById('remorsionView').classList.add('hidden');
+
             if (cargo === 'Ayudante') {
-                document.getElementById('accessView').classList.add('hidden');
-                document.getElementById('tenienteSegundoView').classList.add('hidden');
-                document.getElementById('cuartelInventoryView').classList.add('hidden');
                 document.getElementById('rosterView').classList.remove('hidden');
-                document.getElementById('fichasView').classList.add('hidden');
-                document.getElementById('remorsionView').classList.add('hidden');
                 document.getElementById('navTitle').textContent = `Panel Ayudantía`;
                 document.getElementById('exportCsvBtn').style.display = 'none';
                 document.getElementById('openQrBtn').style.display = 'none';
                 renderRoster();
-            } else if (operativosRoles.includes(cargo)) {
-                document.getElementById('accessView').classList.add('hidden');
+            } else if (cargo === 'Tenientesegundo' || cargo === 'Capitan' || cargo === 'Tenienteprimero') {
                 document.getElementById('tenienteSegundoView').classList.remove('hidden');
-                document.getElementById('cuartelInventoryView').classList.add('hidden');
-                document.getElementById('rosterView').classList.add('hidden');
-                document.getElementById('fichasView').classList.add('hidden');
-                document.getElementById('remorsionView').classList.add('hidden');
                 document.getElementById('navTitle').textContent = `Panel ${cargo}`;
+                document.getElementById('exportCsvBtn').style.display = 'none';
+                document.getElementById('openQrBtn').style.display = 'none';
+            } else if (cargo === 'Tenientetercero') {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
+                document.getElementById('navTitle').textContent = `Panel Teniente Tercero`;
                 document.getElementById('exportCsvBtn').style.display = 'none';
                 document.getElementById('openQrBtn').style.display = 'none';
             } else if (showAlert) {
@@ -774,8 +945,42 @@
 
         function logout() {
             localStorage.removeItem('active_cargo');
+            localStorage.removeItem('active_carro');
             localStorage.removeItem('active_cuartel_seccion');
             window.location.reload();
+        }
+
+        function openCarro(carroCode) {
+            currentCarro = carroCode;
+            localStorage.setItem('active_carro', carroCode);
+            activateCarroView(carroCode);
+        }
+
+        function activateCarroView(carroCode) {
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.remove('hidden');
+            document.getElementById('carroBadge').textContent = `${carroCode}`;
+            document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
+            document.getElementById('navTitle').textContent = `Panel ${carroCode}`;
+
+            const gavetasContainer = document.getElementById('gavetasContainer');
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (carroCode === 'B2') {
+                if(gavetasContainer) gavetasContainer.classList.remove('hidden');
+                if(modalGavetaField) modalGavetaField.classList.remove('hidden');
+            } else {
+                if(gavetasContainer) gavetasContainer.classList.add('hidden');
+                if(modalGavetaField) modalGavetaField.classList.add('hidden');
+            }
+            renderInventory();
+        }
+
+        function backToCarros() {
+            currentCarro = null;
+            localStorage.removeItem('active_carro');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Panel de Control";
         }
 
         function openCuartelSeccion(seccion) {
@@ -785,12 +990,8 @@
         }
 
         function activateCuartelView(seccion) {
-            document.getElementById('accessView').classList.add('hidden');
-            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
             document.getElementById('cuartelInventoryView').classList.remove('hidden');
-            document.getElementById('rosterView').classList.add('hidden');
-            document.getElementById('fichasView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.add('hidden');
             
             const tituloSeccion = seccion === 'Inmuebles' ? 'Inmuebles y Ornato del Cuartel' : 'Elementos y Stock de Aseo';
             document.getElementById('cuartelBadge').textContent = seccion;
@@ -803,87 +1004,16 @@
             currentCuartelSeccion = null;
             localStorage.removeItem('active_cuartel_seccion');
             document.getElementById('cuartelInventoryView').classList.add('hidden');
-            document.getElementById('rosterView').classList.add('hidden');
-            document.getElementById('fichasView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.add('hidden');
-            document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            document.getElementById('navTitle').textContent = "Panel de Control";
+            document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Panel Teniente Tercero";
         }
-
-        function renderCuartelInventory() {
-            if (!currentCuartelSeccion) return;
-            const tbody = document.getElementById('cuartelInventoryTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            let list = cuartelInventarios[currentCuartelSeccion] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay elementos registrados en esta sección.</td></tr>`;
-                return;
-            }
-
-            list.forEach(item => {
-                let badgeColor = "bg-emerald-100 text-emerald-700";
-                if (item.status && item.status.includes('revisión')) badgeColor = "bg-amber-100 text-amber-700";
-                if (item.status && (item.status.includes('Dañado') || item.status.includes('Agotado'))) badgeColor = "bg-rose-100 text-rose-700";
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50/80 transition-colors";
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
-                    <td class="px-6 py-4 text-slate-600">${item.ubicacion}</td>
-                    <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
-                    <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status || 'Operativo'}</span></td>
-                    <td class="px-6 py-4 text-right space-x-2">
-                        <button onclick="deleteCuartelItem(${item.id})" class="text-rose-600 hover:text-rose-900 text-xs font-medium bg-rose-50 px-2.5 py-1 rounded border border-rose-200">Eliminar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openCuartelItemModal() {
-            document.getElementById('cuartelItemId').value = '';
-            document.getElementById('cuartelItemForm').reset();
-            const tituloModal = currentCuartelSeccion === 'Inmuebles' ? 'Nuevo Inmueble / Artículo de Ornato' : 'Nuevo Elemento de Aseo';
-            document.getElementById('cuartelModalTitle').textContent = tituloModal;
-            document.getElementById('cuartelItemModal').classList.remove('hidden');
-        }
-
-        function closeCuartelItemModal() {
-            document.getElementById('cuartelItemModal').classList.add('hidden');
-        }
-
-        function saveCuartelItem(e) {
-            e.preventDefault();
-            if (!currentCuartelSeccion) return;
-            const name = document.getElementById('cuartelItemName').value.trim();
-            const ubicacion = document.getElementById('cuartelItemUbicacion').value.trim();
-            const quantity = parseInt(document.getElementById('cuartelItemQuantity').value) || 1;
-            const status = document.getElementById('cuartelItemStatus').value;
-
-            if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = [];
-
-            cuartelInventarios[currentCuartelSeccion].push({ id: Date.now(), name, ubicacion, quantity, status });
-            localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-            closeCuartelItemModal();
-            renderCuartelInventory();
-        }
-
-        function deleteCuartelItem(id) {
-            if (confirm("¿Estás seguro de eliminar este elemento?")) {
-                cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id);
-                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-                renderCuartelInventory();
-            }
-        }
-    </script>
-    <!-- Script General - Parte 2 -->
+            </script>
+        <!-- Script General - Parte 2 -->
     <script>
         function openRemoverRestriccionModal() {
             const activeCargo = localStorage.getItem('active_cargo');
             if (!activeCargo || !operativosRoles.includes(activeCargo)) {
-                let passwordVerif = prompt("Acceso restringido a Oficiales Operativos (Tenientes o Capitán).\nIngrese la contraseña de su cargo:");
+                let passwordVerif = prompt("Acceso restringido a Oficiales Operativos.\nIngrese la contraseña de su cargo:");
                 if (!passwordVerif) return;
                 
                 let cargoEncontrado = null;
@@ -937,6 +1067,8 @@
         function openRemorsionView() {
             document.getElementById('accessView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
             document.getElementById('cuartelInventoryView').classList.add('hidden');
             document.getElementById('rosterView').classList.add('hidden');
             document.getElementById('fichasView').classList.add('hidden');
@@ -1017,6 +1149,8 @@
             sincronizarConListaAyudante();
             document.getElementById('accessView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
             document.getElementById('cuartelInventoryView').classList.add('hidden');
             document.getElementById('rosterView').classList.remove('hidden');
             document.getElementById('fichasView').classList.add('hidden');
@@ -1125,6 +1259,8 @@
             sincronizarConListaAyudante();
             document.getElementById('accessView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
             document.getElementById('cuartelInventoryView').classList.add('hidden');
             document.getElementById('rosterView').classList.add('hidden');
             document.getElementById('fichasView').classList.remove('hidden');
@@ -1157,8 +1293,8 @@
                 tr.innerHTML = `
                     <td class="px-6 py-4 font-bold text-slate-900">${member.name}</td>
                     <td class="px-6 py-4 text-slate-600 font-medium">${member.role} <span class="text-xs text-slate-400">(${member.category})</span></td>
-                    <td class="px-6 py-4 text-center font-mono font-bold text-blue-600">${member.count3m || 0} asistencias[span_5](start_span)[span_5](end_span)</td>
-                    <td class="px-6 py-4 text-center font-mono font-bold text-emerald-600">${member.count1y || 0} asistencias[span_6](start_span)[span_6](end_span)</td>
+                    <td class="px-6 py-4 text-center font-mono font-bold text-blue-600">${member.count3m || 0} asistencias</td>
+                    <td class="px-6 py-4 text-center font-mono font-bold text-emerald-600">${member.count1y || 0} asistencias</td>
                     <td class="px-6 py-4 text-right">
                         <button onclick="openFichaEditModal(${member.id})" class="text-blue-600 hover:text-blue-900 text-xs font-medium bg-blue-50 px-3 py-1.5 rounded border border-blue-200">Modificar Ficha</button>
                     </td>
@@ -1383,6 +1519,259 @@
             link.href = URL.createObjectURL(blob);
             link.download = `Registro_${new Date().toLocaleDateString('es-CL')}.csv`;
             link.click();
+        }
+
+        // --- INVENTARIO DE CARROS (TENIENTE 2°) ---
+        function renderInventory() {
+            if (!currentCarro) return;
+            const tbody = document.getElementById('inventoryTableBody');
+            const gavetaFilter = document.getElementById('gavetaFilter');
+            if(!tbody) return;
+            
+            const selectedGaveta = (currentCarro === 'B2' && gavetaFilter) ? gavetaFilter.value : 'Todos';
+            tbody.innerHTML = '';
+
+            let carroList = inventories[currentCarro] || [];
+            
+            const filtered = carroList.filter(i => {
+                const matchGaveta = (selectedGaveta === 'Todos' || !i.gaveta || i.gaveta === selectedGaveta);
+                return matchGaveta;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay materiales registrados.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let badgeColor = "bg-emerald-100 text-emerald-700";
+                if (item.status === 'Revision') badgeColor = "bg-amber-100 text-amber-700";
+                if (item.status === 'Dañado') badgeColor = "bg-rose-100 text-rose-700";
+
+                const ubicacionText = item.gaveta ? `<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${item.gaveta}</span>` : item.category;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
+                    <td class="px-6 py-4 text-slate-600 font-mono text-xs">${item.model || 'N/D'}</td>
+                    <td class="px-6 py-4 text-slate-600">${ubicacionText}</td>
+                    <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
+                    <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status || 'Operativo'}</span></td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="deleteItem(${item.id})" class="text-rose-600 hover:text-rose-900 text-xs font-medium bg-rose-50 px-2.5 py-1 rounded border border-rose-200">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openItemModal() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemModalTitle').textContent = `Nuevo Material (${currentCarro})`;
+            
+            const modalGavetaField = document.getElementById('modalGavetaField');
+            if (currentCarro === 'B2') {
+                if(modalGavetaField) modalGavetaField.classList.remove('hidden');
+            } else {
+                if(modalGavetaField) modalGavetaField.classList.add('hidden');
+            }
+
+            document.getElementById('itemModal').classList.add('hidden'); // bug fix
+            document.getElementById('itemModal').classList.remove('hidden');
+        }
+
+        function closeItemModal() {
+            document.getElementById('itemModal').classList.add('hidden');
+        }
+
+        function saveInventoryItem(e) {
+            e.preventDefault();
+            if (!currentCarro) return;
+            const name = document.getElementById('itemName').value.trim();
+            const model = document.getElementById('itemModel').value.trim();
+            const category = document.getElementById('itemCategory').value.trim();
+            const quantity = parseInt(document.getElementById('itemQuantity').value) || 1;
+            const gaveta = (currentCarro === 'B2') ? document.getElementById('itemGaveta').value : null;
+
+            if (!inventories[currentCarro]) inventories[currentCarro] = [];
+
+            inventories[currentCarro].push({ id: Date.now(), name, model, category, gaveta, quantity, status: "Operativo" });
+            localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
+            closeItemModal();
+            renderInventory();
+        }
+
+        function deleteItem(id) {
+            if (confirm("¿Estás seguro de eliminar este material?")) {
+                inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id);
+                localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
+                renderInventory();
+            }
+        }
+
+        // --- INVENTARIO DE CUARTEL (TENIENTE 3°) ---
+        function renderCuartelInventory() {
+            if (!currentCuartelSeccion) return;
+            const tbody = document.getElementById('cuartelInventoryTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            let list = cuartelInventarios[currentCuartelSeccion] || [];
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay elementos registrados en esta sección.</td></tr>`;
+                return;
+            }
+
+            list.forEach(item => {
+                let badgeColor = "bg-emerald-100 text-emerald-700";
+                if (item.status && item.status.includes('revisión')) badgeColor = "bg-amber-100 text-amber-700";
+                if (item.status && (item.status.includes('Dañado') || item.status.includes('Agotado'))) badgeColor = "bg-rose-100 text-rose-700";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
+                    <td class="px-6 py-4 text-slate-600">${item.ubicacion}</td>
+                    <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
+                    <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status || 'Operativo'}</span></td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="deleteCuartelItem(${item.id})" class="text-rose-600 hover:text-rose-900 text-xs font-medium bg-rose-50 px-2.5 py-1 rounded border border-rose-200">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openCuartelItemModal() {
+            document.getElementById('cuartelItemId').value = '';
+            document.getElementById('cuartelItemForm').reset();
+            const tituloModal = currentCuartelSeccion === 'Inmuebles' ? 'Nuevo Inmueble / Artículo de Ornato' : 'Nuevo Elemento de Aseo';
+            document.getElementById('cuartelModalTitle').textContent = tituloModal;
+            document.getElementById('cuartelItemModal').classList.remove('hidden');
+        }
+
+        function closeCuartelItemModal() {
+            document.getElementById('cuartelItemModal').classList.add('hidden');
+        }
+
+        function saveCuartelItem(e) {
+            e.preventDefault();
+            if (!currentCuartelSeccion) return;
+            const name = document.getElementById('cuartelItemName').value.trim();
+            const ubicacion = document.getElementById('cuartelItemUbicacion').value.trim();
+            const quantity = parseInt(document.getElementById('cuartelItemQuantity').value) || 1;
+            const status = document.getElementById('cuartelItemStatus').value;
+
+            if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = [];
+
+            cuartelInventarios[currentCuartelSeccion].push({ id: Date.now(), name, ubicacion, quantity, status });
+            localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
+            closeCuartelItemModal();
+            renderCuartelInventory();
+        }
+
+        function deleteCuartelItem(id) {
+            if (confirm("¿Estás seguro de eliminar este elemento?")) {
+                cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id);
+                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
+                renderCuartelInventory();
+            }
+        }
+    </script>
+        <!-- Script General - Parte 2 -->
+    <script>
+        function openRemoverRestriccionModal() {
+            const activeCargo = localStorage.getItem('active_cargo');
+            if (!activeCargo || !operativosRoles.includes(activeCargo)) {
+                let passwordVerif = prompt("Acceso restringido a Oficiales Operativos.\nIngrese la contraseña de su cargo:");
+                if (!passwordVerif) return;
+                
+                let cargoEncontrado = null;
+                for (let rol of operativosRoles) {
+                    if (credentials[rol] === passwordVerif) {
+                        cargoEncontrado = rol;
+                        break;
+                    }
+                }
+
+                if (!cargoEncontrado) {
+                    alert("Contraseña incorrecta.");
+                    return;
+                }
+                localStorage.setItem('temp_remorsion_author', cargoEncontrado);
+            } else {
+                localStorage.setItem('temp_remorsion_author', activeCargo);
+            }
+
+            document.getElementById('removerRestriccionModal').classList.remove('hidden');
+        }
+
+        function closeRemoverRestriccionModal() {
+            document.getElementById('removerRestriccionModal').classList.add('hidden');
+            document.getElementById('voluntarioRestriccionNombre').value = '';
+            document.getElementById('motivoRemorsion').value = '';
+        }
+
+        function ejecutarRemorsionRestriccion(e) {
+            e.preventDefault();
+            const voluntarioNombre = document.getElementById('voluntarioRestriccionNombre').value.trim();
+            const motivo = document.getElementById('motivoRemorsion').value.trim();
+            const autor = localStorage.getItem('temp_remorsion_author') || "Oficial Operativo";
+
+            localStorage.removeItem('last_departure_timestamp');
+
+            remorsionesLog.push({
+                id: Date.now(),
+                fecha: new Date().toLocaleString('es-CL'),
+                oficial: autor,
+                voluntario: voluntarioNombre,
+                motivo: motivo
+            });
+            localStorage.setItem('remorsiones_log', JSON.stringify(remorsionesLog));
+
+            closeRemoverRestriccionModal();
+            verificarBloqueoSalida();
+            alert(`¡Restricción removida con éxito para el voluntario ${voluntarioNombre} por el ${autor}!`);
+        }
+
+        function openRemorsionView() {
+            document.getElementById('accessView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('tenienteTerceroView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('cuartelInventoryView').classList.add('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
+            document.getElementById('fichasView').classList.add('hidden');
+            document.getElementById('remorsionView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Panel de Remoción de Restricciones";
+            renderRemorsionesLog();
+        }
+
+        function renderRemorsionesLog() {
+            const tbody = document.getElementById('remorsionTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (remorsionesLog.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay registros de remoción.</td></tr>`;
+                return;
+            }
+
+            const sortedLogs = [...remorsionesLog].reverse();
+            sortedLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-xs text-slate-600">${log.fecha}</td>
+                    <td class="px-6 py-4 font-bold text-indigo-700">${log.oficial}</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">${log.voluntario || 'General'}</td>
+                    <td class="px-6 py-4 text-slate-800">${log.motivo}</td>
+                    <td class="px-6 py-4 text-right"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Aprobado</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     </script>
 </body>
