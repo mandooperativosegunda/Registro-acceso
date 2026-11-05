@@ -29,7 +29,7 @@
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        Sistema Activo <span id="activeUserBadge" class="hidden text-indigo-600 font-semibold ml-2"></span>
+                        Sistema Activo <span id="activeUserBadge" class="text-indigo-600 font-semibold ml-2"></span>
                     </p>
                 </div>
             </div>
@@ -53,7 +53,7 @@
 
     <!-- Modal de Login -->
     <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 overflow-hidden transform scale-95 transition-transform duration-300" id="loginModalContent">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 overflow-hidden transform scale-95 transition-transform duration-300">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
                     <i class="ph ph-lock-key text-indigo-600 text-xl"></i> Autenticación de Cargo
@@ -181,7 +181,6 @@
             </div>
         </div>
 
-        <!-- Tabla de Inventario -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4">
                 <div class="relative flex-1 max-w-sm">
@@ -219,7 +218,7 @@
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material o Equipo</label>
-                    <input type="text" id="itemName" required placeholder="Ej. Pdte. Manguera 50mm / Eslinga" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera 50mm / Eslinga" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
@@ -248,7 +247,6 @@
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpDZdRys1pxaMcR4uASEFFaeqCVGudbzPXQ_Rqhz9zpgrXgMa7dt9Pbi1al5KmLhQpdQ/exec"; 
 
-        // Credenciales autorizadas
         const credentials = {
             "Directora": "Directorabalmaceda1",
             "Tesorero": "Tesorerobalmaceda2",
@@ -267,7 +265,6 @@
             { id: 3, name: "Arnés de Rescate H-A9550", category: "Protección", quantity: 4, status: "Operativo" }
         ];
 
-        // Autocompletar datos de acceso al cargar
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('saved_nombre')) {
                 const nameInput = document.getElementById('fullName');
@@ -278,22 +275,298 @@
                 if (antInput) antInput.value = localStorage.getItem('saved_antiguedad');
             }
 
-            // Verificar si ya hay una sesión activa guardada
             const activeCargo = localStorage.getItem('active_cargo');
             if (activeCargo) {
                 activateSession(activeCargo);
             }
+            
+            saveAndRenderVisitors();
         });
 
-        // Reloj en tiempo real
+        
+   // Reloj en tiempo real
         setInterval(() => {
             const timeString = new Date().toLocaleTimeString('es-CL');
             const clock = document.getElementById('currentTime');
             if (clock) clock.textContent = timeString;
         }, 1000);
 
-        // Control de Modales de Login
         function openLoginModal() {
             document.getElementById('loginModal').classList.remove('hidden');
         }
-        function closeLoginMo
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const cargo = document.getElementById('loginCargo').value;
+            const pass = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (credentials[cargo] && credentials[cargo] === pass) {
+                localStorage.setItem('active_cargo', cargo);
+                closeLoginModal();
+                activateSession(cargo);
+            } else {
+                errorDiv.textContent = "Contraseña incorrecta para el cargo seleccionado.";
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        function activateSession(cargo) {
+            const badge = document.getElementById('activeUserBadge');
+            if(badge) badge.textContent = `(${cargo})`;
+            const btnText = document.getElementById('loginBtnText');
+            if(btnText) btnText.textContent = cargo;
+            
+            if (cargo === 'Tenientesegundo') {
+                const accessView = document.getElementById('accessView');
+                const t2View = document.getElementById('tenienteSegundoView');
+                const navTitle = document.getElementById('navTitle');
+                const csvBtn = document.getElementById('exportCsvBtn');
+                const qrBtn = document.getElementById('openQrBtn');
+
+                if(accessView) accessView.classList.add('hidden');
+                if(t2View) t2View.classList.remove('hidden');
+                if(navTitle) navTitle.textContent = "Panel Teniente 2°";
+                if(csvBtn) csvBtn.style.display = 'none';
+                if(qrBtn) qrBtn.style.display = 'none';
+                renderInventory();
+            } else {
+                alert(`Sesión iniciada con éxito como: ${cargo}`);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('active_cargo');
+            window.location.reload();
+        }
+
+        // --- INVENTARIO TENIENTE SEGUNDO ---
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            const searchInput = document.getElementById('searchInventory');
+            if(!tbody) return;
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+            tbody.innerHTML = '';
+
+            const filtered = inventory.filter(i => i.name.toLowerCase().includes(search) || i.category.toLowerCase().includes(search));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No se encontraron materiales registrados.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let badgeColor = "bg-emerald-100 text-emerald-700";
+                if (item.status === 'Revision') badgeColor = "bg-amber-100 text-amber-700";
+                if (item.status === 'Dañado') badgeColor = "bg-rose-100 text-rose-700";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${item.name}</td>
+                    <td class="px-6 py-4 text-slate-600">${item.category}</td>
+                    <td class="px-6 py-4 text-center font-mono">${item.quantity}</td>
+                    <td class="px-6 py-4 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${badgeColor}">${item.status}</span></td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="editItem(${item.id})" class="text-indigo-600 hover:text-indigo-900 text-xs font-medium bg-indigo-50 px-2.5 py-1 rounded border border-indigo-200">Editar</button>
+                        <button onclick="deleteItem(${item.id})" class="text-rose-600 hover:text-rose-900 text-xs font-medium bg-rose-50 px-2.5 py-1 rounded border border-rose-200">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openItemModal() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemModalTitle').textContent = "Nuevo Material";
+            document.getElementById('itemModal').classList.remove('hidden');
+        }
+
+        function closeItemModal() {
+            document.getElementById('itemModal').classList.add('hidden');
+        }
+
+        function saveInventoryItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('itemId').value;
+            const name = document.getElementById('itemName').value.trim();
+            const category = document.getElementById('itemCategory').value.trim();
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const status = document.getElementById('itemStatus').value;
+
+            if (id) {
+                const idx = inventory.findIndex(i => i.id == id);
+                if (idx !== -1) {
+                    inventory[idx] = { id: Number(id), name, category, quantity, status };
+                }
+            } else {
+                inventory.push({ id: Date.now(), name, category, quantity, status });
+            }
+
+            localStorage.setItem('inventario_teniente2', JSON.stringify(inventory));
+            closeItemModal();
+            renderInventory();
+        }
+
+        function editItem(id) {
+            const item = inventory.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('itemId').value = item.id;
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemQuantity').value = item.quantity;
+            document.getElementById('itemStatus').value = item.status;
+            document.getElementById('itemModalTitle').textContent = "Editar Material";
+            document.getElementById('itemModal').classList.remove('hidden');
+        }
+
+        function deleteItem(id) {
+            if (confirm("¿Estás seguro de eliminar este material del inventario?")) {
+                inventory = inventory.filter(i => i.id !== id);
+                localStorage.setItem('inventario_teniente2', JSON.stringify(inventory));
+                renderInventory();
+            }
+        }
+
+        // --- CONTROL DE ACCESOS ---
+        const form = document.getElementById('visitorForm');
+        const tableBody = document.getElementById('visitorsTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const notification = document.getElementById('notification');
+
+        function showNotification(message, type = 'success') {
+            if(!notification) return;
+            notification.textContent = message;
+            notification.className = 'p-3 rounded-lg text-sm font-medium transition-all duration-300 mb-4 border block';
+            if (type === 'success') {
+                notification.classList.add('bg-green-50', 'text-green-700', 'border-green-200');
+            } else {
+                notification.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+            }
+            setTimeout(() => notification.classList.add('hidden'), 3000);
+        }
+
+        function formatDuration(ms) {
+            const minutes = Math.floor((ms / (1000 * 60)) % 60);
+            const hours = Math.floor((ms / (1000 * 60 * 60)));
+            return `${hours}h ${minutes}m`;
+        }
+
+        function saveAndRenderVisitors() {
+            if(!tableBody) return;
+            localStorage.setItem('visitantes', JSON.stringify(visitors));
+            tableBody.innerHTML = '';
+            if (visitors.length === 0) {
+                tableBody.appendChild(emptyState);
+                return;
+            }
+            const sortedVisitors = [...visitors].sort((a, b) => b.id - a.id);
+            sortedVisitors.forEach(visitor => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition-colors group';
+                const statusBadge = visitor.status === 'active' 
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> En recinto</span>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Salió (${visitor.duration || ''})</span>`;
+                const actionButton = visitor.status === 'active'
+                    ? `<button onclick="markDeparture(${visitor.id})" class="text-xs font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-md transition-colors border border-rose-200">Marcar Salida</button>`
+                    : `<span class="text-xs text-slate-400 italic">Completado</span>`;
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${visitor.fullName}</td>
+                    <td class="px-6 py-4 text-slate-600 font-mono text-xs">${visitor.documentId}</td>
+                    <td class="px-6 py-4 text-slate-600">${visitor.antiguedad}</td>
+                    <td class="px-6 py-4 text-slate-600 text-xs">Entrada: ${visitor.entryTime} ${visitor.exitTime ? '<br>Salida: ' + visitor.exitTime : ''}</td>
+                    <td class="px-6 py-4 text-center">${statusBadge}</td>
+                    <td class="px-6 py-4 text-right">${actionButton}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const fullName = document.getElementById('fullName').value.trim();
+                const documentId = document.getElementById('documentId').value.trim();
+                const antiguedad = document.getElementById('antiguedad').value.trim();
+
+                if(!fullName || !documentId || !antiguedad) return;
+
+                localStorage.setItem('saved_nombre', fullName);
+                localStorage.setItem('saved_rut', documentId);
+                localStorage.setItem('saved_antiguedad', antiguedad);
+
+                const nuevoVisitante = {
+                    id: Date.now(),
+                    fullName, documentId, antiguedad,
+                    entryTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+                    startTimestamp: Date.now(),
+                    status: 'active'
+                };
+
+                visitors.push(nuevoVisitante);
+                form.reset();
+                
+                document.getElementById('fullName').value = localStorage.getItem('saved_nombre');
+                document.getElementById('documentId').value = localStorage.getItem('saved_rut');
+                document.getElementById('antiguedad').value = localStorage.getItem('saved_antiguedad');
+
+                showNotification('Ingreso registrado exitosamente.');
+                saveAndRenderVisitors();
+
+                if (GOOGLE_SCRIPT_URL) {
+                    fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre: fullName, rut: documentId, antiguedad: antiguedad, entrada: nuevoVisitante.entryTime, salida: 'En recinto', duracion: '-' })
+                    }).catch(err => console.log(err));
+                }
+            });
+        }
+
+        window.markDeparture = function(id) {
+            const index = visitors.findIndex(v => v.id === id);
+            if (index !== -1) {
+                const endTimestamp = Date.now();
+                visitors[index].status = 'departed';
+                visitors[index].exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+                visitors[index].duration = formatDuration(endTimestamp - visitors[index].startTimestamp);
+                
+                showNotification('Salida registrada.');
+                saveAndRenderVisitors();
+
+                if (GOOGLE_SCRIPT_URL) {
+                    fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: "updateExit",
+                            rut: visitors[index].documentId,
+                            salida: visitors[index].exitTime,
+                            duracion: visitors[index].duration
+                        })
+                    }).catch(err => console.log(err));
+                }
+            }
+        }
+
+        window.exportarExcel = function() {
+            if (visitors.length === 0) { alert("No hay datos."); return; }
+            let csv = "Nombre,RUT,Antiguedad,Entrada,Salida,Duracion\n";
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.antiguedad}","${v.entryTime}","${v.exitTime || 'En recinto'}","${v.duration || '-'}"\n`; });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Registro_${new Date().toLocaleDateString('es-CL')}.csv`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
