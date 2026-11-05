@@ -144,7 +144,17 @@
     <script>
         // URL de Google Apps Script (cuando quieras sincronizarlo con Drive, solo pega tu URL aquí entre las comillas)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpDZdRys1pxaMcR4uASEFFaeqCVGudbzPXQ_Rqhz9zpgrXgMa7dt9Pbi1al5KmLhQpdQ/exec"; 
-
+window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('saved_nombre')) {
+                const nameInput = document.getElementById('fullName');
+                const rutInput = document.getElementById('documentId');
+                const antInput = document.getElementById('antiguedad');
+                
+                if (nameInput) nameInput.value = localStorage.getItem('saved_nombre');
+                if (rutInput) rutInput.value = localStorage.getItem('saved_rut');
+                if (antInput) antInput.value = localStorage.getItem('saved_antiguedad');
+            }
+        });
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         
         const form = document.getElementById('visitorForm');
@@ -217,6 +227,10 @@
             const documentId = document.getElementById('documentId').value.trim();
             const antiguedad = document.getElementById('antiguedad').value.trim();
 
+            localStorage.setItem('saved_nombre', fullName);
+            localStorage.setItem('saved_rut', documentId);
+            localStorage.setItem('saved_antiguedad', antiguedad);
+            
             if(!fullName || !documentId || !antiguedad) return;
 
             const nuevoVisitante = {
@@ -229,6 +243,10 @@
 
             visitors.push(nuevoVisitante);
             form.reset();
+            document.getElementById('fullName').value = localStorage.getItem('saved_nombre');
+            document.getElementById('documentId').value = localStorage.getItem('saved_rut');
+            document.getElementById('antiguedad').value = localStorage.getItem('saved_antiguedad');
+            
             document.getElementById('fullName').focus();
             showNotification('Ingreso registrado exitosamente.');
             saveAndRender();
