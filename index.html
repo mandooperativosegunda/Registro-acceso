@@ -240,11 +240,11 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Asistencias (3 Meses)</label>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Asistencias (3 Meses)[span_0](start_span)[span_0](end_span)</label>
                         <input type="number" id="fichaEdit3m" min="0" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Asistencias (Anual)</label>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Asistencias (Anual)[span_1](start_span)[span_1](end_span)</label>
                         <input type="number" id="fichaEdit1y" min="0" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
@@ -279,7 +279,7 @@
             </form>
         </div>
     </div>
-    <!-- VISTA 1: CONTROL DE ACCESOS -->
+        <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -420,11 +420,11 @@
         </div>
     </div>
 
-    <!-- PANEL UNIFICADO CAPITÁN Y TENIENTE PRIMERO (CON ACCESO A CARROS, CUARTEL Y ASISTENCIA) -->
+    <!-- PANEL UNIFICADO CAPITÁN Y TENIENTE PRIMERO -->
     <div id="capitanTenientePrimeroView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel de Mando Superior</span>
-            <h2 id="mandoTitle" class="text-2xl font-bold text-slate-900 mt-1">Supervisión General de Compañía</h2>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1">Supervisión General de Compañía</h2>
             <p class="text-sm text-slate-500">Acceso unificado a la gestión operativa, cuartel, asistencia y registro de liberaciones.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -445,19 +445,19 @@
             </div>
             <div onclick="openFichasView()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-blue-500 transition-all cursor-pointer flex flex-col items-center text-center">
                 <h3 class="text-lg font-bold text-slate-900">Fichas Voluntarios</h3>
-                <p class="text-xs text-slate-500 mt-1">Historial trimestral y anual</p>
+                <p class="text-xs text-slate-500 mt-1">Historial trimestral y anual[span_2](start_span)[span_2](end_span)</p>
                 <span class="mt-4 text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg">Ver Fichas &rarr;</span>
             </div>
         </div>
     </div>
-       <!-- VISTA 3: INVENTARIO DE CARROS -->
+        <!-- VISTA 3: INVENTARIO DE CARROS -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
-            <button onclick="backToCarros()" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
-                <i class="ph ph-arrow-left text-lg"></i> Volver
+            <button onclick="backToCarros()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors">
+                <i class="ph ph-arrow-left text-lg"></i> Volver al Panel
             </button>
-            <h2 id="carroTitle" class="text-2xl font-bold text-slate-900">Inventario</h2>
-            <button onclick="openItemModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Agregar</button>
+            <h2 id="carroTitle" class="text-xl font-bold text-slate-900">Inventario</h2>
+            <button onclick="openItemModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Agregar</button>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse">
@@ -477,11 +477,11 @@
     <!-- VISTA 3.5: INVENTARIO DE CUARTEL -->
     <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
-            <button onclick="backToCuartelMenu()" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
-                <i class="ph ph-arrow-left text-lg"></i> Volver
+            <button onclick="backToCuartelMenu()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors">
+                <i class="ph ph-arrow-left text-lg"></i> Volver al Panel
             </button>
-            <h2 id="cuartelTitle" class="text-2xl font-bold text-slate-900">Inventario Cuartel</h2>
-            <button onclick="openCuartelItemModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Agregar</button>
+            <h2 id="cuartelTitle" class="text-xl font-bold text-slate-900">Inventario Cuartel</h2>
+            <button onclick="openCuartelItemModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Agregar</button>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse">
@@ -501,8 +501,11 @@
     <!-- VISTA 4: LISTA DE ASISTENCIA -->
     <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-slate-900">Lista y Control de Asistencia</h2>
-            <button onclick="openMemberModal()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Agregar Miembro</button>
+            <button onclick="backToMainPanel()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors">
+                <i class="ph ph-arrow-left text-lg"></i> Volver al Panel
+            </button>
+            <h2 class="text-xl font-bold text-slate-900">Lista y Control de Asistencia</h2>
+            <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Agregar Miembro</button>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse">
@@ -519,11 +522,14 @@
         </div>
     </div>
 
-    <!-- VISTA: HISTORIAL DE REMOCIONES (SOLO CAPITÁN VISUALIZA ESTA SECCIÓN DE AUDITORÍA) -->
+    <!-- VISTA: HISTORIAL DE REMOCIONES -->
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-2xl font-bold text-slate-900">Historial de Remoción de Restricciones (Auditoría de Mandos)</h2>
-            <p class="text-sm text-slate-500 mt-1">Registro de qué oficial desbloqueó y justificó a cada voluntario.</p>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors">
+                <i class="ph ph-arrow-left text-lg"></i> Volver al Panel
+            </button>
+            <h2 class="text-xl font-bold text-slate-900">Historial de Remoción de Restricciones</h2>
+            <div></div>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse">
@@ -539,10 +545,14 @@
             </table>
         </div>
     </div>
-       <!-- VISTA 5: FICHA DE VOLUNTARIOS -->
+        <!-- VISTA 5: FICHA DE VOLUNTARIOS -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-2xl font-bold text-slate-900">Fichas de Voluntarios</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors">
+                <i class="ph ph-arrow-left text-lg"></i> Volver al Panel
+            </button>
+            <h2 class="text-xl font-bold text-slate-900">Fichas de Voluntarios</h2>
+            <div></div>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse">
@@ -582,7 +592,8 @@
                 <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm">Guardar</button>
             </form>
         </div>
-    <!-- Script General -->
+    </div>
+        <!-- Script General -->
     <script>
         const GOOGLE_SCRIPT_URL = ""; 
 
@@ -594,7 +605,7 @@
             "Ayudante": "Ayudantebalmaceda2",
             "Tenienteprimero": "Tenienteprimerobalmaceda",
             "Tenientesegundo": "Tenientesegundobalmaceda",
-            "Tenientetercero": "Tenientetercerobalmaceda"
+            "Tenientetercero": "Tenientesercerobalmaceda"
         };
 
         const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
@@ -618,7 +629,6 @@
             if (activeCargo) {
                 activateSession(activeCargo, false);
             }
-            verificarBloqueoSalida();
         });
 
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
@@ -637,13 +647,13 @@
             }
         }
 
-        // --- ENRUTAMIENTO ESTRICTO Y REPARACIÓN DEL PERFIL ---
+        // --- ENRUTAMIENTO ESTRICTO Y DIFERENCIA CAPITÁN / TTE 1° ---
         function activateSession(cargo, showAlert = false) {
             document.getElementById('activeUserBadge').textContent = `(${cargo})`;
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
 
-            // Ocultar todas las vistas principales
+            // Ocultar vistas principales
             document.getElementById('accessView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.add('hidden');
             document.getElementById('tenienteTerceroView').classList.add('hidden');
@@ -654,10 +664,10 @@
             document.getElementById('fichasView').classList.add('hidden');
             document.getElementById('remorsionView').classList.add('hidden');
 
-            // Visibilidad de botones del navbar
-            if (operativosRoles.includes(cargo)) {
+            // Diferencia clave: Solo el Capitán ve el historial de auditoría de remociones en su menú superior
+            if (cargo === 'Capitan') {
                 document.getElementById('remorsionBtnContainer').classList.remove('hidden');
-            } else {
+            } else if (operativosRoles.includes(cargo)) {
                 document.getElementById('remorsionBtnContainer').classList.add('hidden');
             }
 
@@ -674,7 +684,7 @@
                 document.getElementById('navTitle').textContent = "Panel Teniente Tercero";
             } else if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
                 document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = `Panel Mando (${cargo})`;
+                document.getElementById('navTitle', 'Historial Remoción').textContent = `Panel Mando (${cargo})`;
             }
 
             if (showAlert) alert(`Sesión iniciada como: ${cargo}`);
@@ -717,12 +727,26 @@
         }
 
         function openMandoSeccion(seccion) {
+            const cargo = localStorage.getItem('active_cargo');
             if (seccion === 'carros') {
                 document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
                 document.getElementById('tenienteSegundoView').classList.remove('hidden');
             } else if (seccion === 'cuartel') {
                 document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
                 document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            }
+        }
+
+        function backToMainPanel() {
+            const cargo = localStorage.getItem('active_cargo');
+            document.getElementById('rosterView').classList.add('hidden');
+            document.getElementById('fichasView').classList.add('hidden');
+            document.getElementById('remorsionView').classList.add('hidden');
+
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
+                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            } else if (cargo === 'Ayudante') {
+                document.getElementById('rosterView').classList.remove('hidden');
             }
         }
 
@@ -733,8 +757,13 @@
             document.getElementById('carroTitle').textContent = `Inventario - ${code}`;
         }
         function backToCarros() {
+            const cargo = localStorage.getItem('active_cargo');
             document.getElementById('carroInventoryView').classList.add('hidden');
-            document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
+                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            } else {
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            }
         }
 
         function openCuartelSeccion(seccion) {
@@ -744,13 +773,18 @@
             document.getElementById('cuartelTitle').textContent = `Inventario Cuartel - ${seccion}`;
         }
         function backToCuartelMenu() {
+            const cargo = localStorage.getItem('active_cargo');
             document.getElementById('cuartelInventoryView').classList.add('hidden');
-            document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
+                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            } else {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            }
         }
 
-        function openRosterView() { document.getElementById('rosterView').classList.remove('hidden'); }
-        function openFichasView() { document.getElementById('fichasView').classList.remove('hidden'); }
-        function openRemorsionView() { document.getElementById('remorsionView').classList.remove('hidden'); renderRemorsionesLog(); }
+        function openRosterView() { document.getElementById('capitanTenientePrimeroView').classList.add('hidden'); document.getElementById('rosterView').classList.remove('hidden'); }
+        function openFichasView() { document.getElementById('capitanTenientePrimeroView').classList.add('hidden'); document.getElementById('fichasView').classList.remove('hidden'); }
+        function openRemorsionView() { document.getElementById('capitanTenientePrimeroView').classList.add('hidden'); document.getElementById('remorsionView').classList.remove('hidden'); renderRemorsionesLog(); }
 
         function renderRemorsionesLog() {
             const tbody = document.getElementById('remorsionTableBody');
@@ -764,10 +798,6 @@
                 tbody.innerHTML += `<tr><td class="px-6 py-3">${log.fecha}</td><td class="px-6 py-3 font-bold">${log.oficial}</td><td class="px-6 py-3">${log.voluntario}</td><td class="px-6 py-3">${log.motivo}</td></tr>`;
             });
         }
-
-        function verificarBloqueoSalida() {}
     </script>
 </body>
 </html>
-</div>
-    
