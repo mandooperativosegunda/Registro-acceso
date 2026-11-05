@@ -44,6 +44,7 @@
                     <span id="profileBtnText">Perfil</span>
                 </button>
 
+                <!-- Botones exclusivos para Ayudante -->
                 <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-2 rounded-lg border border-amber-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-list-checks text-lg"></i>
                     <span class="hidden sm:inline">Lista y Asistencia</span>
@@ -54,7 +55,7 @@
                     <span class="hidden sm:inline">Ficha Voluntarios</span>
                 </button>
 
-                <!-- Botón exclusivo para el Capitán: Remoción de Restricción -->
+                <!-- Botón de Remoción de Restricción (Visible para Capitán y Oficiales Operativos) -->
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-2 rounded-lg border border-rose-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-lock-open text-lg"></i>
                     <span class="hidden sm:inline">Remoción de Restricción</span>
@@ -256,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Modal para que el Oficial Operativo solicite/ejecute la Remoción de Restricción -->
+    <!-- Modal para Remover Restricción (Oficiales Operativos y Teniente 2°) -->
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -268,7 +269,7 @@
             <form onsubmit="ejecutarRemorsionRestriccion(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Motivo Operativo de la Remoción</label>
-                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Ingreso autorizado por emergencia / guardia nocturna extraordinaria..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Ingreso autorizado por el Teniente 2° por emergencia..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-rose-500"></textarea>
                 </div>
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Confirmar y Desbloquear Acceso</button>
@@ -289,7 +290,6 @@
                 <div id="accessFormContainer" class="p-6">
                     <div id="notification" class="hidden p-3 rounded-lg text-sm font-medium transition-all duration-300 mb-4"></div>
                     
-                    <!-- Aviso de bloqueo activo con opción de solicitar desbloqueo a oficiales -->
                     <div id="blockNotice" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm space-y-3 mb-4">
                         <div class="flex items-center gap-2 font-bold">
                             <i class="ph ph-warning text-lg text-amber-600"></i> Registro Bloqueado Temporalmente
@@ -298,17 +298,17 @@
                         <p class="text-xs font-mono font-semibold" id="blockCountdown">Tiempo restante: Calculando...</p>
                         <div class="pt-2 border-t border-amber-200/60">
                             <button type="button" onclick="openRemoverRestriccionModal()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2 px-3 rounded-lg text-xs transition-colors shadow-sm flex items-center justify-center gap-1.5">
-                                <i class="ph ph-key text-sm"></i> Solicitar Remoción a Oficial Operativo
+                                <i class="ph ph-key text-sm"></i> Solicitar Remoción a Oficial Operativo (Tenientes / Capitán)
                             </button>
                         </div>
                     </div>
 
                     <form id="visitorForm" class="space-y-5">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre Completo</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre y Apellido (Lista Oficial)</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-identification-card text-slate-400 text-lg"></i></div>
-                                <input type="text" id="fullName" required placeholder="Ej. Juan Pérez" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" autocomplete="off">
+                                <input type="text" id="fullName" required placeholder="Ej. Bastian Cuevas" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" autocomplete="off">
                             </div>
                         </div>
                         <div>
@@ -322,7 +322,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Antigüedad</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-calendar-star text-slate-400 text-lg"></i></div>
-                                <input type="text" id="antiguedad" required placeholder="Ej. 2 años, Nuevo, etc." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" autocomplete="off">
+                                <input type="text" id="antiguedad" required placeholder="Ej. 2 años" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" autocomplete="off">
                             </div>
                         </div>
                         <div class="pt-2">
@@ -366,41 +366,55 @@
         </section>
     </main>
 
-    <!-- VISTA 2: PANEL EXCLUSIVO DE AYUDANTÍA -->
+    <!-- VISTA 2: PANEL DEL TENIENTE SEGUNDO (INVENTARIO DE CARROS Y BODEGA) -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel de Ayudantía / Operativo</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1">Gestión de Compañía y Sincronización</h2>
-                <p class="text-sm text-slate-500">Control de asistencia, horas y remociones de restricciones autorizadas.</p>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="openRosterView()" class="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
-                    <i class="ph ph-list-checks text-lg"></i> Ver Lista y Asistencia
-                </button>
-                <button onclick="openFichasView()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
-                    <i class="ph ph-identification-card text-lg"></i> Ficha de Voluntarios
-                </button>
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Segundo</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1">Selección de Unidades y Bodega</h2>
+                <p class="text-sm text-slate-500">Seleccione el carro o la bodega para gestionar su inventario independiente.</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div onclick="openRosterView()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
-                <div class="w-20 h-20 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                    <i class="ph ph-list-checks"></i>
+            <!-- RH-2 -->
+            <div onclick="openCarro('RH2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42795.png" alt="Camioneta RH-2" class="w-full h-full object-contain">
                 </div>
-                <h3 class="text-xl font-bold text-slate-900">Lista Semanal</h3>
-                <p class="text-xs text-slate-500 mt-1">Lunes a Domingo y Horas Garita</p>
-                <span class="mt-4 text-xs font-semibold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-colors">Abrir Lista &rarr;</span>
+                <h3 class="text-xl font-bold text-slate-900">RH-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Camioneta de Rescate</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
             </div>
 
-            <div onclick="openFichasView()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
-                <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <i class="ph ph-identification-card"></i>
+            <!-- B-2 -->
+            <div onclick="openCarro('B2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro B-2" class="w-full h-full object-contain">
                 </div>
-                <h3 class="text-xl font-bold text-slate-900">Fichas Modificables</h3>
-                <p class="text-xs text-slate-500 mt-1">Sincronización total</p>
-                <span class="mt-4 text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">Ver Fichas &rarr;</span>
+                <h3 class="text-xl font-bold text-slate-900">B-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro de Bomberos</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BX-2 -->
+            <div onclick="openCarro('BX2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro BX-2" class="w-full h-full object-contain">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">BX-2</h3>
+                <p class="text-xs text-slate-500 mt-1">Carro Portaescala / Aljibe</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+            </div>
+
+            <!-- BODEGA -->
+            <div onclick="openCarro('Bodega')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <i class="ph ph-warehouse"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">Bodega</h3>
+                <p class="text-xs text-slate-500 mt-1">Pañol y Material General</p>
+                <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
             </div>
         </div>
     </div>
@@ -416,10 +430,56 @@
                     <h2 id="carroTitle" class="text-2xl font-bold text-slate-900 mt-1">Inventario de Material Menor</h2>
                 </div>
             </div>
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="openItemModal()" class="w-full md:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    <i class="ph ph-plus text-lg"></i> Agregar Material
+                </button>
+            </div>
+        </div>
+
+        <div id="gavetasContainer" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Filtrar por Compartimiento / Gaveta:</label>
+            <select id="gavetaFilter" onchange="renderInventory()" class="w-full md:w-72 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Todos">📦 Ver Todas las Gavetas / Techo</option>
+                <option value="Gaveta 1">Gaveta 1</option>
+                <option value="Gaveta 1 inferior">Gaveta 1 inferior</option>
+                <option value="Gaveta 2">Gaveta 2</option>
+                <option value="Gaveta 3">Gaveta 3</option>
+                <option value="Gaveta 3 inferior">Gaveta 3 inferior</option>
+                <option value="Gaveta trasera">Gaveta trasera</option>
+                <option value="Gaveta 4">Gaveta 4</option>
+                <option value="Gaveta 4 inferior">Gaveta 4 inferior</option>
+                <option value="Gaveta 5">Gaveta 5</option>
+                <option value="Gaveta 6">Gaveta 6</option>
+                <option value="Gaveta 6 inferior">Gaveta 6 inferior</option>
+                <option value="Techo">Techo</option>
+                <option value="Techo C-1">Techo C-1</option>
+                <option value="Techo C-2">Techo C-2</option>
+            </select>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse whitespace-nowrap min-w-[750px]">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                            <th class="px-6 py-3.5">Nombre del Equipo</th>
+                            <th class="px-6 py-3.5">Modelo / Marca</th>
+                            <th class="px-6 py-3.5">Categoría / Ubicación</th>
+                            <th class="px-6 py-3.5 text-center">Cantidad</th>
+                            <th class="px-6 py-3.5 text-center">Estado</th>
+                            <th class="px-6 py-3.5 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- VISTA 4: LISTA DE ASISTENCIA SEMANAL Y HORAS DE GARITA -->
+    <!-- VISTA 4: LISTA DE ASISTENCIA SEMANAL Y HORAS -->
     <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -429,7 +489,6 @@
                 <div>
                     <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Control de Asistencia y Horas</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Lista, Días y Registro de Garita</h2>
-                    <p class="text-sm text-slate-500">Muestra las horas acumuladas en accesos y cambia automáticamente a AB al superar 4 horas.</p>
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -443,34 +502,28 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-4">
-                <div class="relative flex-1 max-w-sm">
-                    <i class="ph ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
-                    <input type="text" id="searchRoster" onkeyup="renderRoster()" placeholder="Buscar por nombre, cargo o motivo..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
-            </div>
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse whitespace-nowrap min-w-[950px]">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
                             <th class="px-6 py-3.5">Categoría / Rango</th>
                             <th class="px-6 py-3.5">Nombre y Apellido</th>
-                            <th class="px-6 py-3.5 text-center">Día (Lunes a Domingo)</th>
-                            <th class="px-6 py-3.5">Motivo / Actividad</th>
+                            <th class="px-6 py-3.5 text-center">Día</th>
+                            <th class="px-6 py-3.5">Motivo</th>
                             <th class="px-6 py-3.5 text-center">Horas Garita</th>
                             <th class="px-6 py-3.5 text-center">Estado (A / AB / F)</th>
                             <th class="px-6 py-3.5 text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="rosterTableBody" class="divide-y divide-slate-100 text-sm">
-                        <!-- Se llena dinámicamente -->
+                        <!-- Dinámico -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- VISTA NUEVA: PANEL DE REMOCIÓN DE RESTRICCIONES (EXCLUSIVO PARA EL CAPITÁN) -->
+    <!-- VISTA: HISTORIAL DE REMOCIONES (CAPITÁN Y OFICIALES) -->
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -478,17 +531,13 @@
                     <i class="ph ph-arrow-left text-lg"></i>
                 </button>
                 <div>
-                    <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel de Comandancia / Capitán</span>
+                    <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel de Comandancia</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Historial de Remoción de Restricciones</h2>
-                    <p class="text-sm text-slate-500">Registro oficial de desbloqueos de acceso realizados por los oficiales operativos.</p>
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Solicitudes y Desbloqueos Registrados</h3>
-            </div>
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse whitespace-nowrap min-w-[750px]">
                     <thead>
@@ -516,18 +565,11 @@
                 <div>
                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Fichas de Voluntarios</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Historial Acumulado y Modificación</h2>
-                    <p class="text-sm text-slate-500">Sincronizado con las horas de garita y el panel de asistencia.</p>
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4">
-                <div class="relative flex-1 max-w-sm">
-                    <i class="ph ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
-                    <input type="text" id="searchFichas" onkeyup="renderFichas()" placeholder="Buscar voluntario en fichas..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-            </div>
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse whitespace-nowrap min-w-[750px]">
                     <thead>
@@ -540,10 +582,38 @@
                         </tr>
                     </thead>
                     <tbody id="fichasTableBody" class="divide-y divide-slate-100 text-sm">
-                        <!-- Se llena dinámicamente -->
+                        <!-- Dinámico -->
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal para Inventario -->
+    <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="itemModalTitle" class="text-lg font-semibold text-slate-800">Nuevo Material</h3>
+                <button onclick="closeItemModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
+            </div>
+            <form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-6 space-y-4">
+                <input type="hidden" id="itemId">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Material</label>
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Modelo / Marca</label>
+                    <input type="text" id="itemModel" required placeholder="Ej. Akron" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Categoría</label>
+                    <input type="text" id="itemCategory" required placeholder="Ej. Agua" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Material</button>
+                </div>
+            </form>
         </div>
     </div>
         <!-- Script General - Parte 1 -->
@@ -586,11 +656,22 @@
 
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
+        let currentCarro = localStorage.getItem('active_carro') || null;
+
+        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
+            "RH2": [{ id: 101, name: "Cuerda Semiestática 50m", model: "Petzl 50m", category: "Rescate", quantity: 2, status: "Operativo" }],
+            "B2": [{ id: 201, name: "Manguera 70mm", model: "Angus Fire", category: "Agua", gaveta: "Gaveta 1", quantity: 6, status: "Operativo" }],
+            "BX2": [{ id: 301, name: "Escala de Fibra", model: "Alaco", category: "Escala", quantity: 2, status: "Operativo" }],
+            "Bodega": [{ id: 401, name: "Casco Estructural", model: "MSA Gallet F1SF", category: "EPP", quantity: 5, status: "Operativo" }]
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
             if (activeCargo) {
                 activateSession(activeCargo, false);
+                if (activeCargo === 'Tenientesegundo' && currentCarro) {
+                    activateCarroView(currentCarro);
+                }
             }
             verificarBloqueoSalida();
             sincronizarConListaAyudante();
@@ -638,7 +719,8 @@
             document.getElementById('listBtnContainer').classList.remove('hidden');
             document.getElementById('fichaBtnContainer').classList.remove('hidden');
             
-            if (cargo === 'Capitan') {
+            // Permitir que el Capitán y los Tenientes vean el botón de remoción de restricciones
+            if (operativosRoles.includes(cargo)) {
                 const remBtn = document.getElementById('remorsionBtnContainer');
                 if (remBtn) remBtn.classList.remove('hidden');
             } else {
@@ -651,14 +733,15 @@
 
             if (cargo === 'Ayudante' || cargo === 'Secretaria' || operativosRoles.includes(cargo)) {
                 document.getElementById('accessView').classList.add('hidden');
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+                document.getElementById('tenienteSegundoView').classList.add('hidden'); // Oculto inicialmente hasta elegir carro o ir a listas
                 document.getElementById('carroInventoryView').classList.add('hidden');
-                document.getElementById('rosterView').classList.add('hidden');
+                document.getElementById('rosterView').classList.remove('hidden'); // Por defecto abren en la lista
                 document.getElementById('fichasView').classList.add('hidden');
                 document.getElementById('remorsionView').classList.add('hidden');
                 document.getElementById('navTitle').textContent = `Panel ${cargo}`;
                 document.getElementById('exportCsvBtn').style.display = 'none';
                 document.getElementById('openQrBtn').style.display = 'none';
+                renderRoster();
             } else if (showAlert) {
                 alert(`Sesión iniciada con éxito como: ${cargo}`);
             }
@@ -709,13 +792,45 @@
             alert("¡Datos de perfil actualizados exitosamente!");
             openProfileModal();
         }
+
+        function openCarro(carroCode) {
+            currentCarro = carroCode;
+            localStorage.setItem('active_carro', carroCode);
+            activateCarroView(carroCode);
+        }
+
+        function activateCarroView(carroCode) {
+            document.getElementById('accessView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.remove('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
+            document.getElementById('fichasView').classList.add('hidden');
+            document.getElementById('remorsionView').classList.add('hidden');
+            
+            document.getElementById('carroBadge').textContent = `${carroCode}`;
+            document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
+            document.getElementById('navTitle').textContent = `Panel ${carroCode}`;
+            renderInventory();
+        }
+
+        function backToCarros() {
+            currentCarro = null;
+            localStorage.removeItem('active_carro');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
+            document.getElementById('fichasView').classList.add('hidden');
+            document.getElementById('remorsionView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Panel de Control";
+        }
                 </script>
-                    <!-- Script General - Parte 2 -->
+              <!-- Script General - Parte 2 -->
     <script>
         function openRemoverRestriccionModal() {
             const activeCargo = localStorage.getItem('active_cargo');
+            // Si ya tiene una sesión de oficial operativo abierta, usa su nombre. Si no, pide contraseña.
             if (!activeCargo || !operativosRoles.includes(activeCargo)) {
-                let passwordVerif = prompt("Acceso restringido a Oficiales Operativos.\nIngrese la contraseña de su cargo para autorizar la remoción:");
+                let passwordVerif = prompt("Acceso restringido a Oficiales Operativos (Capitán, Teniente 1°, 2° o 3°).\nIngrese la contraseña de su cargo para autorizar la remoción:");
                 if (!passwordVerif) return;
                 
                 let cargoEncontrado = null;
@@ -727,7 +842,7 @@
                 }
 
                 if (!cargoEncontrado) {
-                    alert("Contraseña incorrecta.");
+                    alert("Contraseña de oficial operativo incorrecta.");
                     return;
                 }
                 localStorage.setItem('temp_remorsion_author', cargoEncontrado);
@@ -770,7 +885,7 @@
             document.getElementById('rosterView').classList.add('hidden');
             document.getElementById('fichasView').classList.add('hidden');
             document.getElementById('remorsionView').classList.remove('hidden');
-            document.getElementById('navTitle').textContent = "Panel del Capitán - Remoción de Restricciones";
+            document.getElementById('navTitle').textContent = "Panel de Remoción de Restricciones";
             renderRemorsionesLog();
         }
 
@@ -826,15 +941,12 @@
             }
         }
 
-        // --- CONEXIÓN DIRECTA ENTRE REGISTRO DE ACCESO Y LA LISTA DE LA AYUDANTE ---
         function sincronizarConListaAyudante() {
             roster.forEach(member => {
-                // Filtramos las visitas de este voluntario específico por su nombre exacto
                 let visitasMiembro = visitors.filter(v => v.fullName.toLowerCase().trim() === member.name.toLowerCase().trim());
                 let horasAcumuladas = visitasMiembro.length * 4; 
                 member.garitaHours = horasAcumuladas;
 
-                // Si acumuló 4 horas o más por sus accesos, se marca automáticamente como AB y suma a su ficha
                 if (horasAcumuladas >= 4 && member.status !== 'AB') {
                     member.status = 'AB';
                     member.count3m = (member.count3m || 0) + 1;
@@ -1083,21 +1195,6 @@
                 localStorage.setItem('roster_compania', JSON.stringify(roster));
                 renderRoster();
             }
-        }
-
-        function backToCarros() {
-            document.getElementById('carroInventoryView').classList.add('hidden');
-            document.getElementById('rosterView').classList.add('hidden');
-            document.getElementById('fichasView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.add('hidden');
-            document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            document.getElementById('navTitle').textContent = "Panel de Ayudantía";
-        }
-
-        function logout() {
-            localStorage.removeItem('active_cargo');
-            localStorage.removeItem('active_carro');
-            window.location.reload();
         }
 
         const form = document.getElementById('visitorForm');
