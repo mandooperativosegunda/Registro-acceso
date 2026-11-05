@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Ingreso de Visitantes</title>
+    <title>Control de Accesos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
@@ -12,7 +12,6 @@
         .custom-scrollbar::-webkit-scrollbar { height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -30,16 +29,20 @@
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        Almacenamiento Local Activo
+                        Sistema Activo
                     </p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button id="openQrBtn" class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg border border-indigo-200 font-medium text-sm transition-colors shadow-sm focus:ring-2 focus:ring-indigo-500">
+                <button onclick="exportarExcel()" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 font-medium text-sm transition-colors shadow-sm">
+                    <i class="ph ph-download-simple text-lg text-emerald-700"></i>
+                    <span class="hidden sm:inline">Descargar CSV</span>
+                </button>
+                <button id="openQrBtn" class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg border border-indigo-200 font-medium text-sm transition-colors">
                     <i class="ph ph-qr-code text-lg text-indigo-700"></i>
                     <span class="hidden sm:inline">Generar QR</span>
                 </button>
-                <div class="hidden sm:flex items-center gap-2 text-slate-600 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200 font-mono text-sm shadow-inner">
+                <div class="hidden sm:flex items-center gap-2 text-slate-600 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200 font-mono text-sm">
                     <i class="ph ph-clock text-lg text-indigo-600"></i>
                     <span id="currentTime">--:--:--</span>
                 </div>
@@ -63,7 +66,6 @@
                     <img id="qrImage" src="" alt="QR" class="w-48 h-48">
                 </div>
                 <h4 class="font-semibold text-slate-800 mb-1">Escanea para ingresar</h4>
-                <p class="text-sm text-slate-600">Apunta con tu cámara para abrir el registro.</p>
             </div>
         </div>
     </div>
@@ -100,7 +102,7 @@
                         </div>
                     </div>
                     <div class="pt-2">
-                        <button type="submit" class="w-full flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm focus:ring-4 focus:ring-indigo-100">
+                        <button type="submit" class="w-full flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm">
                             <i class="ph ph-check-circle text-lg"></i> Registrar Ingreso
                         </button>
                     </div>
@@ -110,11 +112,11 @@
 
         <section class="lg:col-span-8">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 h-full flex flex-col overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
                         <i class="ph ph-users text-indigo-600 text-xl"></i> Registro de Visitas
                     </h2>
-                    <div class="sm:hidden flex items-center gap-2 text-sm text-slate-500 bg-white px-3 py-1.5 rounded-md border border-slate-200">
+                    <div class="text-sm text-slate-500 bg-white px-3 py-1.5 rounded-md border border-slate-200">
                         <i class="ph ph-clock text-lg"></i> <span id="currentTimeMobile">--:--:--</span>
                     </div>
                 </div>
@@ -125,7 +127,7 @@
                                 <th class="px-6 py-4">Visitante</th>
                                 <th class="px-6 py-4">Documento</th>
                                 <th class="px-6 py-4">Antigüedad</th>
-                                <th class="px-6 py-4">Entrada</th>
+                                <th class="px-6 py-4">Entrada / Salida</th>
                                 <th class="px-6 py-4 text-center">Estado</th>
                                 <th class="px-6 py-4 text-right">Acción</th>
                             </tr>
@@ -140,10 +142,11 @@
     </main>
 
     <script>
-        // State
+        // URL de Google Apps Script (cuando quieras sincronizarlo con Drive, solo pega tu URL aquí entre las comillas)
+        const GOOGLE_SCRIPT_URL = "Https://script.google.com/macros/s/AKfycbxeVjbJYbkiTUr39i_59nn-p5mKVpeJeQF_788hIXmU7dstpUoChwV1FZf0zgia9dGeAw/exec"; 
+
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         
-        // Elements
         const form = document.getElementById('visitorForm');
         const tableBody = document.getElementById('visitorsTableBody');
         const emptyState = document.getElementById('emptyState');
@@ -151,14 +154,12 @@
         const clockElementMobile = document.getElementById('currentTimeMobile');
         const notification = document.getElementById('notification');
 
-        // Clock
         setInterval(() => {
             const timeString = new Date().toLocaleTimeString('es-CL');
             clockElement.textContent = timeString;
             clockElementMobile.textContent = timeString;
         }, 1000);
 
-        // Notification
         function showNotification(message, type = 'success') {
             notification.textContent = message;
             notification.className = 'p-3 rounded-lg text-sm font-medium transition-all duration-300 mb-4 border block';
@@ -170,17 +171,20 @@
             setTimeout(() => notification.classList.add('hidden'), 3000);
         }
 
-        // Save & Render
+        function formatDuration(ms) {
+            const minutes = Math.floor((ms / (1000 * 60)) % 60);
+            const hours = Math.floor((ms / (1000 * 60 * 60)));
+            return `${hours}h ${minutes}m`;
+        }
+
         function saveAndRender() {
             localStorage.setItem('visitantes', JSON.stringify(visitors));
-            
             tableBody.innerHTML = '';
             if (visitors.length === 0) {
                 tableBody.appendChild(emptyState);
                 return;
             }
 
-            // Sort newest first
             const sortedVisitors = [...visitors].sort((a, b) => b.id - a.id);
 
             sortedVisitors.forEach(visitor => {
@@ -189,7 +193,7 @@
 
                 const statusBadge = visitor.status === 'active' 
                     ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> En recinto</span>`
-                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Retirado ${visitor.exitTime}</span>`;
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Salió (${visitor.duration || ''})</span>`;
 
                 const actionButton = visitor.status === 'active'
                     ? `<button onclick="markDeparture(${visitor.id})" class="text-xs font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-md transition-colors border border-rose-200">Marcar Salida</button>`
@@ -199,7 +203,7 @@
                     <td class="px-6 py-4 font-medium text-slate-900">${visitor.fullName}</td>
                     <td class="px-6 py-4 text-slate-600 font-mono text-xs">${visitor.documentId}</td>
                     <td class="px-6 py-4 text-slate-600">${visitor.antiguedad}</td>
-                    <td class="px-6 py-4 text-slate-600"><i class="ph ph-clock"></i> ${visitor.entryTime}</td>
+                    <td class="px-6 py-4 text-slate-600 text-xs">Entrada: ${visitor.entryTime} ${visitor.exitTime ? '<br>Salida: ' + visitor.exitTime : ''}</td>
                     <td class="px-6 py-4 text-center">${statusBadge}</td>
                     <td class="px-6 py-4 text-right">${actionButton}</td>
                 `;
@@ -207,7 +211,6 @@
             });
         }
 
-        // Add Visitor
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const fullName = document.getElementById('fullName').value.trim();
@@ -216,46 +219,66 @@
 
             if(!fullName || !documentId || !antiguedad) return;
 
-            visitors.push({
+            const nuevoVisitante = {
                 id: Date.now(),
                 fullName, documentId, antiguedad,
                 entryTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+                startTimestamp: Date.now(),
                 status: 'active'
-            });
+            };
 
+            visitors.push(nuevoVisitante);
             form.reset();
             document.getElementById('fullName').focus();
             showNotification('Ingreso registrado exitosamente.');
             saveAndRender();
+
+            // Sincronizar con Google Sheets si la URL está configurada
+            if (GOOGLE_SCRIPT_URL) {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre: fullName, rut: documentId, antiguedad: antiguedad, entrada: nuevoVisitante.entryTime, salida: 'En recinto', duracion: '-' })
+                }).catch(err => console.log(err));
+            }
         });
 
-        // Mark Departure
         window.markDeparture = function(id) {
             const index = visitors.findIndex(v => v.id === id);
             if (index !== -1) {
+                const endTimestamp = Date.now();
                 visitors[index].status = 'departed';
                 visitors[index].exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+                visitors[index].duration = formatDuration(endTimestamp - visitors[index].startTimestamp);
                 showNotification('Salida registrada.');
                 saveAndRender();
             }
         }
 
-        // QR Logic
+        window.exportarExcel = function() {
+            if (visitors.length === 0) { alert("No hay datos."); return; }
+            let csv = "Nombre,RUT,Antiguedad,Entrada,Salida,Duracion\n";
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.antiguedad}","${v.entryTime}","${v.exitTime || 'En recinto'}","${v.duration || '-'}"\n`; });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Registro_${new Date().toLocaleDateString('es-CL')}.csv`;
+            link.click();
+        }
+
         const qrModal = document.getElementById('qrModal');
         const qrModalContent = document.getElementById('qrModalContent');
-        
         document.getElementById('openQrBtn').onclick = () => {
             document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(window.location.href)}`;
             qrModal.classList.remove('hidden');
             setTimeout(() => { qrModalContent.classList.remove('scale-95'); qrModalContent.classList.add('scale-100'); }, 10);
         };
-        
         document.getElementById('closeQrBtn').onclick = () => {
             qrModalContent.classList.remove('scale-100'); qrModalContent.classList.add('scale-95');
             setTimeout(() => qrModal.classList.add('hidden'), 300);
         };
 
-        // Init
         saveAndRender();
     </script>
 </body>
