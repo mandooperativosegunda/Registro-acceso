@@ -175,7 +175,6 @@
             </button>
         </div>
 
-        <!-- Tarjetas de Carros y Bodega -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- RH-2 -->
             <div onclick="openCarro('RH2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
@@ -189,18 +188,18 @@
 
             <!-- B-2 -->
             <div onclick="openCarro('B2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
-                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                    <i class="ph ph-fire-extinguisher"></i>
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro B-2" class="w-full h-full object-contain">
                 </div>
                 <h3 class="text-xl font-bold text-slate-900">B-2</h3>
-                <p class="text-xs text-slate-500 mt-1">Carro de Bomberos (Agua)</p>
+                <p class="text-xs text-slate-500 mt-1">Carro de Bomberos</p>
                 <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
             </div>
 
             <!-- BX-2 -->
             <div onclick="openCarro('BX2')" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group">
-                <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                    <i class="ph ph-car"></i>
+                <div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center p-3 mb-4 group-hover:bg-red-100 transition-colors">
+                    <img src="42794.png" alt="Carro BX-2" class="w-full h-full object-contain">
                 </div>
                 <h3 class="text-xl font-bold text-slate-900">BX-2</h3>
                 <p class="text-xs text-slate-500 mt-1">Carro Portaescala / Aljibe</p>
@@ -219,7 +218,7 @@
         </div>
     </div>
 
-    <!-- VISTA 3: INTERFAZ DE INVENTARIO ESPECÍFICA POR UNIDAD / BODEGA -->
+    <!-- VISTA 3: INTERFAZ DE INVENTARIO ESPECÍFICA -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -265,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar/Editar Material -->
+ <!-- Modal para Agregar/Editar Material -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -300,8 +299,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Script General -->
+        <!-- Script General -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpDZdRys1pxaMcR4uASEFFaeqCVGudbzPXQ_Rqhz9zpgrXgMa7dt9Pbi1al5KmLhQpdQ/exec"; 
 
@@ -317,7 +315,6 @@
         };
 
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
-        
         let currentCarro = localStorage.getItem('active_carro') || null;
         
         let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
@@ -331,8 +328,7 @@
                 { id: 301, name: "Escala de Fibra", category: "Escala", quantity: 2, status: "Operativo" }
             ],
             "Bodega": [
-                { id: 401, name: "Casco Estructural de Repuesto", category: "EPP", quantity: 5, status: "Operativo" },
-                { id: 402, name: "Ln. Guantes Cabritilla", category: "EPP", quantity: 10, status: "Operativo" }
+                { id: 401, name: "Casco Estructural de Repuesto", category: "EPP", quantity: 5, status: "Operativo" }
             ]
         };
 
