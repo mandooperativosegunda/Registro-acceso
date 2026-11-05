@@ -34,16 +34,19 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Botón Acceso Cargos (Visible por defecto) -->
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg border border-slate-300 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-user-circle text-lg text-indigo-600"></i>
                     <span class="hidden sm:inline">Acceso Cargos</span>
                 </button>
 
-                <!-- Botón Perfil de Cargo (Oculto hasta que se inicia sesión) -->
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg border border-indigo-200 font-medium text-sm transition-colors shadow-sm">
                     <i class="ph ph-user-gear text-lg text-indigo-600"></i>
                     <span id="profileBtnText">Perfil</span>
+                </button>
+
+                <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-2 rounded-lg border border-amber-200 font-medium text-sm transition-colors shadow-sm">
+                    <i class="ph ph-list-checks text-lg"></i>
+                    <span class="hidden sm:inline">Lista y Compañía</span>
                 </button>
 
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 font-medium text-sm transition-colors shadow-sm">
@@ -97,7 +100,7 @@
         </div>
     </div>
 
-    <!-- Modal de Perfil de Cargo e información -->
+    <!-- Modal de Perfil de Cargo -->
     <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -106,7 +109,6 @@
                 </h3>
                 <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
             </div>
-            
             <div class="p-6 space-y-4">
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-center gap-4">
                     <div class="w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-sm">
@@ -117,7 +119,6 @@
                         <h4 id="profileDisplayName" class="text-lg font-bold text-slate-900">Nombre Oficial</h4>
                     </div>
                 </div>
-
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between border-b border-slate-100 pb-2">
                         <span class="text-slate-500 font-medium">Nombre Completo:</span>
@@ -132,7 +133,6 @@
                         <span id="profilePhoneVal" class="text-slate-900 font-mono">--</span>
                     </div>
                 </div>
-
                 <div class="pt-2 flex gap-3">
                     <button onclick="openEditProfileModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-300 flex items-center justify-center gap-2">
                         <i class="ph ph-pencil-simple text-base text-indigo-600"></i> Editar Datos
@@ -171,7 +171,45 @@
             </form>
         </div>
     </div>
-        <!-- VISTA 1: CONTROL DE ACCESOS -->
+
+    <!-- Modal para Agregar Miembro a la Lista -->
+    <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="memberModalTitle" class="text-lg font-semibold text-slate-800">Agregar Miembro a la Lista</h3>
+                <button onclick="closeMemberModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-md hover:bg-slate-200"><i class="ph ph-x text-xl"></i></button>
+            </div>
+            <form id="memberForm" onsubmit="saveMember(event)" class="p-6 space-y-4">
+                <input type="hidden" id="memberId">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Categoría / Sección</label>
+                    <select id="memberCategory" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Mártires">Mártires</option>
+                        <option value="Honorarios">Honorarios</option>
+                        <option value="Oficiales administrativos">Oficiales administrativos</option>
+                        <option value="Oficiales operativo">Oficiales operativo</option>
+                        <option value="Voluntario">Voluntario</option>
+                        <option value="Aspirante">Aspirante</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Cargo / Rango</label>
+                    <input type="text" id="memberRole" required placeholder="Ej. Capitán, Teniente 2, Bombero..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre Completo</label>
+                    <input type="text" id="memberName" required placeholder="Ej. Bastian Cuevas" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Motivo / Detalle de Asistencia</label>
+                    <input type="text" id="memberReason" placeholder="Ej. Asistencia a ejercicio día miércoles..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">Guardar Miembro</button>
+                </div>
+            </form>
+        </div>
+    </div>    <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -243,14 +281,17 @@
         </section>
     </main>
 
-    <!-- VISTA 2: SELECCIÓN DE CARROS Y BODEGA (TENIENTE SEGUNDO) -->
+    <!-- VISTA 2: SELECCIÓN DE CARROS Y BODEGA -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel Teniente Segundo</span>
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Panel de Control</span>
                 <h2 class="text-2xl font-bold text-slate-900 mt-1">Selección de Unidades y Bodega</h2>
-                <p class="text-sm text-slate-500">Seleccione el carro o la bodega para gestionar su inventario independiente.</p>
+                <p class="text-sm text-slate-500">Seleccione el carro, la bodega o gestione la lista de compañía.</p>
             </div>
+            <button onclick="openRosterView()" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                <i class="ph ph-list-checks text-lg"></i> Ver Lista y Compañía
+            </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -294,8 +335,7 @@
                 <span class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
             </div>
         </div>
-    </div>
-        <!-- VISTA 3: INTERFAZ DE INVENTARIO -->
+    </div>    <!-- VISTA 3: INTERFAZ DE INVENTARIO -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
@@ -315,7 +355,6 @@
             </div>
         </div>
 
-        <!-- Filtro de Gavetas exclusivo para B-2 -->
         <div id="gavetasContainer" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Filtrar por Compartimiento / Gaveta:</label>
             <select id="gavetaFilter" onchange="renderInventory()" class="w-full md:w-72 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
@@ -364,7 +403,54 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar/Editar Material -->
+    <!-- VISTA 4: LISTA DE COMPAÑÍA Y ASISTENCIA (ROSTER) -->
+    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-center gap-4">
+                <button onclick="backToCarros()" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                    <i class="ph ph-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Ayudantía / Secretaría</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Lista y Control de Asistencia</h2>
+                    <p class="text-sm text-slate-500">Registro de personal, motivo de asistencia (A: Activo, AB: Abono, F: Falta).</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="openMemberModal()" class="w-full md:w-auto flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    <i class="ph ph-user-plus text-lg"></i> Agregar Miembro u Otro Cargo
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4">
+                <div class="relative flex-1 max-w-sm">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+                    <input type="text" id="searchRoster" onkeyup="renderRoster()" placeholder="Buscar por nombre, cargo o motivo..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+            </div>
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                            <th class="px-6 py-3.5">Categoría</th>
+                            <th class="px-6 py-3.5">Cargo / Rango</th>
+                            <th class="px-6 py-3.5">Nombre y Apellido</th>
+                            <th class="px-6 py-3.5">Motivo / Actividad</th>
+                            <th class="px-6 py-3.5 text-center">Estado (A / AB / F)</th>
+                            <th class="px-6 py-3.5 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rosterTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+        <!-- Modal para Agregar/Editar Material de Inventario -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -437,20 +523,30 @@
             "Tenientetercero": "Tenientetercerobalmaceda"
         };
 
-        // Perfiles configurados para todos los cargos
         let profiles = JSON.parse(localStorage.getItem('perfiles_cargos')) || {
             "Tenientesegundo": { name: "Bastian Cuevas", rut: "20.646.685-5", phone: "983065441" },
-            "Directora": { name: "Directora Oficial", rut: "12.345.678-9", phone: "911111111" },
-            "Tesorero": { name: "Tesorero Oficial", rut: "12.345.678-9", phone: "922222222" },
-            "Secretaria": { name: "Secretaria Oficial", rut: "12.345.678-9", phone: "933333333" },
-            "Capitan": { name: "Capitán Oficial", rut: "12.345.678-9", phone: "944444444" },
+            "Directora": { name: "Marlene Godoy", rut: "12.345.678-9", phone: "911111111" },
+            "Tesorero": { name: "Alejandro Medina", rut: "12.345.678-9", phone: "922222222" },
+            "Secretaria": { name: "Jazmin", rut: "12.345.678-9", phone: "933333333" },
+            "Capitan": { name: "Edison Soto", rut: "12.345.678-9", phone: "944444444" },
             "Ayudante": { name: "Ayudante Oficial", rut: "12.345.678-9", phone: "955555555" },
-            "Tenienteprimero": { name: "Teniente Primero", rut: "12.345.678-9", phone: "966666666" },
-            "Tenientetercero": { name: "Teniente Tercero", rut: "12.345.678-9", phone: "977777777" }
+            "Tenienteprimero": { name: "Alejandro Maldonado", rut: "12.345.678-9", phone: "966666666" },
+            "Tenientetercero": { name: "Andrea Candia", rut: "12.345.678-9", phone: "977777777" }
         };
+
+        let roster = JSON.parse(localStorage.getItem('roster_compania')) || [
+            { id: 1, category: "Oficiales administrativos", role: "Directora", name: "Marlene Godoy", reason: "Asistencia general", status: "A" },
+            { id: 2, category: "Oficiales administrativos", role: "Secretaria", name: "Jazmin", reason: "Asistencia general", status: "A" },
+            { id: 3, category: "Oficiales administrativos", role: "Tesorero", name: "Alejandro Medina", reason: "Asistencia general", status: "A" },
+            { id: 4, category: "Oficiales operativo", role: "Capitán", name: "Edison Soto", reason: "Asistencia a ejercicio día miércoles", status: "A" },
+            { id: 5, category: "Oficiales operativo", role: "Teniente 1", name: "Alejandro Maldonado", reason: "Asistencia a ejercicio día miércoles", status: "A" },
+            { id: 6, category: "Oficiales operativo", role: "Teniente 2", name: "Bastian Cuevas", reason: "Asistencia a ejercicio día miércoles", status: "A" },
+            { id: 7, category: "Oficiales operativo", role: "Teniente 3", name: "Andrea Candia", reason: "Asistencia a ejercicio día miércoles", status: "A" }
+        ];
 
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         let currentCarro = localStorage.getItem('active_carro') || null;
+        let currentViewMode = 'carros';
         
         let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
             "RH2": [{ id: 101, name: "Cuerda Semiestática 50m", model: "Petzl 50m", category: "Rescate", quantity: 2, status: "Operativo" }],
@@ -517,15 +613,17 @@
             
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
+            document.getElementById('listBtnContainer').classList.remove('hidden');
             
             const profileData = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
             document.getElementById('profileBtnText').textContent = profileData.name;
 
-            if (cargo === 'Tenientesegundo') {
+            if (cargo === 'Tenientesegundo' || cargo === 'Ayudante' || cargo === 'Secretaria') {
                 document.getElementById('accessView').classList.add('hidden');
                 document.getElementById('tenienteSegundoView').classList.remove('hidden');
                 document.getElementById('carroInventoryView').classList.add('hidden');
-                document.getElementById('navTitle').textContent = "Panel Teniente 2°";
+                document.getElementById('rosterView').classList.add('hidden');
+                document.getElementById('navTitle').textContent = `Panel ${cargo}`;
                 document.getElementById('exportCsvBtn').style.display = 'none';
                 document.getElementById('openQrBtn').style.display = 'none';
             } else if (showAlert) {
@@ -533,7 +631,6 @@
             }
         }
 
-        // --- GESTIÓN DE PERFIL ---
         function openProfileModal() {
             const activeCargo = localStorage.getItem('active_cargo');
             if (!activeCargo) return;
@@ -586,6 +683,128 @@
             openProfileModal();
         }
 
+        function openRosterView() {
+            currentViewMode = 'roster';
+            document.getElementById('accessView').classList.add('hidden');
+            document.getElementById('tenienteSegundoView').classList.add('hidden');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('rosterView').classList.remove('hidden');
+            document.getElementById('navTitle').textContent = "Lista y Directorio de Compañía";
+            renderRoster();
+        }
+
+        function renderRoster() {
+            const tbody = document.getElementById('rosterTableBody');
+            const searchInput = document.getElementById('searchRoster');
+            if(!tbody) return;
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+            tbody.innerHTML = '';
+
+            const filtered = roster.filter(m => 
+                m.name.toLowerCase().includes(search) || 
+                m.role.toLowerCase().includes(search) || 
+                m.category.toLowerCase().includes(search) ||
+                (m.reason && m.reason.toLowerCase().includes(search))
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay miembros registrados.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(member => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                
+                const statusOptions = `
+                    <div class="flex justify-center gap-1.5">
+                        <button onclick="updateMemberStatus(${member.id}, 'A')" class="px-2.5 py-1 rounded text-xs font-bold transition-all ${member.status === 'A' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">A</button>
+                        <button onclick="updateMemberStatus(${member.id}, 'AB')" class="px-2.5 py-1 rounded text-xs font-bold transition-all ${member.status === 'AB' ? 'bg-amber-500 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">AB</button>
+                        <button onclick="updateMemberStatus(${member.id}, 'F')" class="px-2.5 py-1 rounded text-xs font-bold transition-all ${member.status === 'F' ? 'bg-rose-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">F</button>
+                    </div>
+                `;
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-semibold text-slate-700">${member.category}</td>
+                    <td class="px-6 py-4 text-slate-600">${member.role}</td>
+                    <td class="px-6 py-4 font-medium text-slate-900">${member.name}</td>
+                    <td class="px-6 py-4 text-slate-600 italic text-xs">${member.reason || '<span class="text-slate-400">Sin motivo registrado</span>'}</td>
+                    <td class="px-6 py-4 text-center">${statusOptions}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="editMember(${member.id})" class="text-indigo-600 hover:text-indigo-900 text-xs font-medium bg-indigo-50 px-2.5 py-1 rounded border border-indigo-200">Editar</button>
+                        <button onclick="deleteMember(${member.id})" class="text-rose-600 hover:text-rose-900 text-xs font-medium bg-rose-50 px-2.5 py-1 rounded border border-rose-200">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateMemberStatus(id, newStatus) {
+            const member = roster.find(m => m.id === id);
+            if (member) {
+                member.status = newStatus;
+                localStorage.setItem('roster_compania', JSON.stringify(roster));
+                renderRoster();
+            }
+        }
+
+        function openMemberModal() {
+            document.getElementById('memberId').value = '';
+            document.getElementById('memberForm').reset();
+            document.getElementById('memberModalTitle').textContent = "Agregar Miembro a la Lista";
+            document.getElementById('memberModal').classList.remove('hidden');
+        }
+
+        function closeMemberModal() {
+            document.getElementById('memberModal').classList.add('hidden');
+        }
+
+        function saveMember(e) {
+            e.preventDefault();
+            const id = document.getElementById('memberId').value;
+            const category = document.getElementById('memberCategory').value;
+            const role = document.getElementById('memberRole').value.trim();
+            const name = document.getElementById('memberName').value.trim();
+            const reason = document.getElementById('memberReason').value.trim();
+
+            if (id) {
+                const idx = roster.findIndex(m => m.id == id);
+                if (idx !== -1) {
+                    roster[idx].category = category;
+                    roster[idx].role = role;
+                    roster[idx].name = name;
+                    roster[idx].reason = reason;
+                }
+            } else {
+                roster.push({ id: Date.now(), category, role, name, reason, status: 'A' });
+            }
+
+            localStorage.setItem('roster_compania', JSON.stringify(roster));
+            closeMemberModal();
+            renderRoster();
+        }
+
+        function editMember(id) {
+            const member = roster.find(m => m.id === id);
+            if (!member) return;
+
+            document.getElementById('memberId').value = member.id;
+            document.getElementById('memberCategory').value = member.category;
+            document.getElementById('memberRole').value = member.role;
+            document.getElementById('memberName').value = member.name;
+            document.getElementById('memberReason').value = member.reason || '';
+            document.getElementById('memberModalTitle').textContent = "Editar Miembro";
+            document.getElementById('memberModal').classList.remove('hidden');
+        }
+
+        function deleteMember(id) {
+            if (confirm("¿Estás seguro de eliminar este miembro de la lista?")) {
+                roster = roster.filter(m => m.id !== id);
+                localStorage.setItem('roster_compania', JSON.stringify(roster));
+                renderRoster();
+            }
+        }
+
         function openCarro(carroCode) {
             currentCarro = carroCode;
             localStorage.setItem('active_carro', carroCode);
@@ -593,12 +812,11 @@
         }
 
         function activateCarroView(carroCode) {
-            const badge = document.getElementById('activeUserBadge');
-            if(badge) badge.textContent = `(Teniente Segundo - ${carroCode})`;
-            
+            currentViewMode = 'carros';
             document.getElementById('accessView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.add('hidden');
             document.getElementById('carroInventoryView').classList.remove('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
             
             document.getElementById('carroBadge').textContent = `${carroCode}`;
             document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${carroCode}`;
@@ -618,10 +836,9 @@
             currentCarro = null;
             localStorage.removeItem('active_carro');
             document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('rosterView').classList.add('hidden');
             document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            document.getElementById('navTitle').textContent = "Panel Teniente 2°";
-            const badge = document.getElementById('activeUserBadge');
-            if(badge) badge.textContent = `(Tenientesegundo)`;
+            document.getElementById('navTitle').textContent = "Panel de Control";
         }
 
         function logout() {
@@ -760,8 +977,6 @@
             }
         }
 
-        
-        // --- CONTROL DE ACCESOS ---
         const form = document.getElementById('visitorForm');
         const tableBody = document.getElementById('visitorsTableBody');
         const emptyState = document.getElementById('emptyState');
