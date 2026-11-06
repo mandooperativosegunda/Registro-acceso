@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Modal Agregar Miembro -->
+    <!-- Modal Agregar Miembro (Actualizado con campo Motivo en vez de RUT) -->
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -175,7 +175,7 @@
                 </div>
                 <div><label class="block font-semibold text-slate-700 mb-1">Grado / Cargo</label><input type="text" id="memberRole" required placeholder="Ej. Bombero..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></div>
                 <div><label class="block font-semibold text-slate-700 mb-1">Nombre Completo</label><input type="text" id="memberName" required placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></div>
-                <div><label class="block font-semibold text-slate-700 mb-1">RUT / DNI</label><input type="text" id="memberRut" placeholder="Ej. 12.345.678-9" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                <div><label class="block font-semibold text-slate-700 mb-1">Motivo de Asistencia</label><input type="text" id="memberReason" required placeholder="Ej. Guardia nocturna / Turno" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></div>
                 <div class="pt-2"><button type="submit" class="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2 px-4 rounded transition-colors shadow-sm">Guardar Registro</button></div>
             </form>
         </div>
@@ -198,13 +198,12 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                    <div><span class="block font-medium text-slate-400 text-[10px]">RUT / DNI</span> <span id="detailMemberRut" class="font-mono font-semibold text-slate-900">--</span></div>
                     <div><span class="block font-medium text-slate-400 text-[10px]">ASIST. 3 MESES</span> <span id="detailMember3m" class="font-bold text-blue-700 text-sm">0</span></div>
                     <div><span class="block font-medium text-slate-400 text-[10px]">ASIST. ANUAL</span> <span id="detailMember1y" class="font-bold text-emerald-700 text-sm">0</span></div>
                 </div>
 
                 <div>
-                    <h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-clock-counter-clockwise text-indigo-700 text-sm"></i> Historial de Motivos de Guardia</h5>
+                    <h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-clock-counter-clockwise text-indigo-700 text-sm"></i> Historial de Motivos de Asistencia</h5>
                     <div class="border border-slate-200 rounded-lg overflow-hidden bg-white">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -223,31 +222,7 @@
         </div>
     </div>
 
-<!-- Modal Asignar Motivo (Solo Ayudante / Capitán) -->
-    <div id="assignReasonModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-cyan-900 text-white">
-                <h3 class="text-sm font-bold flex items-center gap-1.5"><i class="ph ph-clipboard-text text-base"></i> Asignar Motivo de Guardia</h3>
-                <button onclick="closeAssignReasonModal()" class="text-cyan-200 hover:text-white p-1 rounded"><i class="ph ph-x text-lg"></i></button>
-            </div>
-            <form onsubmit="saveAssignedReason(event)" class="p-5 space-y-3">
-                <input type="hidden" id="assignVisitorId">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Voluntario</label>
-                    <input type="text" id="assignVisitorName" disabled class="w-full px-3 py-2 bg-slate-100 border rounded font-bold text-slate-700">
-                </div>
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Motivo / Detalle de la Guardia</label>
-                    <input type="text" id="assignVisitorReasonInput" required placeholder="Ej. Guardia nocturna / Turno extraordinario..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500 outline-none">
-                </div>
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2 px-4 rounded transition-colors shadow-sm">Guardar y Activar Tiempo</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Editar Ficha -->
+<!-- Modal Editar Ficha -->
     <div id="fichaEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -329,8 +304,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal Agregar Elemento Cuartel / Aseo -->
+     <!-- Modal Agregar Elemento Cuartel / Aseo -->
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-emerald-900 text-white">
@@ -355,7 +329,7 @@
         </div>
     </div>
 
-    <!-- VISTA 1: CONTROL DE ACCESOS (SOLO NOMBRE Y RUT PARA VOLUNTARIOS) -->
+    <!-- VISTA 1: CONTROL DE ACCESOS (SOLO NOMBRE Y RUT) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden text-xs">
@@ -391,21 +365,21 @@
                             <tr class="bg-slate-100/70 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
                                 <th class="px-5 py-3">Voluntario</th>
                                 <th class="px-5 py-3">RUT</th>
-                                <th class="px-5 py-3">Motivo</th>
                                 <th class="px-5 py-3">Hora Entrada</th>
                                 <th class="px-5 py-3 text-center">Estado</th>
                                 <th class="px-5 py-3 text-right">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="visitorsTableBody" class="divide-y divide-slate-100">
-                            <tr id="emptyState"><td colspan="6" class="px-5 py-10 text-center text-slate-400">Sin voluntarios de guardia en cuartel.</td></tr>
+                            <tr id="emptyState"><td colspan="5" class="px-5 py-10 text-center text-slate-400">Sin voluntarios de guardia en cuartel.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
     </main>
-<!-- PANEL TENIENTE SEGUNDO -->
+
+    <!-- PANEL TENIENTE SEGUNDO -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex justify-between items-center">
             <div>
@@ -473,8 +447,7 @@
             </table>
         </div>
     </div>
-
-    <!-- VISTA INVENTARIO DE CUARTEL -->
+  <!-- VISTA INVENTARIO DE CUARTEL -->
     <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
             <button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors"><i class="ph ph-arrow-left text-sm"></i> Atrás</button>
@@ -574,7 +547,7 @@
         </div>
     </div>
 
-    <!-- VISTA TIEMPO EN VIVO -->
+    <!-- VISTA TIEMPO EN VIVO (SIN MOTIVO, SOLO NOMBRE, RUT, TIEMPO Y PROGRESO) -->
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors"><i class="ph ph-arrow-left text-sm"></i> Atrás</button>
@@ -585,15 +558,17 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
-                        <th class="px-5 py-3">Voluntario</th><th class="px-5 py-3">Motivo</th><th class="px-5 py-3 text-center">Tiempo Transcurrido</th><th class="px-5 py-3 text-center">Progreso Abono (4 hrs)</th>
+                        <th class="px-5 py-3">Voluntario</th>
+                        <th class="px-5 py-3">RUT</th>
+                        <th class="px-5 py-3 text-center">Tiempo Transcurrido</th>
+                        <th class="px-5 py-3 text-center">Progreso Abono (4 hrs)</th>
                     </tr>
                 </thead>
                 <tbody id="liveHoursTableBody" class="divide-y divide-slate-100"></tbody>
             </table>
         </div>
     </div>
-
-<!-- ==================== SCRIPT DE FUNCIONAMIENTO ==================== -->
+     <!-- ==================== SCRIPT DE FUNCIONAMIENTO ==================== -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB8Hs4NIPoQd--0mInGb4Bd7fAB8toYaYI",
@@ -770,8 +745,7 @@
             db.ref('perfiles').set(profiles);
             closeEditProfileModal(); alert("Perfil actualizado."); openProfileModal();
         }
-
-        function openCarro(code) {
+function openCarro(code) {
             currentCarro = code; hideAllViews();
             document.getElementById('carroInventoryView').classList.remove('hidden');
             document.getElementById('carroTitle').textContent = `Inventario - ${code}`;
@@ -858,7 +832,8 @@
                 db.ref('cuartel').set(cuartelInventarios); 
             }
         }
-          // ================= ASISTENCIA Y FICHAS =================
+
+        // ================= ASISTENCIA Y FICHAS (SINCRONIZADAS) =================
         function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
         function openFichasView() { hideAllViews(); document.getElementById('fichasView').classList.remove('hidden'); renderFichas(); }
         function openLiveHoursView() { hideAllViews(); document.getElementById('liveHoursView').classList.remove('hidden'); renderLiveHours(); }
@@ -872,24 +847,49 @@
                 return;
             }
             roster.forEach(m => {
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${m.role} <span class="text-[10px] text-slate-400">(${m.category})</span></td><td class="px-5 py-3">${m.name}</td><td class="px-5 py-3 text-center text-indigo-700 font-bold">${m.garitaHours || 0} hrs</td><td class="px-5 py-3 text-center font-bold text-emerald-700">${m.status || 'A'}</td><td class="px-5 py-3 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold">${m.role} <span class="text-[10px] text-slate-400">(${m.category})</span></td>
+                    <td class="px-5 py-3 font-bold text-slate-900">${m.name}</td>
+                    <td class="px-5 py-3 text-center text-indigo-700 font-bold">${m.garitaHours || 0} hrs</td>
+                    <td class="px-5 py-3 text-center font-bold text-emerald-700">${m.status || 'A'}</td>
+                    <td class="px-5 py-3 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td>
+                </tr>`;
             });
         }
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberId').value = ''; document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
+        
         function saveMember(e) {
             e.preventDefault();
-            roster.push({ 
-                id: Date.now(), 
-                category: document.getElementById('memberCategory').value, 
-                role: document.getElementById('memberRole').value, 
-                name: document.getElementById('memberName').value, 
-                rut: document.getElementById('memberRut').value.trim() || "N/D",
-                status: 'A', count3m: 0, count1y: 0, garitaHours: 0,
-                historialMotivos: []
-            });
-            db.ref('roster').set(roster); closeMemberModal(); 
+            const name = document.getElementById('memberName').value.trim();
+            const role = document.getElementById('memberRole').value.trim();
+            const category = document.getElementById('memberCategory').value;
+            const motivo = document.getElementById('memberReason').value.trim();
+            const fechaHoy = new Date().toLocaleDateString('es-CL');
+
+            let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
+            if (miembro) {
+                if(!miembro.historialMotivos) miembro.historialMotivos = [];
+                miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: motivo });
+                miembro.count3m = (miembro.count3m || 0) + 1;
+                miembro.count1y = (miembro.count1y || 0) + 1;
+            } else {
+                roster.push({ 
+                    id: Date.now(), 
+                    category, 
+                    role, 
+                    name, 
+                    status: 'A', 
+                    count3m: 1, 
+                    count1y: 1, 
+                    garitaHours: 0,
+                    historialMotivos: [{ fecha: fechaHoy, detalle: motivo }]
+                });
+            }
+            db.ref('roster').set(roster); 
+            closeMemberModal(); 
         }
+
         function deleteMember(id) { roster = roster.filter(m => m.id !== id); db.ref('roster').set(roster); }
 
         function renderFichas() {
@@ -916,7 +916,6 @@
             if (!m) return;
             document.getElementById('detailMemberName').textContent = m.name;
             document.getElementById('detailMemberRole').textContent = m.role;
-            document.getElementById('detailMemberRut').textContent = m.rut || "N/D";
             document.getElementById('detailMember3m').textContent = m.count3m || 0;
             document.getElementById('detailMember1y').textContent = m.count1y || 0;
 
@@ -1023,8 +1022,7 @@
                 db.ref('calendario').set(calendarEvents); 
             }
         }
-
-        // ================= CONTROL DE ACCESO Y TIEMPO =================
+     // ================= CONTROL DE ACCESO Y TIEMPO EN VIVO =================
         function renderLiveHours() {
             const tbody = document.getElementById('liveHoursTableBody');
             if (!tbody) return;
@@ -1046,13 +1044,13 @@
                 
                 html += `<tr class="hover:bg-slate-50">
                     <td class="px-5 py-3 font-semibold">${v.fullName}</td>
-                    <td class="px-5 py-3 font-medium text-slate-700">${v.reason || '<span class="text-amber-600 italic">Sin motivo asignado (Pendiente oficial)</span>'}</td>
-                    <td class="px-5 py-3 text-center font-mono font-bold text-cyan-700">${v.reason ? timeStr : '--:--:--'}</td>
+                    <td class="px-5 py-3 font-mono text-slate-500">${v.documentId}</td>
+                    <td class="px-5 py-3 text-center font-mono font-bold text-cyan-700">${timeStr}</td>
                     <td class="px-5 py-3 text-center">
                         <div class="flex flex-col items-center gap-1">
                             ${badge}
                             <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1 max-w-[100px]">
-                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${v.reason ? progress : 0}%"></div>
+                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${progress}%"></div>
                             </div>
                         </div>
                     </td>
@@ -1064,15 +1062,13 @@
         function checkAndGrantAB() {
             let updated = false; const now = Date.now(); const LIMIT_MS = 4 * 60 * 60 * 1000; 
             visitors.forEach(v => {
-                if (v.status === 'active' && v.reason && !v.abGranted) {
+                if (v.status === 'active' && !v.abGranted) {
                     if (now - v.startTimestamp >= LIMIT_MS) {
                         v.abGranted = true; updated = true;
                         let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
                         if (miembro) {
                             if (miembro.status !== 'AB') {
                                 miembro.status = 'AB';
-                                miembro.count3m = (miembro.count3m || 0) + 1;
-                                miembro.count1y = (miembro.count1y || 0) + 1;
                             }
                         }
                     }
@@ -1086,27 +1082,17 @@
             if (!tbody) return;
             tbody.innerHTML = '';
             if (visitors.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-10 text-center text-slate-400">Sin visitas activas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-10 text-center text-slate-400">Sin visitas activas.</td></tr>`;
                 return;
             }
             const sorted = [...visitors].sort((a, b) => b.id - a.id);
-            const cargo = localStorage.getItem('active_cargo');
-            const esOficialAsignador = (cargo === 'Capitan' || cargo === 'Ayudante' || cargo === 'Tenienteprimero');
-
             sorted.forEach(v => {
                 const statusHtml = v.status === 'active' ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">En cuartel</span>` : `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">Salió</span>`;
-                
-                let reasonHtml = v.reason ? `<span class="text-slate-800 font-medium">${v.reason}</span>` : `<span class="text-amber-600 italic">Pendiente</span>`;
-                if (!v.reason && esOficialAsignador && v.status === 'active') {
-                    reasonHtml = `<button onclick="openAssignReasonModal(${v.id}, '${v.fullName}')" class="bg-cyan-600 hover:bg-cyan-700 text-white px-2 py-1 rounded font-bold text-[10px]">Asignar Motivo</button>`;
-                }
-
                 const actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-600 font-bold bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded">Marcar Salida</button>` : `<span class="text-slate-400 italic text-[10px]">Listo</span>`;
                 
                 tbody.innerHTML += `<tr class="hover:bg-slate-50">
                     <td class="px-5 py-3 font-semibold">${v.fullName}</td>
                     <td class="px-5 py-3 font-mono text-slate-500">${v.documentId}</td>
-                    <td class="px-5 py-3">${reasonHtml}</td>
                     <td class="px-5 py-3">Entrada: ${v.entryTime}</td>
                     <td class="px-5 py-3 text-center">${statusHtml}</td>
                     <td class="px-5 py-3 text-right">${actionHtml}</td>
@@ -1114,7 +1100,7 @@
             });
         }
 
-        // Formulario de acceso simplificado (Solo Nombre y RUT)
+        // Formulario de acceso simplificado (Inicia el tiempo en vivo inmediatamente)
         const visitorForm = document.getElementById('visitorForm');
         if(visitorForm) {
             visitorForm.addEventListener('submit', function(e) {
@@ -1122,59 +1108,38 @@
                 const fullName = document.getElementById('fullName').value.trim();
                 const documentId = document.getElementById('documentId').value.trim();
                 const entryTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+                const fechaHoy = new Date().toLocaleDateString('es-CL');
 
                 visitors.push({ 
-                    id: Date.now(), fullName, documentId, reason: "", entryTime, startTimestamp: Date.now(), status: 'active', abGranted: false 
+                    id: Date.now(), fullName, documentId, entryTime, startTimestamp: Date.now(), status: 'active', abGranted: false 
                 });
                 db.ref('visitantes').set(visitors);
-                visitorForm.reset(); 
-                alert("¡Ingreso registrado! Un oficial asignará el motivo y activará el temporizador.");
-            });
-        }
 
-        function openAssignReasonModal(id, name) {
-            document.getElementById('assignVisitorId').value = id;
-            document.getElementById('assignVisitorName').value = name;
-            document.getElementById('assignVisitorReasonInput').value = '';
-            document.getElementById('assignReasonModal').classList.remove('hidden');
-        }
-        function closeAssignReasonModal() { document.getElementById('assignReasonModal').classList.add('hidden'); }
-
-        function saveAssignedReason(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('assignVisitorId').value);
-            const reason = document.getElementById('assignVisitorReasonInput').value.trim();
-            
-            let v = visitors.find(x => x.id === id);
-            if (v) {
-                v.reason = reason;
-                v.startTimestamp = Date.now(); // El cronómetro arranca desde que el oficial asigna el motivo
-                db.ref('visitantes').set(visitors);
-
-                // SINCRONIZACIÓN AUTOMÁTICA CON LA FICHA Y LISTA DE ASISTENCIA
-                let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
-                const fechaHoy = new Date().toLocaleDateString('es-CL');
+                // Conexión automática al Roster / Fichas
+                let miembro = roster.find(m => m.name.toLowerCase().trim() === fullName.toLowerCase().trim());
                 if (miembro) {
                     if(!miembro.historialMotivos) miembro.historialMotivos = [];
-                    miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: reason });
-                    if(miembro.rut === "N/D") miembro.rut = v.documentId;
+                    miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: "Guardia en cuartel (Acceso general)" });
+                    miembro.count3m = (miembro.count3m || 0) + 1;
+                    miembro.count1y = (miembro.count1y || 0) + 1;
                 } else {
                     roster.push({
                         id: Date.now() + 1,
                         category: "Voluntario",
                         role: "Bombero",
-                        name: v.fullName,
-                        rut: v.documentId,
+                        name: fullName,
                         status: 'A',
-                        count3m: 0,
-                        count1y: 0,
+                        count3m: 1,
+                        count1y: 1,
                         garitaHours: 0,
-                        historialMotivos: [{ fecha: fechaHoy, detalle: reason }]
+                        historialMotivos: [{ fecha: fechaHoy, detalle: "Guardia en cuartel (Acceso general)" }]
                     });
                 }
                 db.ref('roster').set(roster);
-            }
-            closeAssignReasonModal();
+
+                visitorForm.reset(); 
+                alert("¡Ingreso registrado con éxito! El cronómetro y la ficha se han actualizado.");
+            });
         }
 
         window.markDeparture = function(id) {
@@ -1251,12 +1216,11 @@
             remorsionesLog.forEach(log => {
                 tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-mono text-slate-500">${log.fecha}</td><td class="px-5 py-3 font-bold text-indigo-800">${log.oficial}</td><td class="px-5 py-3 font-semibold">${log.voluntario}</td><td class="px-5 py-3">${log.motivo}</td></tr>`;
             });
-        }
-        
-        function exportarExcel() {
+        }   
+ function exportarExcel() {
             if (visitors.length === 0) { alert("No hay datos."); return; }
             let csv = "Nombre,RUT,Antiguedad,Entrada,Salida\n";
-            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.antiguedad || 'N/D'}","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","N/D","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
