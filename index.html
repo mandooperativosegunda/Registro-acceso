@@ -42,7 +42,6 @@
                     <span id="profileBtnText">Mi Perfil</span>
                 </button>
 
-                <!-- Menús superiores de navegación institucional -->
                 <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
                     <i class="ph ph-list-checks text-sm"></i>
                     <span>Asistencia</span>
@@ -65,7 +64,7 @@
             </div>
         </div>
     </nav>
-        <!-- Modal de Login Institucional -->
+    <!-- Modal de Login Institucional -->
     <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -168,7 +167,7 @@
         </div>
     </div>
 
-    <!-- Modal Agregar Miembro (Ayudantía) -->
+    <!-- Modal Agregar Miembro -->
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -241,7 +240,7 @@
         </div>
     </div>
 
-    <!-- Modal para Remover Restricción (Informa al Capitán) -->
+    <!-- Modal para Remover Restricción -->
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-rose-900 text-white">
@@ -255,9 +254,8 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Motivo Operativo de la Liberación</label>
-                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Incorporado a guardia nocturna autorizada..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-rose-500 outline-none"></textarea>
+                    <textarea id="motivoRemorsion" required rows="3" placeholder="Ej. Incorporado a guardia..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-rose-500 outline-none"></textarea>
                 </div>
-                <p class="text-[10px] text-slate-500 italic">* Esta acción deshabilitará el bloqueo de 2 horas y enviará el reporte al panel del Capitán.</p>
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-rose-700 hover:bg-rose-800 text-white font-semibold py-2 px-4 rounded transition-colors shadow-sm">Confirmar y Desbloquear</button>
                 </div>
@@ -265,7 +263,7 @@
         </div>
     </div>
 
-    <!-- Modal Agregar Material Menor (Teniente 2°) -->
+    <!-- Modal Agregar Material Menor -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -276,15 +274,15 @@
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Nombre del Equipo</label>
-                    <input type="text" id="itemName" required placeholder="Ej. Manguera, Pitón..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="itemName" required placeholder="Ej. Manguera..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Marca / Modelo</label>
-                    <input type="text" id="itemModel" required placeholder="Ej. Akron, Storz..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="itemModel" required placeholder="Ej. Akron..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Categoría</label>
-                    <input type="text" id="itemCategory" required placeholder="Ej. Agua, Rescate..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="itemCategory" required placeholder="Ej. Agua..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
                 <div id="modalGavetaField" class="hidden">
                     <label class="block font-semibold text-slate-700 mb-1">Gaveta / Compartimiento</label>
@@ -318,7 +316,7 @@
         </div>
     </div>
 
-   <!-- Modal Agregar Elemento Cuartel / Aseo (Teniente 3°) -->
+  <!-- Modal Agregar Elemento Cuartel / Aseo -->
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-emerald-900 text-white">
@@ -329,11 +327,11 @@
                 <input type="hidden" id="cuartelItemId">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Nombre del Artículo</label>
-                    <input type="text" id="cuartelItemName" required placeholder="Ej. Cloro, Escobillón..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <input type="text" id="cuartelItemName" required placeholder="Ej. Cloro..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Ubicación / Detalle</label>
-                    <input type="text" id="cuartelItemUbicacion" required placeholder="Ej. Bodega de Aseo, Salón..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <input type="text" id="cuartelItemUbicacion" required placeholder="Ej. Bodega..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -354,8 +352,8 @@
                 </div>
             </form>
         </div>
-    </div> 
-        <!-- VISTA 1: CONTROL DE ACCESOS (Garita) -->
+    </div>
+        <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden text-xs">
@@ -370,7 +368,7 @@
                         <div class="flex items-center gap-1.5 font-bold">
                             <i class="ph ph-warning text-base text-amber-600"></i> Acceso Restringido (Espera 2 Hrs)
                         </div>
-                        <p id="blockReasonText" class="text-[11px]">Debes esperar antes de registrar un nuevo acceso o solicitar desbloqueo a un oficial.</p>
+                        <p id="blockReasonText" class="text-[11px]">Debes esperar antes de registrar un nuevo acceso.</p>
                         <p class="text-[11px] font-mono font-semibold" id="blockCountdown">Tiempo restante: --:--</p>
                         <button type="button" onclick="openRemoverRestriccionModal()" class="w-full bg-rose-700 hover:bg-rose-800 text-white font-semibold py-1.5 px-3 rounded text-xs transition-colors flex items-center justify-center gap-1">
                             <i class="ph ph-key text-sm"></i> Solicitar Liberación a Oficial
@@ -429,43 +427,41 @@
         </section>
     </main>
 
-    <!-- PANEL TENIENTE SEGUNDO (Material Menor de Carros) -->
+    <!-- PANEL TENIENTE SEGUNDO -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex justify-between items-center">
-            <div>
-                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Operativo</span>
-                <h2 class="text-xl font-bold text-slate-900 mt-0.5">Material Menor de los Carros y Bodega</h2>
-                <p class="text-slate-500 text-[11px]">Seleccione una unidad para gestionar inventarios, marcas, cantidades y estados.</p>
-            </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
+            <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span>
+            <h2 class="text-xl font-bold text-slate-900 mt-0.5">Material Menor de los Carros y Bodega</h2>
+            <p class="text-slate-500 text-[11px]">Seleccione una unidad para gestionar inventarios.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div onclick="openCarro('RH2')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">RH-2</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Camioneta de Rescate</p>
-                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded group-hover:bg-indigo-700 group-hover:text-white transition-colors">Gestionar Inventario &rarr;</span>
+                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Gestionar Inventario &rarr;</span>
             </div>
             <div onclick="openCarro('B2')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">B-2</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Carro de Bomberos</p>
-                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded group-hover:bg-indigo-700 group-hover:text-white transition-colors">Gestionar Inventario &rarr;</span>
+                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Gestionar Inventario &rarr;</span>
             </div>
             <div onclick="openCarro('BX2')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">BX-2</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Carro Portaescala</p>
-                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded group-hover:bg-indigo-700 group-hover:text-white transition-colors">Gestionar Inventario &rarr;</span>
+                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Gestionar Inventario &rarr;</span>
             </div>
             <div onclick="openCarro('Bodega')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">Bodega</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Material General</p>
-                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded group-hover:bg-indigo-700 group-hover:text-white transition-colors">Gestionar Inventario &rarr;</span>
+                <span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Gestionar Inventario &rarr;</span>
             </div>
         </div>
     </div>
 
-    <!-- PANEL TENIENTE TERCERO (Aseo y Ornato) -->
+    <!-- PANEL TENIENTE TERCERO -->
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
-            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel de Cuartel</span>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Tercero</span>
             <h2 class="text-xl font-bold text-slate-900 mt-0.5">Aseo, Ornato e Inmuebles</h2>
             <p class="text-slate-500 text-[11px]">Control de bienes raíces, infraestructura y pañol de limpieza.</p>
         </div>
@@ -473,12 +469,12 @@
             <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-6 hover:border-emerald-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">Inmuebles y Ornato</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Muebles y equipamiento del salón y oficinas</p>
-                <span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded group-hover:bg-emerald-700 group-hover:text-white transition-colors">Ver Inventario &rarr;</span>
+                <span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded">Ver Inventario &rarr;</span>
             </div>
             <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-6 hover:border-emerald-500 transition-all cursor-pointer flex flex-col items-center text-center group">
                 <h3 class="text-lg font-bold text-slate-900">Elementos de Aseo</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Stock de detergentes, cloro y suministros</p>
-                <span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded group-hover:bg-emerald-700 group-hover:text-white transition-colors">Ver Elementos &rarr;</span>
+                <span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded">Ver Elementos &rarr;</span>
             </div>
         </div>
     </div>
@@ -488,7 +484,7 @@
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
             <span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel de Mando Superior</span>
             <h2 class="text-xl font-bold text-slate-900 mt-1">Supervisión Institucional Unificada</h2>
-            <p class="text-slate-500 text-[11px]">Acceso directo a la supervisión operativa, control de asistencia, fichas y auditoría de liberaciones.</p>
+            <p class="text-slate-500 text-[11px]">Acceso directo a la supervisión operativa, cuartel, asistencia y auditoría de liberaciones.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div onclick="openMandoSeccion('carros')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center">
@@ -508,16 +504,16 @@
             </div>
             <div onclick="openFichasView()" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-blue-500 transition-all cursor-pointer flex flex-col items-center text-center">
                 <h3 class="font-bold text-slate-900 text-sm">Fichas Voluntarios</h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Historial trimestral y anual[span_1](start_span)[span_1](end_span)</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Historial trimestral y anual[span_0](start_span)[span_0](end_span)</p>
                 <span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Fichas &rarr;</span>
             </div>
         </div>
     </div>
-    <!-- VISTA INVENTARIO DE CARROS -->
+        <!-- VISTA INVENTARIO DE CARROS -->
     <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
-            <button onclick="backToCarros()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
-                <i class="ph ph-arrow-left text-sm"></i> Volver al Panel
+            <button onclick="goBack()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
             <h2 id="carroTitle" class="text-sm font-bold text-slate-900 uppercase">Inventario</h2>
             <button onclick="openItemModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Material</button>
@@ -542,8 +538,8 @@
     <!-- VISTA INVENTARIO DE CUARTEL -->
     <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
-            <button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
-                <i class="ph ph-arrow-left text-sm"></i> Volver al Panel
+            <button onclick="goBack()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
             <h2 id="cuartelTitle" class="text-sm font-bold text-slate-900 uppercase">Inventario Cuartel</h2>
             <button onclick="openCuartelItemModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Artículo</button>
@@ -567,8 +563,8 @@
     <!-- VISTA LISTA DE ASISTENCIA -->
     <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
-            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
-                <i class="ph ph-arrow-left text-sm"></i> Volver
+            <button onclick="goBack()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
             <h2 class="text-sm font-bold text-slate-900 uppercase">Lista Semanal y Control de Asistencia</h2>
             <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Miembro</button>
@@ -580,7 +576,7 @@
                         <th class="px-5 py-3">Categoría / Cargo</th>
                         <th class="px-5 py-3">Nombre</th>
                         <th class="px-5 py-3 text-center">Horas Garita</th>
-                        <th class="px-5 py-3 text-center">Estado (A / AB / F)[span_2](start_span)[span_2](end_span)</th>
+                        <th class="px-5 py-3 text-center">Estado (A / AB / F)[span_1](start_span)[span_1](end_span)</th>
                         <th class="px-5 py-3 text-right">Acciones</th>
                     </tr>
                 </thead>
@@ -589,11 +585,11 @@
         </div>
     </div>
 
-    <!-- VISTA HISTORIAL DE REMOCIONES (Auditoría del Capitán) -->
+    <!-- VISTA HISTORIAL DE REMOCIONES -->
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
-            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
-                <i class="ph ph-arrow-left text-sm"></i> Volver
+            <button onclick="goBack()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
             <h2 class="text-sm font-bold text-slate-900 uppercase">Historial y Auditoría de Liberaciones (Capitán)</h2>
             <div></div>
@@ -612,11 +608,11 @@
             </table>
         </div>
     </div>
-       <!-- VISTA FICHAS DE VOLUNTARIOS -->
+        <!-- VISTA FICHAS DE VOLUNTARIOS -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
-            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
-                <i class="ph ph-arrow-left text-sm"></i> Volver
+            <button onclick="goBack()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
             <h2 class="text-sm font-bold text-slate-900 uppercase">Fichas de Historial de Voluntarios</h2>
             <div></div>
@@ -627,8 +623,8 @@
                     <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
                         <th class="px-5 py-3">Nombre Completo</th>
                         <th class="px-5 py-3">Cargo / Grado</th>
-                        <th class="px-5 py-3 text-center">Asistencias 3 Meses[span_3](start_span)[span_3](end_span)</th>
-                        <th class="px-5 py-3 text-center">Asistencias Anual[span_4](start_span)[span_4](end_span)</th>
+                        <th class="px-5 py-3 text-center">Asistencias 3 Meses[span_2](start_span)[span_2](end_span)</th>
+                        <th class="px-5 py-3 text-center">Asistencias Anual[span_3](start_span)[span_3](end_span)</th>
                         <th class="px-5 py-3 text-right">Modificar</th>
                     </tr>
                 </thead>
@@ -636,7 +632,7 @@
             </table>
         </div>
     </div>
-    <!-- Script de Funcionamiento Institucional -->
+        <!-- Script de Funcionamiento Institucional -->
     <script>
         const GOOGLE_SCRIPT_URL = ""; 
 
@@ -648,7 +644,7 @@
             "Ayudante": "Ayudantebalmaceda2",
             "Tenienteprimero": "Tenienteprimerobalmaceda",
             "Tenientesegundo": "Tenientesegundobalmaceda",
-            "Tenientetercero": "Tenientesercerobalmaceda"
+            "Tenientetercero": "Tenientetercerobalmaceda"
         };
 
         const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
@@ -662,8 +658,7 @@
         };
 
         let roster = JSON.parse(localStorage.getItem('roster_compania')) || [
-            { id: 1, category: "Oficiales operativo", role: "Capitán", name: "Edison Soto", day: "Miércoles", reason: "Ejercicio", status: "A", count3m: 14, count1y: 50, garitaHours: 0 },
-            { id: 2, category: "Oficiales operativo", role: "Teniente 2", name: "Bastian Cuevas", day: "Miércoles", reason: "Ejercicio", status: "A", count3m: 15, count1y: 52, garitaHours: 0 }
+            { id: 1, category: "Oficiales operativo", role: "Capitán", name: "Edison Soto", day: "Miércoles", reason: "Ejercicio", status: "A", count3m: 14, count1y: 50, garitaHours: 0 }
         ];
         let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
         let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
@@ -726,7 +721,6 @@
             document.getElementById('fichasView').classList.add('hidden');
             document.getElementById('remorsionView').classList.add('hidden');
 
-            // Visibilidad de botones del navbar
             if (cargo === 'Ayudante') {
                 document.getElementById('listBtnContainer').classList.remove('hidden');
                 document.getElementById('fichaBtnContainer').classList.remove('hidden');
@@ -805,14 +799,21 @@
             }
         }
 
-        function backToMainPanel() {
+        // --- FUNCIÓN UNIVERSAL "ATRÁS" (Regresa a la página anterior o panel principal) ---
+        function goBack() {
             const cargo = localStorage.getItem('active_cargo');
+            document.getElementById('carroInventoryView').classList.add('hidden');
+            document.getElementById('cuartelInventoryView').classList.add('hidden');
             document.getElementById('rosterView').classList.add('hidden');
             document.getElementById('fichasView').classList.add('hidden');
             document.getElementById('remorsionView').classList.add('hidden');
 
             if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
                 document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            } else if (cargo === 'Tenientesegundo') {
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            } else if (cargo === 'Tenientetercero') {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
             } else if (cargo === 'Ayudante') {
                 document.getElementById('rosterView').classList.remove('hidden');
             }
@@ -825,15 +826,6 @@
             document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${code}`;
             renderInventory();
         }
-        function backToCarros() {
-            const cargo = localStorage.getItem('active_cargo');
-            document.getElementById('carroInventoryView').classList.add('hidden');
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            } else {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            }
-        }
 
         function openCuartelSeccion(seccion) {
             currentCuartelSeccion = seccion;
@@ -842,19 +834,11 @@
             document.getElementById('cuartelTitle').textContent = `Inventario - ${seccion}`;
             renderCuartelInventory();
         }
-        function backToCuartelMenu() {
-            const cargo = localStorage.getItem('active_cargo');
-            document.getElementById('cuartelInventoryView').classList.add('hidden');
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            } else {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            }
-        }
 
         function openRosterView() { 
             const cargo = localStorage.getItem('active_cargo');
             if(cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
+            if(cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.add('hidden');
             document.getElementById('rosterView').classList.remove('hidden'); 
             renderRoster();
         }
@@ -973,7 +957,7 @@
             });
         }
 
-  function renderFichas() {
+        function renderFichas() {
             const tbody = document.getElementById('fichasTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
@@ -1012,4 +996,4 @@
         function saveAndRenderVisitors() {}
     </script>
 </body>
-</html>-    
+</html>
