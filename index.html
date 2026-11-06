@@ -31,38 +31,44 @@
                     </p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors">
+            <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0">
+                <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-user-circle text-sm text-indigo-300"></i>
                     <span class="hidden sm:inline">Iniciar Sesión</span>
                 </button>
 
-                <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors">
+                <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-user-gear text-sm text-indigo-300"></i>
                     <span id="profileBtnText" class="hidden sm:inline">Mi Perfil</span>
                 </button>
 
-                <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
+                <!-- BOTÓN: TIEMPO EN VIVO -->
+                <button id="liveHoursBtnContainer" onclick="openLiveHoursView()" class="hidden flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
+                    <i class="ph ph-timer text-sm"></i>
+                    <span class="hidden sm:inline">Tiempo en Vivo</span>
+                </button>
+
+                <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-list-checks text-sm"></i>
                     <span class="hidden sm:inline">Asistencia</span>
                 </button>
 
-                <button id="fichaBtnContainer" onclick="openFichasView()" class="hidden flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
+                <button id="fichaBtnContainer" onclick="openFichasView()" class="hidden flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-identification-card text-sm"></i>
                     <span class="hidden sm:inline">Fichas</span>
                 </button>
                 
-                <button id="calendarBtnContainer" onclick="openCalendarView()" class="hidden flex items-center gap-1.5 bg-fuchsia-700 hover:bg-fuchsia-600 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
+                <button id="calendarBtnContainer" onclick="openCalendarView()" class="hidden flex items-center gap-1.5 bg-fuchsia-700 hover:bg-fuchsia-600 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-calendar-blank text-sm"></i>
                     <span class="hidden sm:inline">Calendario</span>
                 </button>
 
-                <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
+                <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-lock-open text-sm"></i>
                     <span class="hidden sm:inline">Auditoría Restricciones</span>
                 </button>
 
-                <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
+                <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors whitespace-nowrap">
                     <i class="ph ph-download-simple text-sm"></i>
                     <span class="hidden sm:inline">CSV</span>
                 </button>
@@ -110,7 +116,7 @@
         </div>
     </div>
 
-    <!-- Modal de Perfil del Oficial -->
+    <!-- Modal de Perfil -->
     <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -246,7 +252,7 @@
         </div>
     </div>
 
-    <!-- Modal para Remover Restricción -->
+<!-- Modal para Remover Restricción -->
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-rose-900 text-white">
@@ -269,7 +275,7 @@
         </div>
     </div>
 
-   <!-- Modal Agregar Actividad en Calendario (Solo Capitán) -->
+    <!-- Modal Agregar Actividad en Calendario (Solo Capitán) -->
     <div id="eventModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-fuchsia-900 text-white">
@@ -433,7 +439,7 @@
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 h-full flex flex-col overflow-hidden text-xs">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                     <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="ph ph-users text-indigo-700 text-base"></i> Listado General de Garita
+                        <i class="ph ph-users text-indigo-700 text-base"></i> Listado General de Guardia en Cuartel
                     </h2>
                     <span id="currentTime" class="font-mono bg-white px-2.5 py-1 rounded border border-slate-200 font-semibold text-slate-600">--:--:--</span>
                 </div>
@@ -539,8 +545,13 @@
             </div>
             <div onclick="openRosterView()" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-amber-500 transition-all cursor-pointer flex flex-col items-center text-center">
                 <h3 class="font-bold text-slate-900 text-sm">Lista y Asistencia</h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Control de horas de garita</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Control de horas de guardia en cuartel</p>
                 <span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Lista &rarr;</span>
+            </div>
+            <div onclick="openLiveHoursView()" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-cyan-500 transition-all cursor-pointer flex flex-col items-center text-center">
+                <h3 class="font-bold text-slate-900 text-sm">Tiempo en Vivo</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Timer de abonos de guardia (4 hrs)</p>
+                <span class="mt-3 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-3 py-1 rounded">Ver Timer &rarr;</span>
             </div>
             <div onclick="openFichasView()" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-blue-500 transition-all cursor-pointer flex flex-col items-center text-center">
                 <h3 class="font-bold text-slate-900 text-sm">Fichas Voluntarios</h3>
@@ -600,7 +611,6 @@
             </table>
         </div>
     </div>
-
     <!-- VISTA LISTA DE ASISTENCIA -->
     <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
@@ -616,7 +626,7 @@
                     <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
                         <th class="px-5 py-3">Categoría / Cargo</th>
                         <th class="px-5 py-3">Nombre</th>
-                        <th class="px-5 py-3 text-center">Horas Garita</th>
+                        <th class="px-5 py-3 text-center">Horas Guardia en Cuartel</th>
                         <th class="px-5 py-3 text-center">Estado (A / AB / F)</th>
                         <th class="px-5 py-3 text-right">Acciones</th>
                     </tr>
@@ -686,7 +696,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Grilla del Calendario -->
             <div class="md:col-span-2 bg-white rounded-xl shadow-xs border border-slate-200 p-5">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
                     <button onclick="changeMonth(-1)" class="p-1.5 hover:bg-slate-100 rounded border border-slate-200 text-slate-600"><i class="ph ph-caret-left text-base"></i></button>
@@ -696,23 +705,42 @@
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-slate-400 mb-2 uppercase">
                     <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
                 </div>
-                <div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm">
-                    <!-- Los días se renderizan aquí -->
-                </div>
+                <div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div>
             </div>
-
-            <!-- Detalles del Día Seleccionado -->
             <div class="bg-slate-50 rounded-xl border border-slate-200 p-5 h-full">
                 <h3 id="selectedDateLabel" class="font-bold text-sm text-fuchsia-900 mb-4 border-b border-slate-200 pb-2">Seleccione un día</h3>
                 <div id="dayEventsList" class="space-y-3">
-                    <!-- Los eventos del día se inyectan aquí -->
                     <p class="text-slate-500 italic text-[11px]">No hay actividades programadas.</p>
                 </div>
             </div>
         </div>
     </div>
 
-<!-- Script de Funcionamiento Institucional -->
+    <!-- VISTA NUEVA: CONTROL DE TIEMPO Y ABONOS EN VIVO -->
+    <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
+            <h2 class="text-sm font-bold text-slate-900 uppercase">Control de Tiempo y Abonos (Guardia)</h2>
+            <div></div>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Voluntario</th>
+                        <th class="px-5 py-3">Hora Ingreso</th>
+                        <th class="px-5 py-3 text-center">Tiempo Transcurrido</th>
+                        <th class="px-5 py-3 text-center">Progreso Abono (4 hrs)</th>
+                    </tr>
+                </thead>
+                <tbody id="liveHoursTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script de Funcionamiento Institucional -->
     <script>
         const credentials = {
             "Directora": "Directorabalmaceda1",
@@ -727,6 +755,7 @@
 
         const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         const calendarioRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero", "Ayudante"];
+        const liveHoursRoles = ["Capitan", "Tenienteprimero", "Ayudante"];
 
         let profiles = JSON.parse(localStorage.getItem('perfiles_cargos')) || {
             "Tenientetercero": { name: "Andrea Candia", rut: "12.345.678-9", phone: "977777777" },
@@ -746,12 +775,10 @@
         let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || { "RH2": [], "B2": [], "BX2": [], "Bodega": [] };
         let cuartelInventarios = JSON.parse(localStorage.getItem('cuartel_inventarios')) || { "Inmuebles": [], "Aseo": [] };
 
-        // Variables del Calendario
         let calendarEvents = JSON.parse(localStorage.getItem('calendario_actividades')) || [];
         let calDate = new Date();
         let selectedDateStr = "";
 
-        // ================= INICIALIZACIÓN =================
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
             if (activeCargo) {
@@ -766,17 +793,15 @@
             const clock = document.getElementById('currentTime');
             if (clock) clock.textContent = new Date().toLocaleTimeString('es-CL');
             verificarBloqueoSalida();
+            checkAndGrantAB(); 
+            if (!document.getElementById('liveHoursView').classList.contains('hidden')) {
+                renderLiveHours();
+            }
         }, 1000);
 
-        // ================= AUTENTICACIÓN =================
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-        
-        // CORRECCIÓN: Solo cierra la sesión, no borra la base de datos entera
-        function logout() { 
-            localStorage.removeItem('active_cargo'); 
-            window.location.reload(); 
-        }
+        function logout() { localStorage.removeItem('active_cargo'); window.location.reload(); }
 
         function handleLogin(e) {
             e.preventDefault();
@@ -791,18 +816,15 @@
                 if (errorDiv) {
                     errorDiv.textContent = "Contraseña incorrecta para el cargo seleccionado.";
                     errorDiv.classList.remove('hidden');
-                } else {
-                    alert("Contraseña incorrecta.");
-                }
+                } else { alert("Contraseña incorrecta."); }
             }
         }
 
-        // ================= NAVEGACIÓN =================
         function hideAllViews() {
             const views = [
                 'accessView', 'tenienteSegundoView', 'tenienteTerceroView', 
                 'capitanTenientePrimeroView', 'carroInventoryView', 
-                'cuartelInventoryView', 'rosterView', 'fichasView', 'remorsionView', 'calendarView'
+                'cuartelInventoryView', 'rosterView', 'fichasView', 'remorsionView', 'calendarView', 'liveHoursView'
             ];
             views.forEach(id => {
                 const el = document.getElementById(id);
@@ -817,7 +839,6 @@
 
             hideAllViews(); 
 
-            // Visibilidad de botones del Navbar
             const btnRemorsion = document.getElementById('remorsionBtnContainer');
             if(btnRemorsion) {
                 if (cargo === 'Capitan') btnRemorsion.classList.remove('hidden');
@@ -843,6 +864,13 @@
                 if(btnCalendar) btnCalendar.classList.add('hidden');
             }
 
+            const btnLiveHours = document.getElementById('liveHoursBtnContainer');
+            if (liveHoursRoles.includes(cargo)) {
+                if(btnLiveHours) btnLiveHours.classList.remove('hidden');
+            } else {
+                if(btnLiveHours) btnLiveHours.classList.add('hidden');
+            }
+
             const btnList = document.getElementById('listBtnContainer');
             const btnFicha = document.getElementById('fichaBtnContainer');
             if (cargo === 'Ayudante') {
@@ -853,7 +881,6 @@
                 if(btnFicha) btnFicha.classList.add('hidden');
             }
 
-            // Redirección Principal
             if (cargo === 'Ayudante') {
                 document.getElementById('rosterView').classList.remove('hidden');
                 document.getElementById('navTitle').textContent = "Panel Ayudantía";
@@ -888,14 +915,10 @@
 
         function openMandoSeccion(seccion) {
             hideAllViews();
-            if (seccion === 'carros') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else if (seccion === 'cuartel') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            }
+            if (seccion === 'carros') { document.getElementById('tenienteSegundoView').classList.remove('hidden'); } 
+            else if (seccion === 'cuartel') { document.getElementById('tenienteTerceroView').classList.remove('hidden'); }
         }
 
-        // ================= PERFIL =================
         function openProfileModal() {
             const cargo = localStorage.getItem('active_cargo');
             if (!cargo) return;
@@ -919,12 +942,9 @@
                 phone: document.getElementById('editPhoneInput').value.trim()
             };
             localStorage.setItem('perfiles_cargos', JSON.stringify(profiles));
-            closeEditProfileModal();
-            alert("Perfil actualizado.");
-            openProfileModal();
+            closeEditProfileModal(); alert("Perfil actualizado."); openProfileModal();
         }
 
-        // ================= INVENTARIOS (CARROS Y CUARTEL) =================
         function openCarro(code) {
             currentCarro = code;
             hideAllViews();
@@ -936,15 +956,12 @@
             hideAllViews();
             document.getElementById('tenienteSegundoView').classList.remove('hidden');
         }
-        function renderInventory() {
+            function renderInventory() {
             const tbody = document.getElementById('inventoryTableBody');
             if (!tbody || !currentCarro) return;
             tbody.innerHTML = '';
             let list = inventories[currentCarro] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin equipos registrados en esta unidad.</td></tr>`;
-                return;
-            }
+            if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin equipos registrados.</td></tr>`; return; }
             list.forEach(i => {
                 let badge = "bg-emerald-100 text-emerald-800";
                 if(i.status === 'Revisión') badge = "bg-amber-100 text-amber-800";
@@ -954,8 +971,7 @@
             });
         }
         function openItemModal() {
-            document.getElementById('itemId').value = '';
-            document.getElementById('itemForm').reset();
+            document.getElementById('itemId').value = ''; document.getElementById('itemForm').reset();
             const gavetaField = document.getElementById('modalGavetaField');
             if (gavetaField) currentCarro === 'B2' ? gavetaField.classList.remove('hidden') : gavetaField.classList.add('hidden');
             document.getElementById('itemModal').classList.remove('hidden');
@@ -970,18 +986,15 @@
             const quantity = parseInt(document.getElementById('itemQuantity').value) || 1;
             const status = document.getElementById('itemStatus').value;
             const gaveta = currentCarro === 'B2' ? document.getElementById('itemGaveta').value : null;
-
             if (!inventories[currentCarro]) inventories[currentCarro] = [];
             inventories[currentCarro].push({ id: Date.now(), name, model, category, quantity, status, gaveta });
             localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
-            closeItemModal();
-            renderInventory();
+            closeItemModal(); renderInventory();
         }
         function deleteItem(id) {
-            if (confirm("¿Desea eliminar este equipo?")) {
+            if (confirm("¿Eliminar equipo?")) {
                 inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id);
-                localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
-                renderInventory();
+                localStorage.setItem('inventarios_carros', JSON.stringify(inventories)); renderInventory();
             }
         }
 
@@ -992,31 +1005,21 @@
             document.getElementById('cuartelTitle').textContent = `Inventario - ${seccion}`;
             renderCuartelInventory();
         }
-        function backToCuartelMenu() {
-            hideAllViews();
-            document.getElementById('tenienteTerceroView').classList.remove('hidden');
-        }
+        function backToCuartelMenu() { hideAllViews(); document.getElementById('tenienteTerceroView').classList.remove('hidden'); }
         function renderCuartelInventory() {
             const tbody = document.getElementById('cuartelInventoryTableBody');
             if (!tbody || !currentCuartelSeccion) return;
             tbody.innerHTML = '';
             let list = cuartelInventarios[currentCuartelSeccion] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin artículos registrados.</td></tr>`;
-                return;
-            }
+            if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin artículos registrados.</td></tr>`; return; }
             list.forEach(i => {
                 let badge = "bg-emerald-100 text-emerald-800";
                 if(i.status === 'Por reponer') badge = "bg-amber-100 text-amber-800";
                 if(i.status === 'Agotado') badge = "bg-rose-100 text-rose-800";
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3">${i.ubicacion}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteCuartelItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3">${i.ubicacion}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteCuartelItem(${i.id})" class="text-rose-600 font-semibold">Eliminar</button></td></tr>`;
             });
         }
-        function openCuartelItemModal() {
-            document.getElementById('cuartelItemId').value = '';
-            document.getElementById('cuartelItemForm').reset(); 
-            document.getElementById('cuartelItemModal').classList.remove('hidden'); 
-        }
+        function openCuartelItemModal() { document.getElementById('cuartelItemForm').reset(); document.getElementById('cuartelItemModal').classList.remove('hidden'); }
         function closeCuartelItemModal() { document.getElementById('cuartelItemModal').classList.add('hidden'); }
         function saveCuartelItem(e) {
             e.preventDefault();
@@ -1028,19 +1031,19 @@
             if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = [];
             cuartelInventarios[currentCuartelSeccion].push({ id: Date.now(), name, ubicacion, quantity, status });
             localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-            closeCuartelItemModal(); 
-            renderCuartelInventory();
+            closeCuartelItemModal(); renderCuartelInventory();
         }
         function deleteCuartelItem(id) {
             if (confirm("¿Desea eliminar este artículo?")) {
                 cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id);
-                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-                renderCuartelInventory();
+                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios)); renderCuartelInventory();
             }
         }
-// ================= ASISTENCIA Y FICHAS (AYUDANTÍA) =================
+
+        // ================= ASISTENCIA Y FICHAS (AYUDANTÍA) =================
         function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
         function openFichasView() { hideAllViews(); document.getElementById('fichasView').classList.remove('hidden'); renderFichas(); }
+        function openLiveHoursView() { hideAllViews(); document.getElementById('liveHoursView').classList.remove('hidden'); renderLiveHours(); }
 
         function renderRoster() {
             const tbody = document.getElementById('rosterTableBody');
@@ -1084,8 +1087,7 @@
                 member.count3m = parseInt(document.getElementById('fichaEdit3m').value); 
                 member.count1y = parseInt(document.getElementById('fichaEdit1y').value); 
                 localStorage.setItem('roster_compania', JSON.stringify(roster)); 
-                closeFichaEditModal(); 
-                renderFichas(); 
+                closeFichaEditModal(); renderFichas(); 
             }
         }
 
@@ -1093,14 +1095,10 @@
         function openCalendarView() {
             hideAllViews();
             document.getElementById('calendarView').classList.remove('hidden');
-            
             const cargo = localStorage.getItem('active_cargo');
             const btnAddEvent = document.getElementById('btnAddEvent');
-            if (cargo === 'Capitan') {
-                btnAddEvent.classList.remove('hidden');
-            } else {
-                btnAddEvent.classList.add('hidden');
-            }
+            if (cargo === 'Capitan') btnAddEvent.classList.remove('hidden');
+            else btnAddEvent.classList.add('hidden');
             renderCalendar();
         }
 
@@ -1111,16 +1109,13 @@
             
             const month = calDate.getMonth();
             const year = calDate.getFullYear();
-            
             const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
             document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year}`;
             
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             
-            for (let i = 0; i < firstDay; i++) {
-                grid.innerHTML += `<div></div>`;
-            }
+            for (let i = 0; i < firstDay; i++) { grid.innerHTML += `<div></div>`; }
             
             const today = new Date();
             
@@ -1136,96 +1131,125 @@
                 
                 let dot = hasEvent ? `<div class="w-1.5 h-1.5 bg-fuchsia-500 rounded-full mx-auto mt-0.5"></div>` : `<div class="w-1.5 h-1.5 mx-auto mt-0.5"></div>`;
                 
-                grid.innerHTML += `
-                    <div onclick="selectDate('${dateStr}')" class="p-2 border border-slate-100 rounded cursor-pointer transition-colors ${bgClass}">
-                        <span class="block">${i}</span>
-                        ${dot}
-                    </div>
-                `;
+                grid.innerHTML += `<div onclick="selectDate('${dateStr}')" class="p-2 border border-slate-100 rounded cursor-pointer transition-colors ${bgClass}"><span class="block">${i}</span>${dot}</div>`;
             }
         }
-
-        function changeMonth(dir) {
-            calDate.setMonth(calDate.getMonth() + dir);
-            renderCalendar();
-        }
-
-        function selectDate(dateStr) {
-            selectedDateStr = dateStr;
-            renderCalendar();
-            renderDayEvents();
-        }
+        function changeMonth(dir) { calDate.setMonth(calDate.getMonth() + dir); renderCalendar(); }
+        function selectDate(dateStr) { selectedDateStr = dateStr; renderCalendar(); renderDayEvents(); }
 
         function renderDayEvents() {
             const list = document.getElementById('dayEventsList');
             const label = document.getElementById('selectedDateLabel');
-            
             if (!selectedDateStr) {
                 label.textContent = "Seleccione un día";
-                list.innerHTML = `<p class="text-slate-500 italic text-[11px]">No hay actividades programadas.</p>`;
-                return;
+                list.innerHTML = `<p class="text-slate-500 italic text-[11px]">No hay actividades programadas.</p>`; return;
             }
             
             const [y, m, d] = selectedDateStr.split('-');
             label.textContent = `Actividades del ${d}/${m}/${y}`;
-            
             const dayEvents = calendarEvents.filter(e => e.date === selectedDateStr);
-            if (dayEvents.length === 0) {
-                list.innerHTML = `<p class="text-slate-500 italic text-[11px]">Día libre. No hay actividades registradas.</p>`;
-                return;
-            }
+            if (dayEvents.length === 0) { list.innerHTML = `<p class="text-slate-500 italic text-[11px]">Día libre. No hay actividades registradas.</p>`; return; }
             
             list.innerHTML = '';
             const cargo = localStorage.getItem('active_cargo');
             
             dayEvents.forEach(ev => {
                 let deleteBtn = cargo === 'Capitan' ? `<button onclick="deleteEvent(${ev.id})" class="text-rose-600 hover:text-rose-800 text-[10px] mt-1.5 font-bold uppercase tracking-wider">Eliminar</button>` : '';
-                list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-fuchsia-500">
-                        <h4 class="font-bold text-slate-800 text-xs">${ev.title}</h4>
-                        <p class="text-slate-600 text-[11px] mt-1">${ev.description}</p>
-                        ${deleteBtn}
-                    </div>
-                `;
+                list.innerHTML += `<div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-fuchsia-500"><h4 class="font-bold text-slate-800 text-xs">${ev.title}</h4><p class="text-slate-600 text-[11px] mt-1">${ev.description}</p>${deleteBtn}</div>`;
             });
         }
-
         function openEventModal() {
-            if (!selectedDateStr) {
-                alert("Por favor, seleccione primero un día en el calendario.");
-                return;
-            }
+            if (!selectedDateStr) { alert("Seleccione primero un día en el calendario."); return; }
             document.getElementById('eventDate').value = selectedDateStr;
-            document.getElementById('eventForm').reset();
-            document.getElementById('eventModal').classList.remove('hidden');
+            document.getElementById('eventForm').reset(); document.getElementById('eventModal').classList.remove('hidden');
         }
-
         function closeEventModal() { document.getElementById('eventModal').classList.add('hidden'); }
-
         function saveEvent(e) {
             e.preventDefault();
-            const date = document.getElementById('eventDate').value;
-            const title = document.getElementById('eventTitle').value.trim();
-            const desc = document.getElementById('eventDescription').value.trim();
-            
-            calendarEvents.push({ id: Date.now(), date: date, title: title, description: desc });
+            calendarEvents.push({ id: Date.now(), date: document.getElementById('eventDate').value, title: document.getElementById('eventTitle').value.trim(), description: document.getElementById('eventDescription').value.trim() });
             localStorage.setItem('calendario_actividades', JSON.stringify(calendarEvents));
-            
-            closeEventModal();
-            renderCalendar();
-            renderDayEvents();
+            closeEventModal(); renderCalendar(); renderDayEvents();
         }
-
         function deleteEvent(id) {
             if (confirm("¿Seguro que desea eliminar esta actividad?")) {
                 calendarEvents = calendarEvents.filter(e => e.id !== id);
-                localStorage.setItem('calendario_actividades', JSON.stringify(calendarEvents));
-                renderCalendar();
-                renderDayEvents();
+                localStorage.setItem('calendario_actividades', JSON.stringify(calendarEvents)); renderCalendar(); renderDayEvents();
             }
         }
 
-        // ================= SISTEMA DE GARITA Y BLOQUEOS =================
+        // ================= SISTEMA DE GUARDIA EN CUARTEL, TIEMPO EN VIVO Y BLOQUEOS =================
+        function renderLiveHours() {
+            const tbody = document.getElementById('liveHoursTableBody');
+            if (!tbody) return;
+            const activas = visitors.filter(v => v.status === 'active');
+            
+            if (activas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">No hay voluntarios de guardia en cuartel actualmente.</td></tr>`;
+                return;
+            }
+            
+            let html = '';
+            const now = Date.now();
+            const LIMIT_MS = 4 * 60 * 60 * 1000; 
+            
+            activas.forEach(v => {
+                const diffMs = now - v.startTimestamp;
+                const hrs = Math.floor(diffMs / 3600000);
+                const mins = Math.floor((diffMs % 3600000) / 60000);
+                const secs = Math.floor((diffMs % 60000) / 1000);
+                const timeStr = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                
+                let progress = Math.min(100, (diffMs / LIMIT_MS) * 100);
+                let badge = v.abGranted ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold text-[10px]">AB LOGRADO</span>` : `<span class="bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded font-bold text-[10px]">EN PROGRESO</span>`;
+                
+                html += `<tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold">${v.fullName}</td>
+                    <td class="px-5 py-3 font-mono text-slate-500">${v.entryTime}</td>
+                    <td class="px-5 py-3 text-center font-mono font-bold text-cyan-700">${timeStr}</td>
+                    <td class="px-5 py-3 text-center">
+                        <div class="flex flex-col items-center gap-1">
+                            ${badge}
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1 max-w-[100px]">
+                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function checkAndGrantAB() {
+            let updated = false;
+            const now = Date.now();
+            const LIMIT_MS = 4 * 60 * 60 * 1000; 
+            
+            visitors.forEach(v => {
+                if (v.status === 'active' && !v.abGranted) {
+                    if (now - v.startTimestamp >= LIMIT_MS) {
+                        v.abGranted = true;
+                        updated = true;
+                        
+                        let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
+                        if (miembro) {
+                            if (miembro.status !== 'AB') {
+                                miembro.status = 'AB';
+                                miembro.count3m = (miembro.count3m || 0) + 1;
+                                miembro.count1y = (miembro.count1y || 0) + 1;
+                            }
+                        }
+                    }
+                }
+            });
+            
+            if (updated) {
+                localStorage.setItem('visitantes', JSON.stringify(visitors));
+                localStorage.setItem('roster_compania', JSON.stringify(roster));
+                if (!document.getElementById('rosterView').classList.contains('hidden')) renderRoster();
+                if (!document.getElementById('fichasView').classList.contains('hidden')) renderFichas();
+            }
+        }
+
         function saveAndRenderVisitors() {
             const tbody = document.getElementById('visitorsTableBody');
             if (!tbody) return;
@@ -1237,7 +1261,7 @@
             }
             const sorted = [...visitors].sort((a, b) => b.id - a.id);
             sorted.forEach(v => {
-                const statusHtml = v.status === 'active' ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">En recinto</span>` : `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">Salió</span>`;
+                const statusHtml = v.status === 'active' ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">En cuartel</span>` : `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">Salió</span>`;
                 const actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-600 font-bold bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded">Marcar Salida</button>` : `<span class="text-slate-400 italic text-[10px]">Listo</span>`;
                 tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${v.fullName}</td><td class="px-5 py-3 font-mono text-slate-500">${v.documentId}</td><td class="px-5 py-3">${v.antiguedad}</td><td class="px-5 py-3">Entrada: ${v.entryTime}</td><td class="px-5 py-3 text-center">${statusHtml}</td><td class="px-5 py-3 text-right">${actionHtml}</td></tr>`;
             });
@@ -1252,7 +1276,7 @@
                     documentId: document.getElementById('documentId').value, 
                     antiguedad: document.getElementById('antiguedad').value, 
                     entryTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }), 
-                    startTimestamp: Date.now(), status: 'active' 
+                    startTimestamp: Date.now(), status: 'active', abGranted: false 
                 });
                 localStorage.setItem('visitantes', JSON.stringify(visitors));
                 sincronizarConListaAyudante(); 
@@ -1297,12 +1321,11 @@
         function sincronizarConListaAyudante() {
             roster.forEach(m => {
                 let visits = visitors.filter(v => v.fullName.toLowerCase().trim() === m.name.toLowerCase().trim());
-                m.garitaHours = visits.length * 4;
-                if (m.garitaHours >= 4 && m.status !== 'AB') {
-                    m.status = 'AB';
-                    m.count3m = (m.count3m || 0) + 1;
-                    m.count1y = (m.count1y || 0) + 1;
-                }
+                let pastABs = 0;
+                visits.forEach(v => {
+                    if (v.status === 'departed' && v.abGranted) pastABs++;
+                });
+                m.garitaHours = pastABs * 4; 
             });
             localStorage.setItem('roster_compania', JSON.stringify(roster));
         }
