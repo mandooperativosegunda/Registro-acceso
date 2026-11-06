@@ -34,36 +34,37 @@
             <div class="flex items-center gap-2">
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors">
                     <i class="ph ph-user-circle text-sm text-indigo-300"></i>
-                    <span>Iniciar Sesión</span>
+                    <span class="hidden sm:inline">Iniciar Sesión</span>
                 </button>
 
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs transition-colors">
                     <i class="ph ph-user-gear text-sm text-indigo-300"></i>
-                    <span id="profileBtnText">Mi Perfil</span>
+                    <span id="profileBtnText" class="hidden sm:inline">Mi Perfil</span>
                 </button>
 
                 <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
                     <i class="ph ph-list-checks text-sm"></i>
-                    <span>Asistencia</span>
+                    <span class="hidden sm:inline">Asistencia</span>
                 </button>
 
                 <button id="fichaBtnContainer" onclick="openFichasView()" class="hidden flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
                     <i class="ph ph-identification-card text-sm"></i>
-                    <span>Fichas</span>
+                    <span class="hidden sm:inline">Fichas</span>
                 </button>
 
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
                     <i class="ph ph-lock-open text-sm"></i>
-                    <span>Auditoría Restricciones</span>
+                    <span class="hidden sm:inline">Auditoría Restricciones</span>
                 </button>
 
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-colors">
                     <i class="ph ph-download-simple text-sm"></i>
-                    <span>CSV</span>
+                    <span class="hidden sm:inline">CSV</span>
                 </button>
             </div>
         </div>
     </nav>
+
     <!-- Modal de Login Institucional -->
     <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200">
@@ -263,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Modal Agregar Material Menor -->
+       <!-- Modal Agregar Material Menor -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden border border-slate-200 text-xs">
             <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-indigo-900 text-white">
@@ -353,7 +354,7 @@
             </form>
         </div>
     </div>
-        <!-- VISTA 1: CONTROL DE ACCESOS -->
+     <!-- VISTA 1: CONTROL DE ACCESOS -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden text-xs">
@@ -366,7 +367,7 @@
                     
                     <div id="blockNotice" class="hidden p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 space-y-2.5 mb-3">
                         <div class="flex items-center gap-1.5 font-bold">
-                            <i class="ph ph-warning text-base text-amber-600"></i> Acceso Restringido (Espera 2 Hrs)
+                            <i class="ph ph-warning text-base text-amber-600"></i> Acceso Restringido
                         </div>
                         <p id="blockReasonText" class="text-[11px]">Debes esperar antes de registrar un nuevo acceso.</p>
                         <p class="text-[11px] font-mono font-semibold" id="blockCountdown">Tiempo restante: --:--</p>
@@ -402,7 +403,7 @@
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 h-full flex flex-col overflow-hidden text-xs">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                     <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="ph ph-users text-indigo-700 text-base"></i> Listado General de Garita y Horas
+                        <i class="ph ph-users text-indigo-700 text-base"></i> Listado General de Garita
                     </h2>
                     <span id="currentTime" class="font-mono bg-white px-2.5 py-1 rounded border border-slate-200 font-semibold text-slate-600">--:--:--</span>
                 </div>
@@ -429,10 +430,15 @@
 
     <!-- PANEL TENIENTE SEGUNDO -->
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
-            <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span>
-            <h2 class="text-xl font-bold text-slate-900 mt-0.5">Material Menor de los Carros y Bodega</h2>
-            <p class="text-slate-500 text-[11px]">Seleccione una unidad para gestionar inventarios.</p>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex justify-between items-center">
+            <div>
+                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span>
+                <h2 class="text-xl font-bold text-slate-900 mt-0.5">Material Menor de los Carros y Bodega</h2>
+                <p class="text-slate-500 text-[11px]">Seleccione una unidad para gestionar inventarios.</p>
+            </div>
+            <button onclick="backToMainPanel()" class="hidden flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors" id="btnAtrasTteSegundo">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div onclick="openCarro('RH2')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center group">
@@ -458,7 +464,7 @@
         </div>
     </div>
 
-    <!-- PANEL TENIENTE TERCERO (Con Botón Atrás integrado si el Capitán accede aquí) -->
+    <!-- PANEL TENIENTE TERCERO -->
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex justify-between items-center">
             <div>
@@ -489,7 +495,7 @@
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
             <span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel de Mando Superior</span>
             <h2 class="text-xl font-bold text-slate-900 mt-1">Supervisión Institucional Unificada</h2>
-            <p class="text-slate-500 text-[11px]">Acceso directo a la supervisión operativa, cuartel, asistencia y auditoría de liberaciones.</p>
+            <p class="text-slate-500 text-[11px]">Acceso directo a la supervisión operativa, cuartel, asistencia y auditoría.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div onclick="openMandoSeccion('carros')" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-indigo-500 transition-all cursor-pointer flex flex-col items-center text-center">
@@ -509,18 +515,94 @@
             </div>
             <div onclick="openFichasView()" class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 hover:border-blue-500 transition-all cursor-pointer flex flex-col items-center text-center">
                 <h3 class="font-bold text-slate-900 text-sm">Fichas Voluntarios</h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Historial trimestral y anual[span_0](start_span)[span_0](end_span)</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Historial trimestral y anual</p>
                 <span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Fichas &rarr;</span>
             </div>
         </div>
     </div>
-        <!-- VISTA FICHAS DE VOLUNTARIOS -->
+
+    <!-- VISTA INVENTARIO DE CARROS -->
+    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
+            <button onclick="backToCarros()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
+            <h2 id="carroTitle" class="text-sm font-bold text-slate-900 uppercase">Inventario</h2>
+            <button onclick="openItemModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Material</button>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Nombre / Equipo</th>
+                        <th class="px-5 py-3">Marca / Modelo</th>
+                        <th class="px-5 py-3">Ubicación / Gaveta</th>
+                        <th class="px-5 py-3 text-center">Cantidad</th>
+                        <th class="px-5 py-3 text-center">Estado</th>
+                        <th class="px-5 py-3 text-right">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- VISTA INVENTARIO DE CUARTEL -->
+    <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
+            <button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
+            <h2 id="cuartelTitle" class="text-sm font-bold text-slate-900 uppercase">Inventario Cuartel</h2>
+            <button onclick="openCuartelItemModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Artículo</button>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Artículo</th>
+                        <th class="px-5 py-3">Ubicación</th>
+                        <th class="px-5 py-3 text-center">Stock</th>
+                        <th class="px-5 py-3 text-center">Estado</th>
+                        <th class="px-5 py-3 text-right">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuartelInventoryTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+     <!-- VISTA LISTA DE ASISTENCIA -->
+    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
+            <h2 class="text-sm font-bold text-slate-900 uppercase">Lista Semanal de Asistencia</h2>
+            <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Miembro</button>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Categoría / Cargo</th>
+                        <th class="px-5 py-3">Nombre</th>
+                        <th class="px-5 py-3 text-center">Horas Garita</th>
+                        <th class="px-5 py-3 text-center">Estado (A / AB / F)</th>
+                        <th class="px-5 py-3 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- VISTA FICHAS DE VOLUNTARIOS -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
                 <i class="ph ph-arrow-left text-sm"></i> Atrás
             </button>
-            <h2 class="text-sm font-bold text-slate-900 uppercase">Fichas de Historial de Voluntarios</h2>
+            <h2 class="text-sm font-bold text-slate-900 uppercase">Fichas de Historial</h2>
             <div></div>
         </div>
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
@@ -529,8 +611,8 @@
                     <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
                         <th class="px-5 py-3">Nombre Completo</th>
                         <th class="px-5 py-3">Cargo / Grado</th>
-                        <th class="px-5 py-3 text-center">Asistencias 3 Meses[span_2](start_span)[span_2](end_span)</th>
-                        <th class="px-5 py-3 text-center">Asistencias Anual[span_3](start_span)[span_3](end_span)</th>
+                        <th class="px-5 py-3 text-center">Asist. 3 Meses</th>
+                        <th class="px-5 py-3 text-center">Asist. Anual</th>
                         <th class="px-5 py-3 text-right">Modificar</th>
                     </tr>
                 </thead>
@@ -538,270 +620,33 @@
             </table>
         </div>
     </div>
-        <!-- Script de Funcionamiento Institucional -->
-    <script>
-        const GOOGLE_SCRIPT_URL = ""; 
 
-        const credentials = {
-            "Directora": "Directorabalmaceda1",
-            "Tesorero": "Tesorerobalmaceda2",
-            "Secretaria": "Secretariabalmaceda3",
-            "Capitan": "CapitánBalmaceda1",
-            "Ayudante": "Ayudantebalmaceda2",
-            "Tenienteprimero": "Tenienteprimerobalmaceda",
-            "Tenientesegundo": "Tenientesegundobalmaceda",
-            "Tenientetercero": "Tenientesercerobalmaceda"
-        };
+    <!-- VISTA HISTORIAL DE REMOCIONES -->
+    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+                <i class="ph ph-arrow-left text-sm"></i> Atrás
+            </button>
+            <h2 class="text-sm font-bold text-slate-900 uppercase">Auditoría de Liberaciones (Capitán)</h2>
+            <div></div>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Fecha y Hora</th>
+                        <th class="px-5 py-3">Oficial Responsable</th>
+                        <th class="px-5 py-3">Voluntario Liberado</th>
+                        <th class="px-5 py-3">Motivo Registrado</th>
+                    </tr>
+                </thead>
+                <tbody id="remorsionTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
 
-        const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
-
-        let profiles = JSON.parse(localStorage.getItem('perfiles_cargos')) || {
-            "Tenientetercero": { name: "Andrea Candia", rut: "12.345.678-9", phone: "977777777" },
-            "Tenientesegundo": { name: "Bastian Cuevas", rut: "20.646.685-5", phone: "983065441" },
-            "Capitan": { name: "Edison Soto", rut: "12.345.678-9", phone: "944444444" },
-            "Tenienteprimero": { name: "Alejandro Maldonado", rut: "12.345.678-9", phone: "966666666" },
-            "Ayudante": { name: "Ayudante Oficial", rut: "12.345.678-9", phone: "955555555" }
-        };
-
-        let roster = JSON.parse(localStorage.getItem('roster_compania')) || [
-            { id: 1, category: "Oficiales operativo", role: "Capitán", name: "Edison Soto", day: "Miércoles", reason: "Ejercicio", status: "A", count3m: 14, count1y: 50, garitaHours: 0 }
-        ];
-        let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
-        let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
-        let currentCarro = localStorage.getItem('active_carro') || null;
-        let currentCuartelSeccion = localStorage.getItem('active_cuartel_seccion') || null;
-
-        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
-            "RH2": [{ id: 1, name: "Cuerda 50m", model: "Petzl", category: "Rescate", quantity: 2, status: "Operativo" }],
-            "B2": [{ id: 2, name: "Manguera 70mm", model: "Storz", category: "Agua", gaveta: "Gaveta 1", quantity: 4, status: "Operativo" }],
-            "BX2": [], "Bodega": []
-        };
-        let cuartelInventarios = JSON.parse(localStorage.getItem('cuartel_inventarios')) || {
-            "Inmuebles": [{ id: 10, name: "Sillas de salón", ubicacion: "Sala de Sesiones", quantity: 20, status: "Operativo / Bueno" }],
-            "Aseo": [{ id: 20, name: "Cloro Bidón", ubicacion: "Bodega", quantity: 5, status: "Operativo / Bueno" }]
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const activeCargo = localStorage.getItem('active_cargo');
-            if (activeCargo) {
-                activateSession(activeCargo, false);
-            }
-            sincronizarConListaAyudante();
-            saveAndRenderVisitors();
-        });
-
-        setInterval(() => {
-            const timeString = new Date().toLocaleTimeString('es-CL');
-            const clock = document.getElementById('currentTime');
-            if (clock) clock.textContent = timeString;
-        }, 1000);
-
-        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const cargo = document.getElementById('loginCargo').value;
-            const pass = document.getElementById('loginPassword').value;
-            if (credentials[cargo] && credentials[cargo] === pass) {
-                localStorage.setItem('active_cargo', cargo);
-                closeLoginModal();
-                activateSession(cargo, true);
-            } else {
-                alert("Contraseña incorrecta para el cargo seleccionado.");
-            }
-        }
-
-        function activateSession(cargo, showAlert = false) {
-            document.getElementById('activeUserBadge').textContent = cargo;
-            document.getElementById('loginBtnContainer').classList.add('hidden');
-            document.getElementById('profileBtnContainer').classList.remove('hidden');
-
-            document.getElementById('accessView').classList.add('hidden');
-            document.getElementById('tenienteSegundoView').classList.add('hidden');
-            document.getElementById('tenienteTerceroView').classList.add('hidden');
-            document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-            document.getElementById('carroInventoryView').classList.add('hidden');
-            document.getElementById('cuartelInventoryView').classList.add('hidden');
-            document.getElementById('rosterView').classList.add('hidden');
-            document.getElementById('fichasView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.add('hidden');
-
-            // Mostrar botón "Atrás" en el menú de cuartel si es Capitán/Teniente 1°
-            const btnAtrasCuartel = document.getElementById('btnAtrasCuartelMenu');
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                if(btnAtrasCuartel) btnAtrasCuartel.classList.remove('hidden');
-                document.getElementById('remorsionBtnContainer').classList.remove('hidden');
-            } else {
-                if(btnAtrasCuartel) btnAtrasCuartel.classList.add('hidden');
-                document.getElementById('remorsionBtnContainer').classList.add('hidden');
-            }
-
-            if (cargo === 'Ayudante') {
-                document.getElementById('listBtnContainer').classList.remove('hidden');
-                document.getElementById('fichaBtnContainer').classList.remove('hidden');
-            } else {
-                document.getElementById('listBtnContainer').classList.add('hidden');
-                document.getElementById('fichaBtnContainer').classList.add('hidden');
-            }
-
-            if (cargo === 'Ayudante') {
-                document.getElementById('rosterView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Ayudantía";
-                renderRoster();
-            } else if (cargo === 'Tenientesegundo') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Teniente Segundo";
-            } else if (cargo === 'Tenientetercero') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Teniente Tercero";
-            } else if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = `Panel Mando (${cargo})`;
-            }
-
-            if (showAlert) alert(`Sesión iniciada con éxito como: ${cargo}`);
-        }
-
-        function openProfileModal() {
-            const activeCargo = localStorage.getItem('active_cargo');
-            if (!activeCargo) return;
-            const data = profiles[activeCargo] || { name: activeCargo, rut: "N/D", phone: "N/D" };
-            document.getElementById('profileCargoBadge').textContent = `Cargo: ${activeCargo}`;
-            document.getElementById('profileDisplayName').textContent = data.name;
-            document.getElementById('profileNameVal').textContent = data.name;
-            document.getElementById('profileRutVal').textContent = data.rut;
-            document.getElementById('profilePhoneVal').textContent = data.phone;
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function openEditProfileModal() { closeProfileModal(); document.getElementById('editProfileModal').classList.remove('hidden'); }
-        function closeEditProfileModal() { document.getElementById('editProfileModal').classList.add('hidden'); }
-
-        function saveProfileData(e) {
-            e.preventDefault();
-            const activeCargo = localStorage.getItem('active_cargo');
-            if (!activeCargo) return;
-            profiles[activeCargo] = {
-                name: document.getElementById('editNameInput').value.trim(),
-                rut: document.getElementById('editRutInput').value.trim(),
-                phone: document.getElementById('editPhoneInput').value.trim()
-            };
-            localStorage.setItem('perfiles_cargos', JSON.stringify(profiles));
-            closeEditProfileModal();
-            alert("¡Perfil actualizado con éxito!");
-            openProfileModal();
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.reload();
-        }
-
-        function openMandoSeccion(seccion) {
-            if (seccion === 'carros') {
-                document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else if (seccion === 'cuartel') {
-                document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            }
-        }
-
-        // --- JERARQUÍA DEL BOTÓN "ATRÁS" ---
-        function backToMainPanel() {
-            const cargo = localStorage.getItem('active_cargo');
-            document.getElementById('tenienteSegundoView').classList.add('hidden');
-            document.getElementById('tenienteTerceroView').classList.add('hidden');
-            document.getElementById('carroInventoryView').classList.add('hidden');
-            document.getElementById('cuartelInventoryView').classList.add('hidden');
-            document.getElementById('rosterView').classList.add('hidden');
-            document.getElementById('fichasView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.add('hidden');
-
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            } else if (cargo === 'Tenientesegundo') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else if (cargo === 'Tenientetercero') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            } else if (cargo === 'Ayudante') {
-                document.getElementById('rosterView').classList.remove('hidden');
-            }
-        }
-
-        function openCarro(code) {
-            currentCarro = code;
-            document.getElementById('tenienteSegundoView').classList.add('hidden');
-            document.getElementById('carroInventoryView').classList.remove('hidden');
-            document.getElementById('carroTitle').textContent = `Inventario Material Menor - ${code}`;
-            renderInventory();
-        }
-        function backToCarros() {
-            const cargo = localStorage.getItem('active_cargo');
-            document.getElementById('carroInventoryView').classList.add('hidden');
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            }
-        }
-
-        function openCuartelSeccion(seccion) {
-            currentCuartelSeccion = seccion;
-            document.getElementById('tenienteTerceroView').classList.add('hidden');
-            document.getElementById('cuartelInventoryView').classList.remove('hidden');
-            document.getElementById('cuartelTitle').textContent = `Inventario - ${seccion}`;
-            renderCuartelInventory();
-        }
-        function backToCuartelMenu() {
-            const cargo = localStorage.getItem('active_cargo');
-            document.getElementById('cuartelInventoryView').classList.add('hidden');
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            } else {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            }
-        }
-
-        function openRosterView() { 
-            const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-            if(cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.add('hidden');
-            document.getElementById('rosterView').classList.remove('hidden'); 
-            renderRoster();
-        }
-        function openFichasView() { 
-            const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-            document.getElementById('fichasView').classList.remove('hidden'); 
-            renderFichas();
-        }
-        function openRemorsionView() { 
-            const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.add('hidden');
-            document.getElementById('remorsionView').classList.remove('hidden'); 
-            renderRemorsionesLog(); 
-        }
-
-        // Inventarios y Accesos
-        function renderInventory() {
-            const tbody = document.getElementById('inventoryTableBody');
-            if (!tbody || !currentCarro) return;
-            tbody.innerHTML = '';
-            let list = inventories[currentCarro] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin equipos registrados en esta unidad.</td></tr>`;
-                return;
-            }
-            list.forEach(i => {
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3 font-mono">${i.model}</td><td class="px-5 py-3">${i.category}</td><td class="px-5 py-3 text-center font-mono">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
-            });
     <!-- Script de Funcionamiento Institucional -->
     <script>
-        const GOOGLE_SCRIPT_URL = ""; 
-
         const credentials = {
             "Directora": "Directorabalmaceda1",
             "Tesorero": "Tesorerobalmaceda2",
@@ -878,7 +723,7 @@
             }
         }
 
-        // ================= NAVEGACIÓN Y RUTAS =================
+        // ================= NAVEGACIÓN =================
         function hideAllViews() {
             const views = [
                 'accessView', 'tenienteSegundoView', 'tenienteTerceroView', 
@@ -909,6 +754,12 @@
             if (btnAtrasCuartel) {
                 if (cargo === 'Capitan' || cargo === 'Tenienteprimero') btnAtrasCuartel.classList.remove('hidden');
                 else btnAtrasCuartel.classList.add('hidden');
+            }
+            
+            const btnAtrasTte2 = document.getElementById('btnAtrasTteSegundo');
+            if (btnAtrasTte2) {
+                if (cargo === 'Capitan' || cargo === 'Tenienteprimero') btnAtrasTte2.classList.remove('hidden');
+                else btnAtrasTte2.classList.add('hidden');
             }
 
             const btnList = document.getElementById('listBtnContainer');
@@ -992,7 +843,6 @@
             alert("Perfil actualizado.");
             openProfileModal();
         }
-
         // ================= INVENTARIO DE CARROS (TTE 2°) =================
         function openCarro(code) {
             currentCarro = code;
@@ -1004,8 +854,7 @@
         function backToCarros() {
             const cargo = localStorage.getItem('active_cargo');
             hideAllViews();
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            else document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            document.getElementById('tenienteSegundoView').classList.remove('hidden');
         }
         function renderInventory() {
             const tbody = document.getElementById('inventoryTableBody');
@@ -1067,392 +916,7 @@
         function backToCuartelMenu() {
             const cargo = localStorage.getItem('active_cargo');
             hideAllViews();
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            else document.getElementById('tenienteTerceroView').classList.remove('hidden');
-        }
-        function renderCuartelInventory() {
-            const tbody = document.getElementById('cuartelInventoryTableBody');
-            if (!tbody || !currentCuartelSeccion) return;
-            tbody.innerHTML = '';
-            let list = cuartelInventarios[currentCuartelSeccion] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin artículos registrados.</td></tr>`;
-                return;
-            }
-            list.forEach(i => {
-                let badge = "bg-emerald-100 text-emerald-800";
-                if(i.status === 'Por reponer') badge = "bg-amber-100 text-amber-800";
-                if(i.status === 'Agotado') badge = "bg-rose-100 text-rose-800";
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3">${i.ubicacion}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteCuartelItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
-            });
-        }
-        function openCuartelItemModal() {
-            document.getElementById('cuartelItemId').value = '';
-            document.getElementById('cuartelItemForm').reset(); 
-            document.getElementById('cuartelItemModal').classList.remove('hidden'); 
-        }
-        function closeCuartelItemModal() { document.getElementById('cuartelItemModal').classList.add('hidden'); }
-        function saveCuartelItem(e) {
-            e.preventDefault();
-            if (!currentCuartelSeccion) return;
-            const name = document.getElementById('cuartelItemName').value.trim();
-            const ubicacion = document.getElementById('cuartelItemUbicacion').value.trim();
-            const quantity = parseInt(document.getElementById('cuartelItemQuantity').value) || 1;
-            const status = document.getElementById('cuartelItemStatus').value;
-            if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = [];
-            cuartelInventarios[currentCuartelSeccion].push({ id: Date.now(), name, ubicacion, quantity, status });
-            localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-            closeCuartelItemModal(); 
-            renderCuartelInventory();
-        }
-        function deleteCuartelItem(id) {
-            if (confirm("¿Desea eliminar este artículo?")) {
-                cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id);
-                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
-                renderCuartelInventory();
-            }
-        }
-
-        // ================= ASISTENCIA Y FICHAS (AYUDANTÍA) =================
-        function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
-        function openFichasView() { hideAllViews(); document.getElementById('fichasView').classList.remove('hidden'); renderFichas(); }
-
-        function renderRoster() {
-            const tbody = document.getElementById('rosterTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            roster.forEach(m => {
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${m.role} <span class="text-[10px] text-slate-400">(${m.category})</span></td><td class="px-5 py-3">${m.name}</td><td class="px-5 py-3 text-center text-indigo-700 font-bold">${m.garitaHours || 0} hrs</td><td class="px-5 py-3 text-center font-bold text-emerald-700">${m.status}</td><td class="px-5 py-3 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
-            });
-        }
-        function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberId').value = ''; document.getElementById('memberModal').classList.remove('hidden'); }
-        function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
-        function saveMember(e) {
-            e.preventDefault();
-            roster.push({ id: Date.now(), category: document.getElementById('memberCategory').value, role: document.getElementById('memberRole').value, name: document.getElementById('memberName').value, reason: document.getElementById('memberReason').value, status: 'A', count3m: 0, count1y: 0, garitaHours: 0 });
-            localStorage.setItem('roster_compania', JSON.stringify(roster));
-            closeMemberModal(); renderRoster();
-        }
-        function deleteMember(id) { roster = roster.filter(m => m.id !== id); localStorage.setItem('roster_compania', JSON.stringify(roster)); renderRoster(); }
-
-        function renderFichas() {
-            const tbody = document.getElementById('fichasTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            roster.forEach(m => {
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${m.name}</td><td class="px-5 py-3">${m.role}</td><td class="px-5 py-3 text-center text-blue-700 font-bold">${m.count3m || 0}</td><td class="px-5 py-3 text-center text-emerald-700 font-bold">${m.count1y || 0}</td><td class="px-5 py-3 text-right"><button onclick="openFichaEditModal(${m.id})" class="text-blue-600 hover:text-blue-800 font-semibold">Editar</button></td></tr>`;
-            });
-        }
-        function openFichaEditModal(id) {
-            const m = roster.find(x => x.id === id);
-            document.getElementById('fichaEditId').value = m.id; document.getElementById('fichaEditName').value = m.name; document.getElementById('fichaEditRole').value = m.role; document.getElementById('fichaEdit3m').value = m.count3m; document.getElementById('fichaEdit1y').value = m.count1y;
-            document.getElementById('fichaEditModal').classList.remove('hidden');
-        }
-        function closeFichaEditModal() { document.getElementById('fichaEditModal').classList.add('hidden'); }
-        function saveFichaEdit(e) {
-            e.preventDefault();
-            const id = document.getElementById('fichaEditId').value;
-            const member = roster.find(m => m.id == id);
-            if (member) { 
-                member.name = document.getElementById('fichaEditName').value; 
-                member.role = document.getElementById('fichaEditRole').value; 
-                member.count3m = parseInt(document.getElementById('fichaEdit3m').value); 
-                member.count1y = parseInt(document.getElementById('fichaEdit1y').value); 
-                localStorage.setItem('roster_compania', JSON.stringify(roster)); 
-                closeFichaEditModal(); 
-                renderFichas(); 
-            }
-        }
-
-        // ================= SISTEMA DE GARITA Y BLOQUEOS =================
-        function saveAndRenderVisitors() {
-            const tbody = document.getElementById('visitorsTableBody');
-            if (!tbody) return;
-            localStorage.setItem('visitantes', JSON.stringify(visitors));
-            tbody.innerHTML = '';
-            if (visitors.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin visitas activas.</td></tr>`;
-                return;
-            }
-            const sorted = [...visitors].sort((a, b) => b.id - a.id);
-            sorted.forEach(v => {
-                const statusHtml = v.status === 'active' ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">En recinto</span>` : `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">Salió</span>`;
-                const actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-600 font-bold bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded">Marcar Salida</button>` : `<span class="text-slate-400 italic text-[10px]">Listo</span>`;
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${v.fullName}</td><td class="px-5 py-3 font-mono text-slate-500">${v.documentId}</td><td class="px-5 py-3">${v.antiguedad}</td><td class="px-5 py-3">Entrada: ${v.entryTime}</td><td class="px-5 py-3 text-center">${statusHtml}</td><td class="px-5 py-3 text-right">${actionHtml}</td></tr>`;
-            });
-        }
-
-    <!-- Script de Funcionamiento Institucional -->
-    <script>
-        const GOOGLE_SCRIPT_URL = ""; 
-
-        const credentials = {
-            "Directora": "Directorabalmaceda1",
-            "Tesorero": "Tesorerobalmaceda2",
-            "Secretaria": "Secretariabalmaceda3",
-            "Capitan": "CapitánBalmaceda1",
-            "Ayudante": "Ayudantebalmaceda2",
-            "Tenienteprimero": "Tenienteprimerobalmaceda",
-            "Tenientesegundo": "Tenientesegundobalmaceda",
-            "Tenientetercero": "Tenientetercerobalmaceda"
-        };
-
-        const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
-
-        let profiles = JSON.parse(localStorage.getItem('perfiles_cargos')) || {
-            "Tenientetercero": { name: "Andrea Candia", rut: "12.345.678-9", phone: "977777777" },
-            "Tenientesegundo": { name: "Bastian Cuevas", rut: "20.646.685-5", phone: "983065441" },
-            "Capitan": { name: "Edison Soto", rut: "12.345.678-9", phone: "944444444" },
-            "Tenienteprimero": { name: "Alejandro Maldonado", rut: "12.345.678-9", phone: "966666666" },
-            "Ayudante": { name: "Ayudante Oficial", rut: "12.345.678-9", phone: "955555555" }
-        };
-
-        let roster = JSON.parse(localStorage.getItem('roster_compania')) || [];
-        let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
-        let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
-        
-        let currentCarro = localStorage.getItem('active_carro') || null;
-        let currentCuartelSeccion = localStorage.getItem('active_cuartel_seccion') || null;
-
-        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
-            "RH2": [], "B2": [], "BX2": [], "Bodega": []
-        };
-        let cuartelInventarios = JSON.parse(localStorage.getItem('cuartel_inventarios')) || {
-            "Inmuebles": [], "Aseo": []
-        };
-
-        // ================= INICIALIZACIÓN =================
-        window.addEventListener('DOMContentLoaded', () => {
-            const activeCargo = localStorage.getItem('active_cargo');
-            if (activeCargo) {
-                activateSession(activeCargo, false);
-            }
-            sincronizarConListaAyudante();
-            saveAndRenderVisitors();
-            verificarBloqueoSalida();
-        });
-
-        setInterval(() => {
-            const clock = document.getElementById('currentTime');
-            if (clock) clock.textContent = new Date().toLocaleTimeString('es-CL');
-            verificarBloqueoSalida();
-        }, 1000);
-
-        // ================= AUTENTICACIÓN =================
-        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-        function logout() { localStorage.clear(); window.location.reload(); }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const cargo = document.getElementById('loginCargo').value;
-            const pass = document.getElementById('loginPassword').value;
-            if (credentials[cargo] && credentials[cargo] === pass) {
-                localStorage.setItem('active_cargo', cargo);
-                closeLoginModal();
-                activateSession(cargo, true);
-            } else {
-                const errorDiv = document.getElementById('loginError');
-                if (errorDiv) {
-                    errorDiv.textContent = "Contraseña incorrecta para el cargo seleccionado.";
-                    errorDiv.classList.remove('hidden');
-                } else {
-                    alert("Contraseña incorrecta.");
-                }
-            }
-        }
-
-        // ================= NAVEGACIÓN Y RUTAS =================
-        function hideAllViews() {
-            const views = [
-                'accessView', 'tenienteSegundoView', 'tenienteTerceroView', 
-                'capitanTenientePrimeroView', 'carroInventoryView', 
-                'cuartelInventoryView', 'rosterView', 'fichasView', 'remorsionView'
-            ];
-            views.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-        }
-
-        function activateSession(cargo, showAlert = false) {
-            document.getElementById('activeUserBadge').textContent = cargo;
-            document.getElementById('loginBtnContainer').classList.add('hidden');
-            document.getElementById('profileBtnContainer').classList.remove('hidden');
-
-            hideAllViews(); 
-
-            // Visibilidad de botones del Navbar
-            const btnRemorsion = document.getElementById('remorsionBtnContainer');
-            if(btnRemorsion) {
-                if (cargo === 'Capitan') btnRemorsion.classList.remove('hidden');
-                else btnRemorsion.classList.add('hidden');
-            }
-
-            const btnAtrasCuartel = document.getElementById('btnAtrasCuartelMenu');
-            if (btnAtrasCuartel) {
-                if (cargo === 'Capitan' || cargo === 'Tenienteprimero') btnAtrasCuartel.classList.remove('hidden');
-                else btnAtrasCuartel.classList.add('hidden');
-            }
-
-            const btnList = document.getElementById('listBtnContainer');
-            const btnFicha = document.getElementById('fichaBtnContainer');
-            if (cargo === 'Ayudante') {
-                if(btnList) btnList.classList.remove('hidden');
-                if(btnFicha) btnFicha.classList.remove('hidden');
-            } else {
-                if(btnList) btnList.classList.add('hidden');
-                if(btnFicha) btnFicha.classList.add('hidden');
-            }
-
-            // Redirección Principal
-            if (cargo === 'Ayudante') {
-                document.getElementById('rosterView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Ayudantía";
-                renderRoster();
-            } else if (cargo === 'Tenientesegundo') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Teniente Segundo";
-            } else if (cargo === 'Tenientetercero') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = "Panel Teniente Tercero";
-            } else if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-                document.getElementById('navTitle').textContent = `Panel Mando (${cargo})`;
-            }
-
-            if (showAlert) alert(`Sesión iniciada con éxito como: ${cargo}`);
-        }
-
-        // ================= BOTONES DE ATRÁS =================
-        function backToMainPanel() {
-            const cargo = localStorage.getItem('active_cargo');
-            hideAllViews();
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            } else if (cargo === 'Tenientesegundo') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else if (cargo === 'Tenientetercero') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            } else if (cargo === 'Ayudante') {
-                document.getElementById('rosterView').classList.remove('hidden');
-            }
-        }
-
-        function openMandoSeccion(seccion) {
-            hideAllViews();
-            if (seccion === 'carros') {
-                document.getElementById('tenienteSegundoView').classList.remove('hidden');
-            } else if (seccion === 'cuartel') {
-                document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            }
-        }
-
-        // ================= PERFIL =================
-        function openProfileModal() {
-            const cargo = localStorage.getItem('active_cargo');
-            if (!cargo) return;
-            const data = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
-            document.getElementById('profileCargoBadge').textContent = cargo;
-            document.getElementById('profileDisplayName').textContent = data.name;
-            document.getElementById('profileNameVal').textContent = data.name;
-            document.getElementById('profileRutVal').textContent = data.rut;
-            document.getElementById('profilePhoneVal').textContent = data.phone;
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function openEditProfileModal() { closeProfileModal(); document.getElementById('editProfileModal').classList.remove('hidden'); }
-        function closeEditProfileModal() { document.getElementById('editProfileModal').classList.add('hidden'); }
-        function saveProfileData(e) {
-            e.preventDefault();
-            const cargo = localStorage.getItem('active_cargo');
-            profiles[cargo] = {
-                name: document.getElementById('editNameInput').value.trim(),
-                rut: document.getElementById('editRutInput').value.trim(),
-                phone: document.getElementById('editPhoneInput').value.trim()
-            };
-            localStorage.setItem('perfiles_cargos', JSON.stringify(profiles));
-            closeEditProfileModal();
-            alert("Perfil actualizado.");
-            openProfileModal();
-        }
-
-        // ================= INVENTARIO DE CARROS (TTE 2°) =================
-        function openCarro(code) {
-            currentCarro = code;
-            hideAllViews();
-            document.getElementById('carroInventoryView').classList.remove('hidden');
-            document.getElementById('carroTitle').textContent = `Inventario - ${code}`;
-            renderInventory();
-        }
-        function backToCarros() {
-            const cargo = localStorage.getItem('active_cargo');
-            hideAllViews();
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            else document.getElementById('tenienteSegundoView').classList.remove('hidden');
-        }
-        function renderInventory() {
-            const tbody = document.getElementById('inventoryTableBody');
-            if (!tbody || !currentCarro) return;
-            tbody.innerHTML = '';
-            let list = inventories[currentCarro] || [];
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin equipos registrados en esta unidad.</td></tr>`;
-                return;
-            }
-            list.forEach(i => {
-                let badge = "bg-emerald-100 text-emerald-800";
-                if(i.status === 'Revisión') badge = "bg-amber-100 text-amber-800";
-                if(i.status === 'Dañado') badge = "bg-rose-100 text-rose-800";
-                let gavetaText = i.gaveta ? `(${i.gaveta})` : '';
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3 font-mono text-slate-500">${i.model}</td><td class="px-5 py-3">${i.category} ${gavetaText}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
-            });
-        }
-        function openItemModal() {
-            document.getElementById('itemId').value = '';
-            document.getElementById('itemForm').reset();
-            const gavetaField = document.getElementById('modalGavetaField');
-            if (gavetaField) currentCarro === 'B2' ? gavetaField.classList.remove('hidden') : gavetaField.classList.add('hidden');
-            document.getElementById('itemModal').classList.remove('hidden');
-        }
-        function closeItemModal() { document.getElementById('itemModal').classList.add('hidden'); }
-        function saveInventoryItem(e) {
-            e.preventDefault();
-            if (!currentCarro) return;
-            const name = document.getElementById('itemName').value.trim();
-            const model = document.getElementById('itemModel').value.trim();
-            const category = document.getElementById('itemCategory').value.trim();
-            const quantity = parseInt(document.getElementById('itemQuantity').value) || 1;
-            const status = document.getElementById('itemStatus').value;
-            const gaveta = currentCarro === 'B2' ? document.getElementById('itemGaveta').value : null;
-
-            if (!inventories[currentCarro]) inventories[currentCarro] = [];
-            inventories[currentCarro].push({ id: Date.now(), name, model, category, quantity, status, gaveta });
-            localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
-            closeItemModal();
-            renderInventory();
-        }
-        function deleteItem(id) {
-            if (confirm("¿Desea eliminar este equipo?")) {
-                inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id);
-                localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
-                renderInventory();
-            }
-        }
-
-        // ================= INVENTARIO DE CUARTEL Y ASEO (TTE 3°) =================
-        function openCuartelSeccion(seccion) {
-            currentCuartelSeccion = seccion;
-            hideAllViews();
-            document.getElementById('cuartelInventoryView').classList.remove('hidden');
-            document.getElementById('cuartelTitle').textContent = `Inventario - ${seccion}`;
-            renderCuartelInventory();
-        }
-        function backToCuartelMenu() {
-            const cargo = localStorage.getItem('active_cargo');
-            hideAllViews();
-            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
-            else document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            document.getElementById('tenienteTerceroView').classList.remove('hidden');
         }
         function renderCuartelInventory() {
             const tbody = document.getElementById('cuartelInventoryTableBody');
@@ -1644,7 +1108,7 @@
         function closeRemoverRestriccionModal() { document.getElementById('removerRestriccionModal').classList.add('hidden'); }
         function ejecutarRemorsionRestriccion(e) {
             e.preventDefault();
-            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: localStorage.getItem('temp_author') || "Oficial", voluntario: document.getElementById('voluntarioRestriccionNombre').value, motivo: document.getElementById('motivoRemorsion').value });
+            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleTimeString('es-CL'), oficial: localStorage.getItem('temp_author') || "Oficial", voluntario: document.getElementById('voluntarioRestriccionNombre').value, motivo: document.getElementById('motivoRemorsion').value });
             localStorage.setItem('remorsiones_log', JSON.stringify(remorsionesLog));
             localStorage.removeItem('last_departure_timestamp');
             closeRemoverRestriccionModal(); verificarBloqueoSalida();
