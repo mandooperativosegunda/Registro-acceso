@@ -18,7 +18,7 @@
 </head>
 <body class="min-h-screen text-slate-800">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR LIMITADO (Solo Perfil, Calendario, Auditoría, CSV) -->
     <nav class="bg-indigo-900 border-b border-indigo-950 text-white sticky top-0 z-40 px-4 py-3 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
@@ -31,10 +31,9 @@
             <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0">
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar</span></button>
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-user-gear text-sm"></i><span class="hidden sm:inline">Perfil</span></button>
-                <button id="listBtnContainer" onclick="openRosterView()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-list-checks text-sm"></i><span class="hidden sm:inline">Asistencia</span></button>
-                <button id="fichaBtnContainer" onclick="openFichasView()" class="hidden flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-identification-card text-sm"></i><span class="hidden sm:inline">Fichas</span></button>
                 
-                <!-- Botones Calendario, Auditoría y CSV se mantienen -->
+                <!-- Los accesos directos ocultos intencionalmente del Navbar según indicación -->
+                
                 <button id="calendarBtnContainer" onclick="openCalendarView()" class="hidden flex items-center gap-1.5 bg-fuchsia-700 hover:bg-fuchsia-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-calendar-blank text-sm"></i><span class="hidden sm:inline">Calendario</span></button>
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock-open text-sm"></i><span class="hidden sm:inline">Auditoría</span></button>
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-download-simple text-sm"></i><span class="hidden sm:inline">CSV</span></button>
@@ -172,26 +171,48 @@
         </section>
     </main>
 
-    <!-- PANEL MANDO SUPERIOR (CAPITÁN / TTE 1) -->
+    <!-- PANEL MANDO SUPERIOR CENTRALIZADO (Capitán) -->
     <div id="capitanTenientePrimeroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel de Mando</span><h2 class="text-xl font-bold mt-1">Supervisión Institucional Unificada</h2></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal</h3><p class="text-[11px] text-slate-500 mt-0.5">Control EPP de voluntarios</p><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP &rarr;</span></div>
-            <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 hover:border-teal-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega EPP</h3><p class="text-[11px] text-slate-500 mt-0.5">Inventario central uniformes</p><span class="mt-3 text-[11px] font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded">Ver Bodega &rarr;</span></div>
-            <div onclick="openMandoSeccion('carros')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Material Menor</h3><p class="text-[11px] text-slate-500 mt-0.5">Supervisar carros y bodega</p><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Carros &rarr;</span></div>
-            <div onclick="openMandoSeccion('cuartel')" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Cuartel y Aseo</h3><p class="text-[11px] text-slate-500 mt-0.5">Ornato e inmuebles</p><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Cuartel &rarr;</span></div>
+        <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel de Mando</span><h2 class="text-xl font-bold mt-1">Supervisión Institucional Unificada</h2><p class="text-slate-500 text-[11px]">Acceso a todos los controles operativos y de inventario.</p></div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+            <!-- Bloque Personal y Asistencia -->
             <div onclick="openRosterView()" class="bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Lista y Asistencia</h3><p class="text-[11px] text-slate-500 mt-0.5">Control horas de guardia</p><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Lista &rarr;</span></div>
             <div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-5 hover:border-cyan-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Tiempo en Vivo</h3><p class="text-[11px] text-slate-500 mt-0.5">Timer abonos (4 hrs)</p><span class="mt-3 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-3 py-1 rounded">Ver Timer &rarr;</span></div>
             <div onclick="openFichasView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Fichas Voluntarios</h3><p class="text-[11px] text-slate-500 mt-0.5">Historial trimestral y anual</p><span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Fichas &rarr;</span></div>
         </div>
-    </div>
-    
-    <!-- PANEL TENIENTE SEGUNDO -->
-    <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-1">Supervisión de Material Menor y EPP</h2></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+            <!-- Bloque EPP -->
             <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal</h3><p class="text-[11px] text-slate-500 mt-0.5">Control EPP de voluntarios</p><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP &rarr;</span></div>
             <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 hover:border-teal-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega EPP</h3><p class="text-[11px] text-slate-500 mt-0.5">Inventario central uniformes</p><span class="mt-3 text-[11px] font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded">Ver Bodega &rarr;</span></div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Inventarios Material Menor (Carros)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openCarro('B2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">B-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+            <div onclick="openCarro('BX2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">BX-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+            <div onclick="openCarro('RH2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">RH-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+            <div onclick="openCarro('Bodega')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega Material Menor</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Inventarios Cuartel</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+            <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Elementos de Aseo</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
+        </div>
+    </div>
+
+    <!-- PANEL TENIENTE SEGUNDO (Especifico EPP y Material Menor) -->
+    <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-1">Gestión EPP y Material Menor</h2></div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal</h3><p class="text-[11px] text-slate-500 mt-0.5">Control EPP de voluntarios</p><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP &rarr;</span></div>
+            <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 hover:border-teal-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega EPP</h3><p class="text-[11px] text-slate-500 mt-0.5">Inventario central uniformes</p><span class="mt-3 text-[11px] font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded">Ver Bodega &rarr;</span></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div onclick="openCarro('B2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">B-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Inventario &rarr;</span></div>
             <div onclick="openCarro('BX2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">BX-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Inventario &rarr;</span></div>
             <div onclick="openCarro('RH2')" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">RH-2</h3><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Inventario &rarr;</span></div>
@@ -203,13 +224,14 @@
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Tercero</span><h2 class="text-xl font-bold mt-1">Gestión de Aseo, Ornato e Inmuebles</h2></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Inventario &rarr;</span></div>
-            <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Elementos de Aseo</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Elementos &rarr;</span></div>
+            <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-6 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3><p class="text-[11px] text-slate-500 mt-0.5">Muebles y equipamiento del salón y oficinas</p><span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded">Ver Inventario &rarr;</span></div>
+            <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-6 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Elementos de Aseo</h3><p class="text-[11px] text-slate-500 mt-0.5">Stock de detergentes, cloro y suministros</p><span class="mt-4 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded">Ver Elementos &rarr;</span></div>
         </div>
     </div>
 
-    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToCarros()" class="bg-slate-100 px-3 py-1.5 rounded font-bold">Atrás</button><h2 id="carroTitle" class="font-bold uppercase text-indigo-900">Inventario</h2><button onclick="openItemModal()" class="bg-indigo-700 text-white px-3 py-1.5 rounded font-bold">Agregar Material</button></div><div class="bg-white border rounded-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 text-[10px] uppercase text-slate-500"><th class="px-5 py-3">Nombre</th><th class="px-5 py-3">Modelo</th><th class="px-5 py-3">Categoría</th><th class="px-5 py-3 text-center">Cantidad</th><th class="px-5 py-3 text-center">Estado</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="inventoryTableBody" class="divide-y"></tbody></table></div></div>
-    <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToCuartelMenu()" class="bg-slate-100 px-3 py-1.5 rounded font-bold">Atrás</button><h2 id="cuartelTitle" class="font-bold uppercase text-emerald-900">Inventario Cuartel</h2><button onclick="openCuartelItemModal()" class="bg-emerald-700 text-white px-3 py-1.5 rounded font-bold">Agregar Artículo</button></div><div class="bg-white border rounded-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 text-[10px] uppercase text-slate-500"><th class="px-5 py-3">Artículo</th><th class="px-5 py-3">Ubicación</th><th class="px-5 py-3 text-center">Stock</th><th class="px-5 py-3 text-center">Estado</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="cuartelInventoryTableBody" class="divide-y"></tbody></table></div></div>
+    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToCarros()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 id="carroTitle" class="font-bold uppercase text-indigo-900">Inventario</h2><button onclick="openItemModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Material</button></div><div class="bg-white border rounded-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 text-[10px] uppercase text-slate-500"><th class="px-5 py-3">Nombre</th><th class="px-5 py-3">Modelo</th><th class="px-5 py-3">Categoría</th><th class="px-5 py-3 text-center">Cantidad</th><th class="px-5 py-3 text-center">Estado</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="inventoryTableBody" class="divide-y"></tbody></table></div></div>
+    
+    <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 id="cuartelTitle" class="font-bold uppercase text-emerald-900">Inventario Cuartel</h2><button onclick="openCuartelItemModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Artículo</button></div><div class="bg-white border rounded-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 text-[10px] uppercase text-slate-500"><th class="px-5 py-3">Artículo</th><th class="px-5 py-3">Ubicación</th><th class="px-5 py-3 text-center">Stock</th><th class="px-5 py-3 text-center">Estado</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="cuartelInventoryTableBody" class="divide-y"></tbody></table></div></div>
 
     <!-- VISTA BODEGA DE EPP -->
     <div id="bodegaEppView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
@@ -231,18 +253,19 @@
 
     <!-- VISTA FICHAS -->
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="px-3 py-1.5 rounded bg-slate-100 font-semibold">Atrás</button><h2 class="font-bold uppercase">Fichas de Historial</h2><div></div></div>
+        <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase">Fichas de Historial</h2><div></div></div>
         <div class="bg-white rounded-xl shadow-xs border overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 border-b text-[10px] uppercase text-slate-600"><th class="px-5 py-3">Nombre</th><th class="px-5 py-3">Cargo</th><th class="px-5 py-3 text-center">3 Meses</th><th class="px-5 py-3 text-center">Anual</th><th class="px-5 py-3 text-right">Modificar</th></thead><tbody id="fichasTableBody" class="divide-y"></tbody></table></div>
     </div>
 
     <!-- VISTA TIEMPO EN VIVO -->
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="px-3 py-1.5 rounded bg-slate-100 font-semibold">Atrás</button><h2 class="font-bold uppercase">Control de Tiempo y Abonos</h2><div></div></div>
+        <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase">Control de Tiempo y Abonos</h2><div></div></div>
         <div class="bg-white rounded-xl shadow-xs border overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 border-b text-[10px] uppercase text-slate-600"><th class="px-5 py-3">Voluntario</th><th class="px-5 py-3 text-center">Tiempo Transcurrido</th><th class="px-5 py-3 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y"></tbody></table></div>
     </div>
 
-    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs p-4 flex justify-between"><button onclick="backToMainPanel()" class="bg-slate-100 px-3 py-1 rounded">Atrás</button><h2 class="font-bold">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="bg-fuchsia-700 text-white px-3 py-1 rounded">Agendar</button></div><div class="grid grid-cols-3 gap-6"><div class="col-span-2 bg-white p-5 rounded-xl border"><div class="flex justify-between mb-4"><button onclick="changeMonth(-1)">Ant</button><h3 id="currentMonthYear" class="font-bold"></h3><button onclick="changeMonth(1)">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="bg-slate-50 p-5 rounded-xl border"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b pb-2">Seleccione día</h3><div id="dayEventsList"></div></div></div></div>
-    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between"><button onclick="backToMainPanel()" class="bg-slate-100 px-3 py-1 rounded">Atrás</button><h2 class="font-bold">Auditoría</h2></div><table class="w-full text-left bg-white"><tbody id="remorsionTableBody"></tbody></table></div>
+    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="bg-fuchsia-700 text-white px-3 py-1 rounded">Agendar</button></div><div class="grid grid-cols-3 gap-6"><div class="col-span-2 bg-white p-5 rounded-xl border"><div class="flex justify-between mb-4"><button onclick="changeMonth(-1)">Ant</button><h3 id="currentMonthYear" class="font-bold"></h3><button onclick="changeMonth(1)">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="bg-slate-50 p-5 rounded-xl border"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b pb-2">Seleccione día</h3><div id="dayEventsList"></div></div></div></div>
+    
+    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Auditoría</h2><div></div></div><table class="w-full text-left bg-white border rounded-xl overflow-hidden"><thead class="bg-slate-100/70 border-b text-[10px] uppercase font-bold text-slate-600"><th class="px-5 py-3">Fecha y Hora</th><th class="px-5 py-3">Oficial Responsable</th><th class="px-5 py-3">Voluntario Liberado</th><th class="px-5 py-3">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y"></tbody></table></div>
 
     <!-- ==================== SCRIPT JAVASCRIPT PRINCIPAL ==================== -->
     <script>
@@ -299,10 +322,6 @@
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews(); 
-            
-            // Ocultamos EPP, Bodega y Tiempo en Vivo del Navbar Superior
-            // if (eppRoles.includes(cargo)) { document.getElementById('eppBtnContainer').classList.remove('hidden'); document.getElementById('bodegaEppBtnContainer').classList.remove('hidden'); }
-            // if (liveHoursRoles.includes(cargo)) document.getElementById('liveHoursBtnContainer').classList.remove('hidden');
             
             if (cargo === 'Capitan') document.getElementById('remorsionBtnContainer').classList.remove('hidden');
             if (calendarioRoles.includes(cargo)) document.getElementById('calendarBtnContainer').classList.remove('hidden');
@@ -384,7 +403,7 @@
             bodegaEpp.forEach(item => { if(item.stock > 0) select.innerHTML += `<option value="${item.id}">${item.name} ${item.size ? '(Talla: '+item.size+')' : ''} - [Stock: ${item.stock}]</option>`; });
             const tbody = document.getElementById('eppFichaTableBody'); tbody.innerHTML = '';
             if(!m.epp || m.epp.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-3 py-4 text-center text-slate-400">Este voluntario no tiene EPP asignado.</td></tr>`; } 
-            else { m.epp.forEach(item => { tbody.innerHTML += `<tr class="border-b"><td class="px-3 py-2 font-medium">${item.name}</td><td class="px-3 py-2">${item.size || '--'}</td><td class="px-3 py-2 text-center text-slate-500">${item.date}</td><td class="px-3 py-2 text-right"><button onclick="devolverEpp(${m.id}, ${item.id})" class="text-rose-600 hover:text-rose-800 font-bold bg-rose-50 px-2 py-1 rounded">Devolver</button></td></tr>`; }); }
+            else { m.epp.forEach(item => { tbody.innerHTML += `<tr class="border-b"><td class="px-3 py-2 font-medium">${item.name}</td><td class="px-3 py-2">${item.size || '--'}</td><td class="px-3 py-2 text-center text-slate-500">${item.date}</td><td class="px-3 py-2 text-right"><button onclick="devolverEpp(${m.id}, ${item.id})" class="text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded">Devolver</button></td></tr>`; }); }
             document.getElementById('fichaEppVoluntarioModal').classList.remove('hidden');
         }
         function closeFichaEppVoluntarioModal() { document.getElementById('fichaEppVoluntarioModal').classList.add('hidden'); }
@@ -460,7 +479,7 @@
         if(visitorForm) {
             visitorForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Ahora inicia automáticamente el tiempo al registrarse
+                // AHORA INICIA EL TIEMPO AUTOMÁTICAMENTE Y SE MUESTRA EN "TIEMPO EN VIVO" INMEDIATAMENTE
                 visitors.push({ id: Date.now(), fullName: document.getElementById('fullName').value.trim(), documentId: document.getElementById('documentId').value.trim(), reason: "", entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
                 db.ref('visitantes').set(visitors); visitorForm.reset(); alert("Ingreso registrado. El tiempo ya está corriendo.");
             });
@@ -513,7 +532,8 @@
         function openLiveHoursView() { hideAllViews(); document.getElementById('liveHoursView').classList.remove('hidden'); renderLiveHours(); }
         function renderLiveHours() {
             const tbody = document.getElementById('liveHoursTableBody'); if (!tbody) return;
-            // Ahora filtra a todos los activos sin importar si tienen motivo asignado
+            
+            // FILTRO ACTUALIZADO: Muestra a todos los activos en el cuartel, tengan o no motivo asignado.
             const activas = visitors.filter(v => v.status === 'active'); 
             if (activas.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Sin cronómetros activos.</td></tr>`; return; }
             let html = ''; const now = Date.now(); const LIMIT_MS = 4 * 60 * 60 * 1000; 
@@ -532,7 +552,7 @@
                 if (v.status === 'active' && !v.abGranted && (now - v.startTimestamp >= LIMIT_MS)) {
                     v.abGranted = true; updated = true;
                     let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
-                    if (miembro && miembro.status !== 'AB') { miembro.status = 'AB'; miembro.count3m = (miembro.count3m || 0) + 1; miembro.count1y = (miembro.count1y || 0) + 1; }
+                    if (miembro && miembro.status !== 'AB') { miembro.status = 'AB'; }
                 }
             });
             if (updated) { db.ref('visitantes').set(visitors); db.ref('roster').set(roster); }
@@ -540,7 +560,13 @@
 
         // ================= INVENTARIOS DE CARROS Y CUARTEL =================
         function openCarro(code) { currentCarro = code; hideAllViews(); document.getElementById('carroInventoryView').classList.remove('hidden'); document.getElementById('carroTitle').textContent = `Inventario - ${code}`; renderInventory(); }
-        function backToCarros() { hideAllViews(); document.getElementById('tenienteSegundoView').classList.remove('hidden'); }
+        function backToCarros() { 
+            hideAllViews(); 
+            // Vuelve al panel que corresponde según el cargo
+            const cargo = localStorage.getItem('active_cargo');
+            if(cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden'); 
+        }
         function renderInventory() {
             const tbody = document.getElementById('inventoryTableBody'); if (!tbody) return; tbody.innerHTML = '';
             let list = inventories[currentCarro] || [];
@@ -561,7 +587,12 @@
         function deleteItem(id) { if (confirm("¿Eliminar equipo?")) { inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id); db.ref('inventarios').set(inventories); } }
 
         function openCuartelSeccion(s) { currentCuartelSeccion = s; hideAllViews(); document.getElementById('cuartelInventoryView').classList.remove('hidden'); document.getElementById('cuartelTitle').textContent = `Inventario - ${s}`; renderCuartelInventory(); }
-        function backToCuartelMenu() { hideAllViews(); document.getElementById('tenienteTerceroView').classList.remove('hidden'); }
+        function backToCuartelMenu() { 
+            hideAllViews();
+            const cargo = localStorage.getItem('active_cargo');
+            if(cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+        }
         function renderCuartelInventory() {
             const tbody = document.getElementById('cuartelInventoryTableBody'); if (!tbody) return; tbody.innerHTML = '';
             let list = cuartelInventarios[currentCuartelSeccion] || [];
