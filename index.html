@@ -1182,6 +1182,390 @@
             });
         }
 
+    <!-- Script de Funcionamiento Institucional -->
+    <script>
+        const GOOGLE_SCRIPT_URL = ""; 
+
+        const credentials = {
+            "Directora": "Directorabalmaceda1",
+            "Tesorero": "Tesorerobalmaceda2",
+            "Secretaria": "Secretariabalmaceda3",
+            "Capitan": "CapitánBalmaceda1",
+            "Ayudante": "Ayudantebalmaceda2",
+            "Tenienteprimero": "Tenienteprimerobalmaceda",
+            "Tenientesegundo": "Tenientesegundobalmaceda",
+            "Tenientetercero": "Tenientetercerobalmaceda"
+        };
+
+        const operativosRoles = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
+
+        let profiles = JSON.parse(localStorage.getItem('perfiles_cargos')) || {
+            "Tenientetercero": { name: "Andrea Candia", rut: "12.345.678-9", phone: "977777777" },
+            "Tenientesegundo": { name: "Bastian Cuevas", rut: "20.646.685-5", phone: "983065441" },
+            "Capitan": { name: "Edison Soto", rut: "12.345.678-9", phone: "944444444" },
+            "Tenienteprimero": { name: "Alejandro Maldonado", rut: "12.345.678-9", phone: "966666666" },
+            "Ayudante": { name: "Ayudante Oficial", rut: "12.345.678-9", phone: "955555555" }
+        };
+
+        let roster = JSON.parse(localStorage.getItem('roster_compania')) || [];
+        let visitors = JSON.parse(localStorage.getItem('visitantes')) || [];
+        let remorsionesLog = JSON.parse(localStorage.getItem('remorsiones_log')) || [];
+        
+        let currentCarro = localStorage.getItem('active_carro') || null;
+        let currentCuartelSeccion = localStorage.getItem('active_cuartel_seccion') || null;
+
+        let inventories = JSON.parse(localStorage.getItem('inventarios_carros')) || {
+            "RH2": [], "B2": [], "BX2": [], "Bodega": []
+        };
+        let cuartelInventarios = JSON.parse(localStorage.getItem('cuartel_inventarios')) || {
+            "Inmuebles": [], "Aseo": []
+        };
+
+        // ================= INICIALIZACIÓN =================
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeCargo = localStorage.getItem('active_cargo');
+            if (activeCargo) {
+                activateSession(activeCargo, false);
+            }
+            sincronizarConListaAyudante();
+            saveAndRenderVisitors();
+            verificarBloqueoSalida();
+        });
+
+        setInterval(() => {
+            const clock = document.getElementById('currentTime');
+            if (clock) clock.textContent = new Date().toLocaleTimeString('es-CL');
+            verificarBloqueoSalida();
+        }, 1000);
+
+        // ================= AUTENTICACIÓN =================
+        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function logout() { localStorage.clear(); window.location.reload(); }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const cargo = document.getElementById('loginCargo').value;
+            const pass = document.getElementById('loginPassword').value;
+            if (credentials[cargo] && credentials[cargo] === pass) {
+                localStorage.setItem('active_cargo', cargo);
+                closeLoginModal();
+                activateSession(cargo, true);
+            } else {
+                const errorDiv = document.getElementById('loginError');
+                if (errorDiv) {
+                    errorDiv.textContent = "Contraseña incorrecta para el cargo seleccionado.";
+                    errorDiv.classList.remove('hidden');
+                } else {
+                    alert("Contraseña incorrecta.");
+                }
+            }
+        }
+
+        // ================= NAVEGACIÓN Y RUTAS =================
+        function hideAllViews() {
+            const views = [
+                'accessView', 'tenienteSegundoView', 'tenienteTerceroView', 
+                'capitanTenientePrimeroView', 'carroInventoryView', 
+                'cuartelInventoryView', 'rosterView', 'fichasView', 'remorsionView'
+            ];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+
+        function activateSession(cargo, showAlert = false) {
+            document.getElementById('activeUserBadge').textContent = cargo;
+            document.getElementById('loginBtnContainer').classList.add('hidden');
+            document.getElementById('profileBtnContainer').classList.remove('hidden');
+
+            hideAllViews(); 
+
+            // Visibilidad de botones del Navbar
+            const btnRemorsion = document.getElementById('remorsionBtnContainer');
+            if(btnRemorsion) {
+                if (cargo === 'Capitan') btnRemorsion.classList.remove('hidden');
+                else btnRemorsion.classList.add('hidden');
+            }
+
+            const btnAtrasCuartel = document.getElementById('btnAtrasCuartelMenu');
+            if (btnAtrasCuartel) {
+                if (cargo === 'Capitan' || cargo === 'Tenienteprimero') btnAtrasCuartel.classList.remove('hidden');
+                else btnAtrasCuartel.classList.add('hidden');
+            }
+
+            const btnList = document.getElementById('listBtnContainer');
+            const btnFicha = document.getElementById('fichaBtnContainer');
+            if (cargo === 'Ayudante') {
+                if(btnList) btnList.classList.remove('hidden');
+                if(btnFicha) btnFicha.classList.remove('hidden');
+            } else {
+                if(btnList) btnList.classList.add('hidden');
+                if(btnFicha) btnFicha.classList.add('hidden');
+            }
+
+            // Redirección Principal
+            if (cargo === 'Ayudante') {
+                document.getElementById('rosterView').classList.remove('hidden');
+                document.getElementById('navTitle').textContent = "Panel Ayudantía";
+                renderRoster();
+            } else if (cargo === 'Tenientesegundo') {
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+                document.getElementById('navTitle').textContent = "Panel Teniente Segundo";
+            } else if (cargo === 'Tenientetercero') {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
+                document.getElementById('navTitle').textContent = "Panel Teniente Tercero";
+            } else if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
+                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+                document.getElementById('navTitle').textContent = `Panel Mando (${cargo})`;
+            }
+
+            if (showAlert) alert(`Sesión iniciada con éxito como: ${cargo}`);
+        }
+
+        // ================= BOTONES DE ATRÁS =================
+        function backToMainPanel() {
+            const cargo = localStorage.getItem('active_cargo');
+            hideAllViews();
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
+                document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            } else if (cargo === 'Tenientesegundo') {
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            } else if (cargo === 'Tenientetercero') {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            } else if (cargo === 'Ayudante') {
+                document.getElementById('rosterView').classList.remove('hidden');
+            }
+        }
+
+        function openMandoSeccion(seccion) {
+            hideAllViews();
+            if (seccion === 'carros') {
+                document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            } else if (seccion === 'cuartel') {
+                document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            }
+        }
+
+        // ================= PERFIL =================
+        function openProfileModal() {
+            const cargo = localStorage.getItem('active_cargo');
+            if (!cargo) return;
+            const data = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
+            document.getElementById('profileCargoBadge').textContent = cargo;
+            document.getElementById('profileDisplayName').textContent = data.name;
+            document.getElementById('profileNameVal').textContent = data.name;
+            document.getElementById('profileRutVal').textContent = data.rut;
+            document.getElementById('profilePhoneVal').textContent = data.phone;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function openEditProfileModal() { closeProfileModal(); document.getElementById('editProfileModal').classList.remove('hidden'); }
+        function closeEditProfileModal() { document.getElementById('editProfileModal').classList.add('hidden'); }
+        function saveProfileData(e) {
+            e.preventDefault();
+            const cargo = localStorage.getItem('active_cargo');
+            profiles[cargo] = {
+                name: document.getElementById('editNameInput').value.trim(),
+                rut: document.getElementById('editRutInput').value.trim(),
+                phone: document.getElementById('editPhoneInput').value.trim()
+            };
+            localStorage.setItem('perfiles_cargos', JSON.stringify(profiles));
+            closeEditProfileModal();
+            alert("Perfil actualizado.");
+            openProfileModal();
+        }
+
+        // ================= INVENTARIO DE CARROS (TTE 2°) =================
+        function openCarro(code) {
+            currentCarro = code;
+            hideAllViews();
+            document.getElementById('carroInventoryView').classList.remove('hidden');
+            document.getElementById('carroTitle').textContent = `Inventario - ${code}`;
+            renderInventory();
+        }
+        function backToCarros() {
+            const cargo = localStorage.getItem('active_cargo');
+            hideAllViews();
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            else document.getElementById('tenienteSegundoView').classList.remove('hidden');
+        }
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            if (!tbody || !currentCarro) return;
+            tbody.innerHTML = '';
+            let list = inventories[currentCarro] || [];
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin equipos registrados en esta unidad.</td></tr>`;
+                return;
+            }
+            list.forEach(i => {
+                let badge = "bg-emerald-100 text-emerald-800";
+                if(i.status === 'Revisión') badge = "bg-amber-100 text-amber-800";
+                if(i.status === 'Dañado') badge = "bg-rose-100 text-rose-800";
+                let gavetaText = i.gaveta ? `(${i.gaveta})` : '';
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3 font-mono text-slate-500">${i.model}</td><td class="px-5 py-3">${i.category} ${gavetaText}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
+            });
+        }
+        function openItemModal() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemForm').reset();
+            const gavetaField = document.getElementById('modalGavetaField');
+            if (gavetaField) currentCarro === 'B2' ? gavetaField.classList.remove('hidden') : gavetaField.classList.add('hidden');
+            document.getElementById('itemModal').classList.remove('hidden');
+        }
+        function closeItemModal() { document.getElementById('itemModal').classList.add('hidden'); }
+        function saveInventoryItem(e) {
+            e.preventDefault();
+            if (!currentCarro) return;
+            const name = document.getElementById('itemName').value.trim();
+            const model = document.getElementById('itemModel').value.trim();
+            const category = document.getElementById('itemCategory').value.trim();
+            const quantity = parseInt(document.getElementById('itemQuantity').value) || 1;
+            const status = document.getElementById('itemStatus').value;
+            const gaveta = currentCarro === 'B2' ? document.getElementById('itemGaveta').value : null;
+
+            if (!inventories[currentCarro]) inventories[currentCarro] = [];
+            inventories[currentCarro].push({ id: Date.now(), name, model, category, quantity, status, gaveta });
+            localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
+            closeItemModal();
+            renderInventory();
+        }
+        function deleteItem(id) {
+            if (confirm("¿Desea eliminar este equipo?")) {
+                inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id);
+                localStorage.setItem('inventarios_carros', JSON.stringify(inventories));
+                renderInventory();
+            }
+        }
+
+        // ================= INVENTARIO DE CUARTEL Y ASEO (TTE 3°) =================
+        function openCuartelSeccion(seccion) {
+            currentCuartelSeccion = seccion;
+            hideAllViews();
+            document.getElementById('cuartelInventoryView').classList.remove('hidden');
+            document.getElementById('cuartelTitle').textContent = `Inventario - ${seccion}`;
+            renderCuartelInventory();
+        }
+        function backToCuartelMenu() {
+            const cargo = localStorage.getItem('active_cargo');
+            hideAllViews();
+            if (cargo === 'Capitan' || cargo === 'Tenienteprimero') document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+            else document.getElementById('tenienteTerceroView').classList.remove('hidden');
+        }
+        function renderCuartelInventory() {
+            const tbody = document.getElementById('cuartelInventoryTableBody');
+            if (!tbody || !currentCuartelSeccion) return;
+            tbody.innerHTML = '';
+            let list = cuartelInventarios[currentCuartelSeccion] || [];
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin artículos registrados.</td></tr>`;
+                return;
+            }
+            list.forEach(i => {
+                let badge = "bg-emerald-100 text-emerald-800";
+                if(i.status === 'Por reponer') badge = "bg-amber-100 text-amber-800";
+                if(i.status === 'Agotado') badge = "bg-rose-100 text-rose-800";
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${i.name}</td><td class="px-5 py-3">${i.ubicacion}</td><td class="px-5 py-3 text-center font-mono font-bold">${i.quantity}</td><td class="px-5 py-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3 text-right"><button onclick="deleteCuartelItem(${i.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
+            });
+        }
+        function openCuartelItemModal() {
+            document.getElementById('cuartelItemId').value = '';
+            document.getElementById('cuartelItemForm').reset(); 
+            document.getElementById('cuartelItemModal').classList.remove('hidden'); 
+        }
+        function closeCuartelItemModal() { document.getElementById('cuartelItemModal').classList.add('hidden'); }
+        function saveCuartelItem(e) {
+            e.preventDefault();
+            if (!currentCuartelSeccion) return;
+            const name = document.getElementById('cuartelItemName').value.trim();
+            const ubicacion = document.getElementById('cuartelItemUbicacion').value.trim();
+            const quantity = parseInt(document.getElementById('cuartelItemQuantity').value) || 1;
+            const status = document.getElementById('cuartelItemStatus').value;
+            if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = [];
+            cuartelInventarios[currentCuartelSeccion].push({ id: Date.now(), name, ubicacion, quantity, status });
+            localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
+            closeCuartelItemModal(); 
+            renderCuartelInventory();
+        }
+        function deleteCuartelItem(id) {
+            if (confirm("¿Desea eliminar este artículo?")) {
+                cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id);
+                localStorage.setItem('cuartel_inventarios', JSON.stringify(cuartelInventarios));
+                renderCuartelInventory();
+            }
+        }
+
+        // ================= ASISTENCIA Y FICHAS (AYUDANTÍA) =================
+        function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
+        function openFichasView() { hideAllViews(); document.getElementById('fichasView').classList.remove('hidden'); renderFichas(); }
+
+        function renderRoster() {
+            const tbody = document.getElementById('rosterTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            roster.forEach(m => {
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${m.role} <span class="text-[10px] text-slate-400">(${m.category})</span></td><td class="px-5 py-3">${m.name}</td><td class="px-5 py-3 text-center text-indigo-700 font-bold">${m.garitaHours || 0} hrs</td><td class="px-5 py-3 text-center font-bold text-emerald-700">${m.status}</td><td class="px-5 py-3 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-600 hover:text-rose-800 font-semibold">Eliminar</button></td></tr>`;
+            });
+        }
+        function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberId').value = ''; document.getElementById('memberModal').classList.remove('hidden'); }
+        function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
+        function saveMember(e) {
+            e.preventDefault();
+            roster.push({ id: Date.now(), category: document.getElementById('memberCategory').value, role: document.getElementById('memberRole').value, name: document.getElementById('memberName').value, reason: document.getElementById('memberReason').value, status: 'A', count3m: 0, count1y: 0, garitaHours: 0 });
+            localStorage.setItem('roster_compania', JSON.stringify(roster));
+            closeMemberModal(); renderRoster();
+        }
+        function deleteMember(id) { roster = roster.filter(m => m.id !== id); localStorage.setItem('roster_compania', JSON.stringify(roster)); renderRoster(); }
+
+        function renderFichas() {
+            const tbody = document.getElementById('fichasTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            roster.forEach(m => {
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${m.name}</td><td class="px-5 py-3">${m.role}</td><td class="px-5 py-3 text-center text-blue-700 font-bold">${m.count3m || 0}</td><td class="px-5 py-3 text-center text-emerald-700 font-bold">${m.count1y || 0}</td><td class="px-5 py-3 text-right"><button onclick="openFichaEditModal(${m.id})" class="text-blue-600 hover:text-blue-800 font-semibold">Editar</button></td></tr>`;
+            });
+        }
+        function openFichaEditModal(id) {
+            const m = roster.find(x => x.id === id);
+            document.getElementById('fichaEditId').value = m.id; document.getElementById('fichaEditName').value = m.name; document.getElementById('fichaEditRole').value = m.role; document.getElementById('fichaEdit3m').value = m.count3m; document.getElementById('fichaEdit1y').value = m.count1y;
+            document.getElementById('fichaEditModal').classList.remove('hidden');
+        }
+        function closeFichaEditModal() { document.getElementById('fichaEditModal').classList.add('hidden'); }
+        function saveFichaEdit(e) {
+            e.preventDefault();
+            const id = document.getElementById('fichaEditId').value;
+            const member = roster.find(m => m.id == id);
+            if (member) { 
+                member.name = document.getElementById('fichaEditName').value; 
+                member.role = document.getElementById('fichaEditRole').value; 
+                member.count3m = parseInt(document.getElementById('fichaEdit3m').value); 
+                member.count1y = parseInt(document.getElementById('fichaEdit1y').value); 
+                localStorage.setItem('roster_compania', JSON.stringify(roster)); 
+                closeFichaEditModal(); 
+                renderFichas(); 
+            }
+        }
+
+        // ================= SISTEMA DE GARITA Y BLOQUEOS =================
+        function saveAndRenderVisitors() {
+            const tbody = document.getElementById('visitorsTableBody');
+            if (!tbody) return;
+            localStorage.setItem('visitantes', JSON.stringify(visitors));
+            tbody.innerHTML = '';
+            if (visitors.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">Sin visitas activas.</td></tr>`;
+                return;
+            }
+            const sorted = [...visitors].sort((a, b) => b.id - a.id);
+            sorted.forEach(v => {
+                const statusHtml = v.status === 'active' ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">En recinto</span>` : `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">Salió</span>`;
+                const actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-600 font-bold bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded">Marcar Salida</button>` : `<span class="text-slate-400 italic text-[10px]">Listo</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${v.fullName}</td><td class="px-5 py-3 font-mono text-slate-500">${v.documentId}</td><td class="px-5 py-3">${v.antiguedad}</td><td class="px-5 py-3">Entrada: ${v.entryTime}</td><td class="px-5 py-3 text-center">${statusHtml}</td><td class="px-5 py-3 text-right">${actionHtml}</td></tr>`;
+            });
+        }
+
         const visitorForm = document.getElementById('visitorForm');
         if(visitorForm) {
             visitorForm.addEventListener('submit', function(e) {
@@ -1260,7 +1644,7 @@
         function closeRemoverRestriccionModal() { document.getElementById('removerRestriccionModal').classList.add('hidden'); }
         function ejecutarRemorsionRestriccion(e) {
             e.preventDefault();
-            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleTimeString('es-CL'), oficial: localStorage.getItem('temp_author') || "Oficial", voluntario: document.getElementById('voluntarioRestriccionNombre').value, motivo: document.getElementById('motivoRemorsion').value });
+            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: localStorage.getItem('temp_author') || "Oficial", voluntario: document.getElementById('voluntarioRestriccionNombre').value, motivo: document.getElementById('motivoRemorsion').value });
             localStorage.setItem('remorsiones_log', JSON.stringify(remorsionesLog));
             localStorage.removeItem('last_departure_timestamp');
             closeRemoverRestriccionModal(); verificarBloqueoSalida();
@@ -1295,6 +1679,5 @@
             link.click();
         }
     </script>
-
 </body>
 </html>
