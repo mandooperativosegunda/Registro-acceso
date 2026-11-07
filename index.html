@@ -295,19 +295,58 @@
             if(c==='Tenientetercero') return 'Teniente 3°'; if(c==='Capitan') return 'Capitán'; return c;
         }
 
-        // FIREBASE LISTENERS
+        // FIREBASE LISTENERS SEGUROS
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
-        db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); });
-        db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); });
+        
+        db.ref('visitantes').on('value', snap => { 
+            const val = snap.val();
+            visitors = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderVisitors(); 
+            if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); 
+        });
+
+        db.ref('roster').on('value', snap => { 
+            const val = snap.val();
+            roster = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); 
+        });
+
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); });
-        db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
-        db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
+
+        db.ref('tareas').on('value', snap => { 
+            const val = snap.val();
+            tareas = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderBadgeTareas(); 
+        });
+
+        db.ref('novedades').on('value', snap => { 
+            const val = snap.val();
+            novedades = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderNovedades(); 
+        });
+
         db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
-        db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); });
+
+        db.ref('bodegaEpp').on('value', snap => { 
+            const val = snap.val();
+            bodegaEpp = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderBodegaEpp(); 
+        });
+
         db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); renderInventory(); });
         db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); renderCuartelInventory(); });
-        db.ref('calendario').on('value', snap => { calendarEvents = snap.val() || []; renderCalendar(); renderDayEvents(); });
-        db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
+
+        db.ref('calendario').on('value', snap => { 
+            const val = snap.val();
+            calendarEvents = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderCalendar(); renderDayEvents(); 
+        });
+
+        db.ref('remorsiones').on('value', snap => { 
+            const val = snap.val();
+            remorsionesLog = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderRemorsionesLog(); 
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
