@@ -1326,11 +1326,9 @@
         
         function exportarExcel() {
             if (visitors.length === 0) { alert("No hay datos para exportar."); return; }
-            let csv = "Nombre,RUT,Motivo,Entrada,Salida
-";
-            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"
-`; });
-            const blob = new Blob(["﻿" + csv], { type: 'text/csv;charset=utf-8;' });
+            let csv = "Nombre,RUT,Motivo,Entrada,Salida\n";
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Registro_Bomberos_${new Date().toLocaleDateString('es-CL')}.csv`; link.click();
         }
 
