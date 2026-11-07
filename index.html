@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
@@ -166,6 +167,23 @@
 
 
     <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
+        <!-- MODAL FICHA MÉDICA TÁCTICA -->
+    <div id="fichaMedicaModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs">
+            <div class="px-5 py-3 flex justify-between bg-rose-800 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-heartbeat text-base"></i> Ficha Médica y Táctica</h3><button onclick="closeFichaMedica()"><i class="ph ph-x text-lg"></i></button></div>
+            <form onsubmit="saveFichaMedica(event)" class="p-5 space-y-3">
+                <input type="hidden" id="medicaMemberId">
+                <div class="flex items-center gap-3 mb-2 border-b pb-2"><div class="w-8 h-8 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center text-lg"><i class="ph ph-user"></i></div><h4 id="medicaName" class="font-bold text-sm"></h4></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="block font-semibold mb-1">Grupo Sanguíneo</label><input type="text" id="medicaSangre" placeholder="Ej. O+" class="w-full px-3 py-2 border rounded"></div>
+                    <div><label class="block font-semibold mb-1">Fono Emergencia</label><input type="text" id="medicaFono" placeholder="Ej. +569..." class="w-full px-3 py-2 border rounded"></div>
+                </div>
+                <div><label class="block font-semibold mb-1">Alergias (Medicamentos/Otros)</label><input type="text" id="medicaAlergias" placeholder="Ej. Penicilina, Ninguna..." class="w-full px-3 py-2 border rounded"></div>
+                <div><label class="block font-semibold mb-1">Patologías / Especialidad (Ej. Rescatista Nivel 2)</label><input type="text" id="medicaPatologias" class="w-full px-3 py-2 border rounded"></div>
+                <button type="submit" class="w-full bg-rose-700 text-white py-2 rounded font-bold shadow-sm mt-2">Guardar Ficha</button>
+            </form>
+        </div>
+    </div>
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 mt-2">
         <section class="lg:col-span-4 h-fit">
             <div class="bg-white rounded-xl shadow-xs border text-xs overflow-hidden">
@@ -201,6 +219,7 @@
             <!-- EXCLUSIVO CAPITAN -->
             <div id="cardAsignarTarea" onclick="openModalCrearTarea()" class="hidden bg-white rounded-xl border p-5 hover:border-purple-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Asignar Tareas</h3><p class="text-[11px] text-slate-500 mt-0.5">Delegar órdenes a oficiales</p><span class="mt-3 text-[11px] font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded">Crear Tarea &rarr;</span></div>
             <div id="cardNovedades" onclick="openVerNovedadesView()" class="hidden bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Libro de Novedades</h3><p class="text-[11px] text-slate-500 mt-0.5">Revisar reportes de oficiales</p><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Buzón &rarr;</span></div>
+            <div id="cardPartePDF" onclick="generarPartePDF()" class="hidden bg-white rounded-xl border p-5 hover:border-red-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm text-red-800">Parte de Guardia</h3><p class="text-[11px] text-slate-500 mt-0.5">Generar documento PDF</p><span class="mt-3 text-[11px] font-semibold text-red-700 bg-red-50 px-3 py-1 rounded">Descargar PDF &rarr;</span></div>
             <!-- EXCLUSIVO TTE 1 -->
             <div id="cardCertificados" onclick="openCertificadosView()" class="hidden bg-white rounded-xl border p-5 hover:border-violet-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Cursos y Certificados</h3><p class="text-[11px] text-slate-500 mt-0.5">Control académico de voluntarios</p><span class="mt-3 text-[11px] font-semibold text-violet-700 bg-violet-50 px-3 py-1 rounded">Gestionar &rarr;</span></div>
         </div>
@@ -341,6 +360,7 @@
                 document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
                 document.getElementById('cardAsignarTarea').classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardNovedades').classList.toggle('hidden', cargo !== 'Capitan');
+                document.getElementById('cardPartePDF').classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardCertificados').classList.toggle('hidden', cargo !== 'Tenienteprimero');
             } else if (cargo === 'Ayudante') document.getElementById('ayudanteView').classList.remove('hidden');
             else if (cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
@@ -826,7 +846,155 @@
             visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Registro_Bomberos_${new Date().toLocaleDateString('es-CL')}.csv`; link.click();
+                    // --- 1. LÓGICA DE ALERTA EPP ---
+        function renderBodegaEpp() {
+            const tbody = document.getElementById('bodegaEppTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (bodegaEpp.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Bodega vacía.</td></tr>`; return; }
+            const currentYear = new Date().getFullYear();
+            bodegaEpp.forEach(item => {
+                let isExpired = (currentYear - (item.anioFab || currentYear)) >= 10;
+                let badgeStock = item.stock > 0 ? `<span class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-bold">${item.stock}</span>` : `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">Agotado</span>`;
+                let badgeDate = isExpired ? `<span class="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded ml-1 font-bold animate-pulse">VENCIDO</span>` : `<span class="text-slate-400 text-[10px] ml-1">(${item.anioFab})</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${item.name} ${item.anioFab ? badgeDate : ''}</td><td class="px-5 py-3">${item.size || '--'}</td><td class="px-5 py-3 text-center">${badgeStock}</td><td class="px-5 py-3 text-right"><button onclick="deleteBodegaEpp(${item.id})" class="text-rose-600 font-semibold">Eliminar</button></td></tr>`;
+            });
         }
+        
+        function saveBodegaEpp(e) {
+            e.preventDefault();
+            let name = document.getElementById('bodegaEppNameSelect').value;
+            if (name === 'OTRO') name = document.getElementById('bodegaEppNameOtro').value.trim();
+            const size = document.getElementById('bodegaEppSize').value.trim();
+            const anioFab = parseInt(document.getElementById('bodegaEppFab').value);
+            const stock = parseInt(document.getElementById('bodegaEppStock').value);
+            let existente = bodegaEpp.find(i => i.name === name && i.size === size && i.anioFab === anioFab);
+            if(existente) existente.stock += stock; else bodegaEpp.push({ id: Date.now(), name, size, anioFab, stock });
+            db.ref('bodegaEpp').set(bodegaEpp); closeAgregarBodegaEppModal();
+        }
+
+        // --- 2. LÓGICA DE FICHA MÉDICA TÁCTICA ---
+        function renderFichas() {
+            const tbody = document.getElementById('fichasTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            roster.forEach(m => { tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3"><button onclick="openFichaDetail(${m.id})" class="text-blue-700 hover:underline font-bold">${m.name}</button></td><td class="px-5 py-3">${m.role}</td><td class="px-5 py-3 text-center text-blue-700 font-bold">${m.count3m || 0}</td><td class="px-5 py-3 text-center text-emerald-700 font-bold">${m.count1y || 0}</td><td class="px-5 py-3 text-right"><button onclick="openFichaEditModal(${m.id})" class="text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded">Editar</button> <button onclick="openFichaMedica(${m.id})" class="text-rose-600 font-semibold bg-rose-50 px-2 py-1 rounded ml-1"><i class="ph ph-heartbeat"></i> Médica</button></td></tr>`; });
+        }
+
+        function openFichaMedica(id) {
+            const m = roster.find(x => x.id === id); if(!m) return;
+            document.getElementById('medicaMemberId').value = m.id; document.getElementById('medicaName').textContent = m.name;
+            document.getElementById('medicaSangre').value = m.medica ? m.medica.sangre : '';
+            document.getElementById('medicaFono').value = m.medica ? m.medica.fono : '';
+            document.getElementById('medicaAlergias').value = m.medica ? m.medica.alergias : '';
+            document.getElementById('medicaPatologias').value = m.medica ? m.medica.patologias : '';
+            document.getElementById('fichaMedicaModal').classList.remove('hidden');
+        }
+        function closeFichaMedica() { document.getElementById('fichaMedicaModal').classList.add('hidden'); }
+        function saveFichaMedica(e) {
+            e.preventDefault(); const id = parseInt(document.getElementById('medicaMemberId').value); const m = roster.find(x => x.id === id);
+            if(m) {
+                m.medica = { sangre: document.getElementById('medicaSangre').value, fono: document.getElementById('medicaFono').value, alergias: document.getElementById('medicaAlergias').value, patologias: document.getElementById('medicaPatologias').value };
+                db.ref('roster').set(roster); closeFichaMedica(); alert("Ficha médica actualizada exitosamente.");
+            }
+        }
+
+        // --- 1. LÓGICA DE ALERTA EPP ---
+        function renderBodegaEpp() {
+            const tbody = document.getElementById('bodegaEppTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (bodegaEpp.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Bodega vacía.</td></tr>`; return; }
+            const currentYear = new Date().getFullYear();
+            bodegaEpp.forEach(item => {
+                let isExpired = (currentYear - (item.anioFab || currentYear)) >= 10;
+                let badgeStock = item.stock > 0 ? `<span class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-bold">${item.stock}</span>` : `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">Agotado</span>`;
+                let badgeDate = isExpired ? `<span class="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded ml-1 font-bold animate-pulse">VENCIDO</span>` : `<span class="text-slate-400 text-[10px] ml-1">(${item.anioFab})</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">${item.name} ${item.anioFab ? badgeDate : ''}</td><td class="px-5 py-3">${item.size || '--'}</td><td class="px-5 py-3 text-center">${badgeStock}</td><td class="px-5 py-3 text-right"><button onclick="deleteBodegaEpp(${item.id})" class="text-rose-600 font-semibold">Eliminar</button></td></tr>`;
+            });
+        }
+        
+        function saveBodegaEpp(e) {
+            e.preventDefault();
+            let name = document.getElementById('bodegaEppNameSelect').value;
+            if (name === 'OTRO') name = document.getElementById('bodegaEppNameOtro').value.trim();
+            const size = document.getElementById('bodegaEppSize').value.trim();
+            const anioFab = parseInt(document.getElementById('bodegaEppFab').value);
+            const stock = parseInt(document.getElementById('bodegaEppStock').value);
+            let existente = bodegaEpp.find(i => i.name === name && i.size === size && i.anioFab === anioFab);
+            if(existente) existente.stock += stock; else bodegaEpp.push({ id: Date.now(), name, size, anioFab, stock });
+            db.ref('bodegaEpp').set(bodegaEpp); closeAgregarBodegaEppModal();
+        }
+
+        // --- 2. LÓGICA DE FICHA MÉDICA TÁCTICA ---
+        function renderFichas() {
+            const tbody = document.getElementById('fichasTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            roster.forEach(m => { tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3"><button onclick="openFichaDetail(${m.id})" class="text-blue-700 hover:underline font-bold">${m.name}</button></td><td class="px-5 py-3">${m.role}</td><td class="px-5 py-3 text-center text-blue-700 font-bold">${m.count3m || 0}</td><td class="px-5 py-3 text-center text-emerald-700 font-bold">${m.count1y || 0}</td><td class="px-5 py-3 text-right"><button onclick="openFichaEditModal(${m.id})" class="text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded">Editar</button> <button onclick="openFichaMedica(${m.id})" class="text-rose-600 font-semibold bg-rose-50 px-2 py-1 rounded ml-1"><i class="ph ph-heartbeat"></i> Médica</button></td></tr>`; });
+        }
+
+        function openFichaMedica(id) {
+            const m = roster.find(x => x.id === id); if(!m) return;
+            document.getElementById('medicaMemberId').value = m.id; document.getElementById('medicaName').textContent = m.name;
+            document.getElementById('medicaSangre').value = m.medica ? m.medica.sangre : '';
+            document.getElementById('medicaFono').value = m.medica ? m.medica.fono : '';
+            document.getElementById('medicaAlergias').value = m.medica ? m.medica.alergias : '';
+            document.getElementById('medicaPatologias').value = m.medica ? m.medica.patologias : '';
+            document.getElementById('fichaMedicaModal').classList.remove('hidden');
+        }
+        function closeFichaMedica() { document.getElementById('fichaMedicaModal').classList.add('hidden'); }
+        function saveFichaMedica(e) {
+            e.preventDefault(); const id = parseInt(document.getElementById('medicaMemberId').value); const m = roster.find(x => x.id === id);
+            if(m) {
+                m.medica = { sangre: document.getElementById('medicaSangre').value, fono: document.getElementById('medicaFono').value, alergias: document.getElementById('medicaAlergias').value, patologias: document.getElementById('medicaPatologias').value };
+                db.ref('roster').set(roster); closeFichaMedica(); alert("Ficha médica actualizada exitosamente.");
+            }
+        }
+
+        // --- 3. LÓGICA DE PDF (PARTE DE GUARDIA) ---
+        function generarPartePDF() {
+            const fechaActual = new Date().toLocaleDateString('es-CL');
+            const ofGuardia = formatCargoStr(estadoGuardia.activo);
+            
+            let asistHtml = visitors.map(v => `<li style="margin-bottom: 5px;"><strong>${v.fullName}</strong> - Ingreso: ${v.entryTime} - Salida: ${v.exitTime || 'En Cuartel'}</li>`).join('');
+            if(!asistHtml) asistHtml = '<li>Sin personal registrado en esta guardia.</li>';
+
+            let novHoy = novedades.filter(n => n.date.includes(fechaActual));
+            let novHtml = novHoy.map(n => `<p style="margin-bottom: 8px; font-size: 14px;"><strong>[${n.date.split(',')[1]}] ${n.by}:</strong> ${n.text}</p>`).join('');
+            if(!novHtml) novHtml = '<p style="font-style:italic;">Sin novedades operativas registradas.</p>';
+
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div style="padding: 40px; font-family: 'Helvetica', sans-serif; color: #1e293b;">
+                    <div style="text-align: center; border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 30px;">
+                        <h1 style="margin: 0; color: #1e3a8a; font-size: 24px;">CUERPO DE BOMBEROS DE COLLIPULLI</h1>
+                        <h2 style="margin: 5px 0 0 0; color: #334155; font-size: 18px;">Segunda Compañía "Presidente Balmaceda"</h2>
+                        <h3 style="margin: 10px 0 0 0; color: #64748b; font-size: 14px; text-transform: uppercase;">Parte de Guardia Operativa</h3>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px; font-size: 14px;">
+                        <p><strong>Fecha de Emisión:</strong> ${fechaActual}</p>
+                        <p><strong>Oficial a Cargo de Guardia:</strong> ${ofGuardia}</p>
+                    </div>
+
+                    <h4 style="border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; color: #1e3a8a;">1. CONTROL DE ASISTENCIA</h4>
+                    <ul style="font-size: 14px; color: #334155; margin-bottom: 30px;">${asistHtml}</ul>
+
+                    <h4 style="border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; color: #1e3a8a;">2. BITÁCORA DE NOVEDADES</h4>
+                    <div style="color: #334155;">${novHtml}</div>
+
+                    <div style="margin-top: 100px; text-align: center;">
+                        <p style="margin:0;">__________________________________________</p>
+                        <p style="margin-top: 5px; font-weight: bold; color: #1e3a8a;">${ofGuardia}</p>
+                        <p style="margin:0; font-size: 12px; color: #64748b;">Segunda Compañía Presidente Balmaceda</p>
+                    </div>
+                </div>
+            `;
+            
+            const opt = {
+                margin: 1,
+                filename: `Parte_Guardia_SegundaCia_${fechaActual.replace(/\//g,'-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save();
+        }
+
     </script>
 </body>
 </html>
