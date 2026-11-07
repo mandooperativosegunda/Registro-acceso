@@ -38,7 +38,7 @@
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar</span></button>
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-user-gear text-sm"></i><span class="hidden sm:inline">Perfil</span></button>
                 
-                <button id="bloqueadosBtnContainer" onclick="openBloqueadosModal()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock text-sm"></i><span class="hidden sm:inline">Bloqueados</span></button>
+                <button id="bloqueadosBtnContainer" onclick="openBloqueadosModal()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock text-sm"></i><span class="hidden sm:inline">Bloqueados</span> <span id="badgeBloqueadosNav" class="bg-white text-amber-700 px-1.5 rounded-full text-[10px] font-bold">0</span></button>
                 <button id="calendarBtnContainer" onclick="openCalendarView()" class="hidden flex items-center gap-1.5 bg-fuchsia-700 hover:bg-fuchsia-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-calendar-blank text-sm"></i><span class="hidden sm:inline">Calendario</span></button>
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock-open text-sm"></i><span class="hidden sm:inline">Auditoría</span></button>
                 <button id="btnGenerarPdf" onclick="abrirModalFirmasPdf()" class="hidden flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-file-pdf text-sm"></i><span class="hidden sm:inline">Parte PDF</span></button>
@@ -61,6 +61,17 @@
                 <button onclick="openModalCrearNovedad()" id="btnCrearNovedad" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded font-bold transition-colors shadow-sm"><i class="ph ph-warning mr-1"></i> Enviar Novedad</button>
                 <button onclick="openModalVerTareas()" id="btnVerTareas" class="hidden bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-1.5 rounded font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="ph ph-envelope-simple text-sm"></i> Tareas <span id="badgeTareas" class="bg-white text-fuchsia-700 px-1.5 rounded-full text-[10px]">0</span></button>
             </div>
+        </div>
+    </div>
+
+    <!-- BANNER DE ALERTA AUTOMÁTICA EPP / OPERATIVA -->
+    <div id="alertaOperativaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-3">
+        <div class="bg-rose-50 border-l-4 border-rose-600 p-3 rounded-r-lg shadow-xs flex items-center justify-between text-xs text-rose-900">
+            <div class="flex items-center gap-2">
+                <i class="ph ph-warning-octagon text-lg text-rose-600 animate-bounce"></i>
+                <span id="textoAlertaOperativa" class="font-semibold">Alerta de Bodega EPP: Hay artículos próximos a vencer o vencidos bajo norma NFPA 1971.</span>
+            </div>
+            <button onclick="openBodegaEppView()" class="bg-rose-600 text-white px-2.5 py-1 rounded font-bold hover:bg-rose-700">Revisar Bodega</button>
         </div>
     </div>
 
@@ -368,13 +379,13 @@
 
         // FIREBASE LISTENERS
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
-        db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); });
+        db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
         db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); });
-        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); });
+        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
         db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
         db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
-        db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); });
+        db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); verificarAlertasAutomaticas(); });
         db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); renderInventory(); });
         db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); renderCuartelInventory(); });
         db.ref('calendario').on('value', snap => { calendarEvents = snap.val() || []; renderCalendar(); renderDayEvents(); });
@@ -385,6 +396,7 @@
             const activeCargo = localStorage.getItem('active_cargo');
             if (activeCargo) activateSession(activeCargo);
             verificarBloqueoSalida();
+            verificarAlertasAutomaticas();
         });
 
         setInterval(() => {
@@ -394,7 +406,43 @@
             checkAndGrantAB(); 
             if (!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours();
             if (!document.getElementById('bloqueadosModal').classList.contains('hidden')) renderBloqueadosTable();
+            actualizarBadgeBloqueados();
         }, 1000);
+
+        // ================= SISTEMA DE NOTIFICACIONES AUTOMÁTICAS =================
+        function actualizarBadgeBloqueados() {
+            const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000;
+            let count = 0;
+            for(let k in blockedList) {
+                if(now - blockedList[k].timestamp < limitMs) count++;
+            }
+            const badge = document.getElementById('badgeBloqueadosNav');
+            if(badge) badge.textContent = count;
+        }
+
+        function verificarAlertasAutomaticas() {
+            const banner = document.getElementById('alertaOperativaBanner');
+            const textoAlerta = document.getElementById('textoAlertaOperativa');
+            if(!banner || !textoAlerta) return;
+
+            const anioActual = new Date().getFullYear();
+            let eppVencidosCount = 0;
+
+            bodegaEpp.forEach(item => {
+                let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
+                let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
+                if(anioActual >= (fabAnio + vidaUtil)) {
+                    eppVencidosCount++;
+                }
+            });
+
+            if(eppVencidosCount > 0) {
+                textoAlerta.textContent = `¡Alerta Automática NFPA! Hay ${eppVencidosCount} artículo(s) de EPP en bodega que han superado su vida útil reglamentaria.`;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
 
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
@@ -632,9 +680,9 @@
             const fechaFabricacion = document.getElementById('bodegaEppFabricacion').value;
             let existente = bodegaEpp.find(i => i.name === name && i.size === size && i.fechaFabricacion === fechaFabricacion);
             if(existente) existente.stock += stock; else bodegaEpp.push({ id: Date.now(), name, size, stock, fechaFabricacion });
-            db.ref('bodegaEpp').set(bodegaEpp); closeAgregarBodegaEppModal();
+            db.ref('bodegaEpp').set(bodegaEpp); closeAgregarBodegaEppModal(); verificarAlertasAutomaticas();
         }
-        function deleteBodegaEpp(id) { if (confirm("¿Eliminar este artículo de la bodega permanentemente?")) { bodegaEpp = bodegaEpp.filter(i => i.id !== id); db.ref('bodegaEpp').set(bodegaEpp); } }
+        function deleteBodegaEpp(id) { if (confirm("¿Eliminar este artículo de la bodega permanentemente?")) { bodegaEpp = bodegaEpp.filter(i => i.id !== id); db.ref('bodegaEpp').set(bodegaEpp); verificarAlertasAutomaticas(); } }
 
         // ================= SISTEMA EPP VOLUNTARIOS =================
         function openEppVoluntariosView() { hideAllViews(); document.getElementById('eppVoluntariosView').classList.remove('hidden'); renderEppVoluntarios(); }
