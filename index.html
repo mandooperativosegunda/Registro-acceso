@@ -45,7 +45,7 @@
         </div>
     </nav>
 
-    <!-- BARRA ESTADO DE GUARDIA Y NOTIFICACIONES (OFICIALES) -->
+    <!-- BARRA ESTADO DE GUARDIA Y NOTIFICACIONES -->
     <div id="guardiaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-4">
         <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs shadow-sm">
             <div class="flex items-center gap-2">
@@ -125,10 +125,10 @@
                         <option value="VoluntarioRaso">Voluntario Raso</option>
                     </select>
                 </div>
-                <!-- Campo Nombre desplegable exclusivo para Aspirante o Voluntario Raso -->
+                <!-- Campo Nombre o RUT desplegable exclusivo para Aspirante o Voluntario Raso -->
                 <div id="loginNombreContainer" class="hidden">
-                    <label class="block font-semibold mb-1">Nombre con el que te registraste</label>
-                    <input type="text" id="loginNombreInput" placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border rounded bg-slate-50">
+                    <label class="block font-semibold mb-1">Nombre o RUT con el que te registraste</label>
+                    <input type="text" id="loginNombreInput" placeholder="Ej. Juan Pérez o 21.111.222-3" class="w-full px-3 py-2 border rounded bg-slate-50">
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">Contraseña</label>
@@ -557,7 +557,6 @@
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
         
-        // Control de despliegue del campo Nombre al elegir Aspirante o Voluntario Raso
         function toggleLoginNombreField() {
             const cargo = document.getElementById('loginCargo').value;
             const container = document.getElementById('loginNombreContainer');
@@ -613,16 +612,22 @@
                 return;
             } 
 
-            // Verificar Aspirante o Voluntario Raso (Validando el nombre ingresado y la contraseña)
+            // Verificar Aspirante o Voluntario Raso (Validando coincidencia por Nombre o por RUT, junto con la contraseña)
             if (cargoSelect === 'Aspirante' || cargoSelect === 'VoluntarioRaso') {
-                const nombreIngresado = document.getElementById('loginNombreInput').value.trim().toLowerCase();
-                let found = Object.values(usersAccounts).find(u => u.tipo === cargoSelect && u.nombre.toLowerCase() === nombreIngresado && u.password === pass);
+                const queryIngresado = document.getElementById('loginNombreInput').value.trim().toLowerCase();
+                let found = Object.values(usersAccounts).find(u => {
+                    if (u.tipo !== cargoSelect || u.password !== pass) return false;
+                    let matchNombre = u.nombre.toLowerCase() === queryIngresado;
+                    let matchRut = u.rut.toLowerCase().replace(/[^0-9kK]/g, '') === queryIngresado.replace(/[^0-9kK]/g, '');
+                    return matchNombre || matchRut;
+                });
+
                 if (found) {
                     const sessionData = { cargo: found.tipo, nombre: found.nombre, rut: found.rut, tipo: found.tipo };
                     localStorage.setItem('active_user_session', JSON.stringify(sessionData));
                     closeLoginModal(); activateSession(sessionData);
                 } else {
-                    alert("Nombre o contraseña incorrectos para este perfil individual.");
+                    alert("Nombre, RUT o contraseña incorrectos para este perfil individual.");
                 }
             } else {
                 alert("Cargo o contraseña incorrectos.");
