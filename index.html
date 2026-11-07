@@ -8,7 +8,6 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-    <!-- Librería html2pdf para generación de partes de guardia en PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Great+Vibes&display=swap');
@@ -25,7 +24,6 @@
     <nav class="bg-indigo-900 border-b border-indigo-950 text-white sticky top-0 z-40 px-4 py-2.5 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <!-- LOGO DE LA COMPAÑÍA -->
                 <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center p-0.5 shadow-inner overflow-hidden shrink-0">
                     <img src="43358.jpg" alt="Logo Segunda Compañía" class="w-full h-full object-cover">
                 </div>
@@ -35,7 +33,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0">
-                <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar</span></button>
+                <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md border border-indigo-700 font-medium text-xs"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar / Registro</span></button>
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-user-gear text-sm"></i><span class="hidden sm:inline">Perfil</span></button>
                 
                 <button id="bloqueadosBtnContainer" onclick="openBloqueadosModal()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock text-sm"></i><span class="hidden sm:inline">Bloqueados</span> <span id="badgeBloqueadosNav" class="bg-white text-amber-700 px-1.5 rounded-full text-[10px] font-bold">0</span></button>
@@ -100,63 +98,81 @@
         </div>
     </div>
 
-    <!-- MODALES DE SESION Y PERFIL -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200"><div class="px-5 py-3 border-b flex justify-between bg-indigo-900 text-white"><h3 class="text-sm font-bold flex items-center gap-2"><i class="ph ph-lock-key text-base"></i> Autenticación</h3><button onclick="closeLoginModal()"><i class="ph ph-x text-lg"></i></button></div><form id="loginForm" onsubmit="handleLogin(event)" class="p-5 space-y-4 text-xs"><div id="loginError" class="hidden p-2 rounded bg-red-50 text-red-700 font-medium"></div><div><label class="block font-semibold mb-1">Seleccionar Cargo</label><select id="loginCargo" required class="w-full px-3 py-2 border rounded"><option value="">-- Seleccione --</option><option value="Directora">Directora</option><option value="Tesorero">Tesorero</option><option value="Secretaria">Secretaria</option><option value="Capitan">Capitán</option><option value="Ayudante">Ayudante</option><option value="Tenienteprimero">Teniente Primero</option><option value="Tenientesegundo">Teniente Segundo</option><option value="Tenientetercero">Teniente Tercero</option></select></div><div><label class="block font-semibold mb-1">Contraseña</label><input type="password" id="loginPassword" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded font-bold shadow-sm">Acceder</button></form></div></div>
-    
-    <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 text-xs"><div class="px-5 py-3 border-b flex justify-between bg-indigo-900 text-white"><h3 class="text-sm font-bold flex items-center gap-2"><i class="ph ph-identification-badge text-base"></i> Datos del Oficial</h3><button onclick="closeProfileModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 space-y-3"><div class="bg-indigo-50 border rounded-lg p-3 flex items-center gap-3"><div class="w-10 h-10 bg-indigo-700 text-white rounded-full flex justify-center items-center font-bold text-lg"><i class="ph ph-user"></i></div><div><span id="profileCargoBadge" class="text-[10px] font-bold text-indigo-600 uppercase"></span><h4 id="profileDisplayName" class="text-sm font-bold"></h4></div></div><div class="space-y-2"><div class="flex justify-between border-b pb-1"><span>Nombre:</span> <span id="profileNameVal" class="font-semibold"></span></div><div class="flex justify-between border-b pb-1"><span>RUT:</span> <span id="profileRutVal"></span></div><div class="flex justify-between border-b pb-1"><span>Teléfono:</span> <span id="profilePhoneVal"></span></div></div><div class="pt-2 flex gap-2"><button onclick="openEditProfileModal()" class="flex-1 bg-slate-100 py-2 rounded font-semibold border">Editar</button><button onclick="logout()" class="flex-1 bg-rose-50 text-rose-700 py-2 rounded font-semibold border border-rose-200">Salir</button></div></div></div></div>
-    <div id="editProfileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold">Modificar Perfil</h3><button onclick="closeEditProfileModal()"><i class="ph ph-x text-lg"></i></button></div><form id="editProfileForm" onsubmit="saveProfileData(event)" class="p-5 space-y-3"><div><label class="block font-semibold">Nombre Completo</label><input type="text" id="editNameInput" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">RUT</label><input type="text" id="editRutInput" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Teléfono</label><input type="text" id="editPhoneInput" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded">Guardar</button></form></div></div>
-    
-    <!-- MODALES NUEVOS: TAREAS, NOVEDADES Y GUARDIA -->
-    <div id="modalEntregarGuardia" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs">
-            <div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-arrows-left-right text-base"></i> Entregar Guardia</h3><button onclick="closeModalEntregarGuardia()"><i class="ph ph-x text-lg"></i></button></div>
-            <form onsubmit="saveEntregarGuardia(event)" class="p-5 space-y-4">
-                <div><label class="block font-semibold mb-1">Seleccionar Oficial Relevo</label>
-                    <select id="selectNuevoGuardia" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></select>
-                </div>
-                <button type="submit" class="w-full bg-indigo-700 hover:bg-indigo-800 text-white py-2 rounded font-bold shadow-sm">Confirmar Relevo</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalCrearNovedad" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs">
-            <div class="px-5 py-3 flex justify-between bg-amber-700 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-warning text-base"></i> Enviar Novedad al Capitán</h3><button onclick="closeModalCrearNovedad()"><i class="ph ph-x text-lg"></i></button></div>
-            <form onsubmit="saveNovedad(event)" class="p-5 space-y-4">
-                <div><label class="block font-semibold mb-1">Detalle de la Novedad Operativa</label>
-                    <textarea id="txtNovedadDesc" required rows="4" placeholder="Reporte de material, incidente, etc..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded font-bold shadow-sm">Enviar Novedad</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalCrearTarea" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs">
-            <div class="px-5 py-3 flex justify-between bg-purple-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-clipboard-text text-base"></i> Asignar Tarea Operativa</h3><button onclick="closeModalCrearTarea()"><i class="ph ph-x text-lg"></i></button></div>
-            <form onsubmit="saveTarea(event)" class="p-5 space-y-4">
-                <div><label class="block font-semibold mb-1">Oficial Destinatario</label>
-                    <select id="selectDestinoTarea" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-purple-500 outline-none">
+    <!-- MODAL DE AUTENTICACIÓN Y REGISTRO INDIVIDUAL -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 overflow-hidden">
+            <div class="px-5 py-3 border-b flex justify-between bg-indigo-900 text-white">
+                <h3 id="modalTitleLogin" class="text-sm font-bold flex items-center gap-2"><i class="ph ph-lock-key text-base"></i> Iniciar Sesión</h3>
+                <button onclick="closeLoginModal()"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            
+            <!-- FORMULARIO DE LOGIN -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="p-5 space-y-4 text-xs">
+                <div id="loginError" class="hidden p-2 rounded bg-red-50 text-red-700 font-medium"></div>
+                <div>
+                    <label class="block font-semibold mb-1">Seleccionar Cargo / Perfil</label>
+                    <select id="loginCargo" required class="w-full px-3 py-2 border rounded">
+                        <option value="">-- Seleccione --</option>
+                        <option value="Directora">Directora</option>
+                        <option value="Tesorero">Tesorero</option>
+                        <option value="Secretaria">Secretaria</option>
+                        <option value="Capitan">Capitán</option>
+                        <option value="Ayudante">Ayudante</option>
                         <option value="Tenienteprimero">Teniente Primero</option>
                         <option value="Tenientesegundo">Teniente Segundo</option>
                         <option value="Tenientetercero">Teniente Tercero</option>
-                        <option value="Ayudante">Ayudante</option>
+                        <option value="Aspirante">Aspirante (Registrado)</option>
+                        <option value="VoluntarioRaso">Voluntario Raso (Registrado)</option>
                     </select>
                 </div>
-                <div><label class="block font-semibold mb-1">Instrucciones</label>
-                    <textarea id="txtTareaDesc" required rows="3" placeholder="Ej. Realizar inventario de esclavinas..." class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
+                <div>
+                    <label class="block font-semibold mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" required class="w-full px-3 py-2 border rounded">
                 </div>
-                <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white py-2 rounded font-bold shadow-sm">Enviar Orden</button>
+                <button type="submit" class="w-full bg-indigo-700 hover:bg-indigo-800 text-white py-2 rounded font-bold shadow-sm transition-colors">Acceder</button>
+                <div class="text-center pt-2 border-t mt-3">
+                    <span class="text-slate-500">¿Eres nuevo Aspirante o Voluntario?</span>
+                    <button type="button" onclick="toggleRegistroMode(true)" class="text-indigo-700 font-bold hover:underline block mx-auto mt-1">Regístrate con tu perfil personal &rarr;</button>
+                </div>
+            </form>
+
+            <!-- FORMULARIO DE REGISTRO INDIVIDUAL -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="p-5 space-y-3 text-xs hidden">
+                <div class="bg-indigo-50 p-2.5 rounded text-indigo-900 font-semibold mb-2">Crea tu cuenta individual de Aspirante o Voluntario.</div>
+                <div>
+                    <label class="block font-semibold mb-1">Tipo de Perfil</label>
+                    <select id="regTipoPerfil" required class="w-full px-3 py-2 border rounded bg-slate-50 font-semibold">
+                        <option value="Aspirante">Aspirante</option>
+                        <option value="VoluntarioRaso">Voluntario Raso</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Nombre Completo</label>
+                    <input type="text" id="regNombre" required placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">RUT</label>
+                    <input type="text" id="regRut" required placeholder="Ej. 21.111.222-3" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Contraseña Personal</label>
+                    <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres" class="w-full px-3 py-2 border rounded">
+                </div>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2 rounded font-bold shadow-sm transition-colors">Registrarse</button>
+                <div class="text-center pt-2 border-t">
+                    <button type="button" onclick="toggleRegistroMode(false)" class="text-slate-600 font-bold hover:underline">&larr; Volver al inicio de sesión</button>
+                </div>
             </form>
         </div>
     </div>
-
-    <div id="modalVerTareas" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="px-5 py-3 flex justify-between bg-fuchsia-800 text-white shrink-0"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-envelope-open text-base"></i> Buzón de Tareas</h3><button onclick="closeModalVerTareas()"><i class="ph ph-x text-lg"></i></button></div>
-            <div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3" id="tareasContainer"></div>
-        </div>
-    </div>
+    
+    <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 text-xs"><div class="px-5 py-3 border-b flex justify-between bg-indigo-900 text-white"><h3 class="text-sm font-bold flex items-center gap-2"><i class="ph ph-identification-badge text-base"></i> Datos del Perfil</h3><button onclick="closeProfileModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 space-y-3"><div class="bg-indigo-50 border rounded-lg p-3 flex items-center gap-3"><div class="w-10 h-10 bg-indigo-700 text-white rounded-full flex justify-center items-center font-bold text-lg"><i class="ph ph-user"></i></div><div><span id="profileCargoBadge" class="text-[10px] font-bold text-indigo-600 uppercase"></span><h4 id="profileDisplayName" class="text-sm font-bold"></h4></div></div><div class="space-y-2"><div class="flex justify-between border-b pb-1"><span>Nombre:</span> <span id="profileNameVal" class="font-semibold"></span></div><div class="flex justify-between border-b pb-1"><span>RUT / ID:</span> <span id="profileRutVal"></span></div></div><div class="pt-2 flex gap-2"><button onclick="logout()" class="w-full bg-rose-50 text-rose-700 py-2 rounded font-semibold border border-rose-200">Cerrar Sesión</button></div></div></div></div>
+    
+    <!-- MODALES NUEVOS: TAREAS, NOVEDADES Y GUARDIA -->
+    <div id="modalEntregarGuardia" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-arrows-left-right text-base"></i> Entregar Guardia</h3><button onclick="closeModalEntregarGuardia()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveEntregarGuardia(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1">Seleccionar Relevo</label><select id="selectNuevoGuardia" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none"></select></div><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded font-bold">Confirmar</button></form></div></div>
+    <div id="modalCrearNovedad" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-amber-700 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-warning text-base"></i> Enviar Novedad al Capitán</h3><button onclick="closeModalCrearNovedad()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveNovedad(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1">Detalle</label><textarea id="txtNovedadDesc" required rows="4" class="w-full px-3 py-2 border rounded"></textarea></div><button type="submit" class="w-full bg-amber-600 text-white py-2 rounded font-bold">Enviar</button></form></div></div>
+    <div id="modalCrearTarea" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-purple-900 text-white"><h3 class="font-bold">Asignar Tarea</h3><button onclick="closeModalCrearTarea()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveTarea(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1">Destinatario</label><select id="selectDestinoTarea" required class="w-full px-3 py-2 border rounded"><option value="Tenienteprimero">Teniente Primero</option><option value="Tenientesegundo">Teniente Segundo</option><option value="Tenientetercero">Teniente Tercero</option><option value="Ayudante">Ayudante</option></select></div><div><label class="block font-semibold mb-1">Instrucciones</label><textarea id="txtTareaDesc" required rows="3" class="w-full px-3 py-2 border rounded"></textarea></div><button type="submit" class="w-full bg-purple-700 text-white py-2 rounded font-bold">Enviar</button></form></div></div>
+    <div id="modalVerTareas" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-3 flex justify-between bg-fuchsia-800 text-white shrink-0"><h3 class="font-bold">Buzón de Tareas</h3><button onclick="closeModalVerTareas()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3" id="tareasContainer"></div></div></div>
 
     <!-- MODALES DE CONTROL (BLOQUEADOS, LIBERACION, ETC) -->
     <div id="bloqueadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-3 flex justify-between bg-amber-700 text-white shrink-0"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-lock-keyhole text-base"></i> Voluntarios Bloqueados (2 hrs)</h3><button onclick="closeBloqueadosModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar space-y-3"><p class="text-slate-500 text-[11px]">Haz clic sobre el voluntario que deseas liberar manualmente antes de cumplir su tiempo de espera:</p><div class="border rounded-lg overflow-hidden bg-white"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-100 text-[10px] uppercase font-bold text-slate-600"><th class="px-3 py-2">Voluntario</th><th class="px-3 py-2 text-center">Restante</th><th class="px-3 py-2 text-right">Acción</th></tr></thead><tbody id="bloqueadosTableBody" class="divide-y"><tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">Sin voluntarios bloqueados.</td></tr></tbody></table></div></div></div></div>
@@ -201,29 +217,47 @@
     <!-- MODALES FICHAS HISTORIAL Y MÉDICO-TÁCTICO -->
     <div id="fichaDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-blue-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-identification-card"></i> Ficha Detallada & Táctica</h3><button onclick="closeFichaDetailModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar"><div class="bg-blue-50 border rounded-lg p-3.5 flex items-center gap-3"><div class="w-12 h-12 bg-blue-700 text-white rounded-full flex items-center justify-center text-xl font-bold"><i class="ph ph-user"></i></div><div><span id="detailMemberRole" class="text-[10px] font-bold text-blue-600 uppercase"></span><h4 id="detailMemberName" class="text-base font-bold text-slate-900"></h4></div></div><div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border"><div><span class="block font-medium text-slate-400 text-[10px]">ASIST. 3 MESES</span><span id="detailMember3m" class="font-bold text-blue-700 text-sm"></span></div><div><span class="block font-medium text-slate-400 text-[10px]">ASIST. ANUAL</span><span id="detailMember1y" class="font-bold text-emerald-700 text-sm"></span></div></div>
         
-        <!-- SECCIÓN MÉDICA Y TÁCTICA EXCLUSIVA -->
         <div id="medicoTacticaSection" class="hidden bg-rose-50 border border-rose-200 rounded-lg p-3.5 space-y-2">
             <div class="flex justify-between items-center"><h5 class="font-bold text-rose-900 flex items-center gap-1"><i class="ph ph-first-aid text-sm"></i> Ficha Médica y de Emergencia Táctica</h5><button onclick="openEditMedicoTacticaModal()" class="text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-bold">Editar Ficha</button></div>
             <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-700 bg-white p-2.5 rounded border border-rose-100">
                 <div><strong>Grupo Sanguíneo:</strong> <span id="medicoSangre">No registrado</span></div>
                 <div><strong>Contacto Emergencia:</strong> <span id="medicoContacto">No registrado</span></div>
                 <div class="col-span-2"><strong>Alergias / Patologías:</strong> <span id="medicoAlergias">Ninguna</span></div>
-                <div class="col-span-2"><strong>Certificaciones Críticas (Lemon, etc.):</strong> <span id="medicoCert">Ninguna</span></div>
+                <div class="col-span-2"><strong>Certificaciones Críticas:</strong> <span id="medicoCert">Ninguna</span></div>
             </div>
         </div>
 
         <div><h5 class="font-bold mb-2">Historial de Motivos</h5><div class="border rounded-lg overflow-hidden bg-white"><table class="w-full text-left"><tbody id="detailMotivosTableBody" class="divide-y"></tbody></table></div></div></div></div></div>
     
-    <!-- MODAL EDITAR FICHA MÉDICA TÁCTICA -->
-    <div id="editMedicoTacticaModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-rose-900 text-white"><h3 class="font-bold">Editar Ficha Médica / Táctica</h3><button onclick="closeEditMedicoTacticaModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveMedicoTactica(event)" class="p-5 space-y-3"><input type="hidden" id="medicoEditId"><div><label class="block font-semibold">Grupo Sanguíneo</label><input type="text" id="inputSangre" placeholder="Ej. O+" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Contacto de Emergencia (Nombre y Tel)</label><input type="text" id="inputContacto" placeholder="Ej. María Cuevas (+569...)" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Alergias o Patologías</label><input type="text" id="inputAlergias" placeholder="Ej. Penicilina, Asma..." required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Certificaciones Críticas</label><input type="text" id="inputCert" placeholder="Ej. Lemon by Courant Nivel 2, R.A.T..." required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-rose-700 text-white py-2 rounded font-bold">Guardar Ficha</button></form></div></div>
+    <div id="editMedicoTacticaModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-rose-900 text-white"><h3 class="font-bold">Editar Ficha Médica / Táctica</h3><button onclick="closeEditMedicoTacticaModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveMedicoTactica(event)" class="p-5 space-y-3"><input type="hidden" id="medicoEditId"><div><label class="block font-semibold">Grupo Sanguíneo</label><input type="text" id="inputSangre" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Contacto de Emergencia</label><input type="text" id="inputContacto" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Alergias o Patologías</label><input type="text" id="inputAlergias" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Certificaciones Críticas</label><input type="text" id="inputCert" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-rose-700 text-white py-2 rounded font-bold">Guardar Ficha</button></form></div></div>
 
     <div id="fichaEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold">Editar Ficha</h3><button onclick="closeFichaEditModal()"><i class="ph ph-x text-lg"></i></button></div><form id="fichaEditForm" onsubmit="saveFichaEdit(event)" class="p-5 space-y-3"><input type="hidden" id="fichaEditId"><div><label class="block font-semibold">Nombre</label><input type="text" id="fichaEditName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Cargo</label><input type="text" id="fichaEditRole" required class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">3 Meses</label><input type="number" id="fichaEdit3m" min="0" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Anual</label><input type="number" id="fichaEdit1y" min="0" required class="w-full px-3 py-2 border rounded"></div></div><div class="pt-2"><button type="submit" class="w-full bg-blue-700 text-white py-2 rounded">Actualizar</button></div></form></div></div>
     
-    <!-- MODALES INVENTARIO Y CALENDARIO -->
-    <div id="eventModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-fuchsia-900 text-white"><h3 class="font-bold">Agendar Actividad</h3><button onclick="closeEventModal()"><i class="ph ph-x text-lg"></i></button></div><form id="eventForm" onsubmit="saveEvent(event)" class="p-5 space-y-3"><input type="hidden" id="eventDate"><div><label class="block font-semibold">Título</label><input type="text" id="eventTitle" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Descripción</label><textarea id="eventDescription" required rows="3" class="w-full px-3 py-2 border rounded"></textarea></div><div class="pt-2"><button type="submit" class="w-full bg-fuchsia-700 text-white py-2 rounded font-bold">Guardar</button></div></form></div></div>
+    <!-- MODAL PROMOCION DE ASPIRANTES (CAPITAN) -->
+    <div id="gestionAspirantesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="px-5 py-3 flex justify-between bg-amber-800 text-white shrink-0">
+                <h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-user-switch text-base"></i> Promoción de Aspirantes</h3>
+                <button onclick="closeGestionAspirantesModal()"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3">
+                <p class="text-slate-600 text-[11px]">Listado de aspirantes registrados. Promuévelos a Voluntario Raso al completar su formación:</p>
+                <div class="border rounded-lg overflow-hidden bg-white">
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="bg-slate-100 text-[10px] uppercase font-bold text-slate-600"><th class="px-3 py-2">Nombre</th><th class="px-3 py-2">RUT</th><th class="px-3 py-2 text-right">Acción</th></tr></thead>
+                        <tbody id="aspirantesTableBody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CALENDARIO (CON VISIBILIDAD) -->
+    <div id="eventModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-fuchsia-900 text-white"><h3 class="font-bold">Agendar Actividad</h3><button onclick="closeEventModal()"><i class="ph ph-x text-lg"></i></button></div><form id="eventForm" onsubmit="saveEvent(event)" class="p-5 space-y-3"><input type="hidden" id="eventDate"><div><label class="block font-semibold">Título</label><input type="text" id="eventTitle" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Descripción</label><textarea id="eventDescription" required rows="3" class="w-full px-3 py-2 border rounded"></textarea></div><div><label class="block font-semibold">Dirigido a:</label><select id="eventVisibility" class="w-full px-3 py-2 border rounded bg-slate-50 font-semibold"><option value="todos">Todos (Compañía)</option><option value="aspirante">Solo Aspirantes</option><option value="voluntario">Solo Voluntarios Rasos</option></select></div><div class="pt-2"><button type="submit" class="w-full bg-fuchsia-700 text-white py-2 rounded font-bold">Guardar</button></div></form></div></div>
+    
+    <!-- MODALES INVENTARIO -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 id="itemModalTitle" class="text-sm font-bold">Agregar Material Menor</h3><button onclick="closeItemModal()"><i class="ph ph-x text-lg"></i></button></div><form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-5 space-y-3"><input type="hidden" id="itemId"><div><label class="block font-semibold">Nombre Equipo</label><input type="text" id="itemName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Marca/Modelo</label><input type="text" id="itemModel" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Categoría</label><input type="text" id="itemCategory" required class="w-full px-3 py-2 border rounded"></div><div id="modalGavetaField" class="hidden"><label class="block font-semibold">Gaveta</label><select id="itemGaveta" class="w-full px-3 py-2 border rounded"><option value="Gaveta 1">Gaveta 1</option><option value="Gaveta 2">Gaveta 2</option><option value="Gaveta 3">Gaveta 3</option><option value="Gaveta 4">Gaveta 4</option><option value="Gaveta trasera">Gaveta trasera</option><option value="Techo">Techo</option></select></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">Cantidad</label><input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Estado</label><select id="itemStatus" class="w-full px-3 py-2 border rounded"><option value="Operativo">Operativo</option><option value="Revisión">Revisión</option><option value="Dañado">Dañado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded font-bold">Registrar</button></div></form></div></div>
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-emerald-900 text-white"><h3 id="cuartelModalTitle" class="text-sm font-bold">Agregar Artículo</h3><button onclick="closeCuartelItemModal()"><i class="ph ph-x text-lg"></i></button></div><form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-5 space-y-3"><input type="hidden" id="cuartelItemId"><div><label class="block font-semibold">Nombre</label><input type="text" id="cuartelItemName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Ubicación</label><input type="text" id="cuartelItemUbicacion" required class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">Stock</label><input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Estado</label><select id="cuartelItemStatus" class="w-full px-3 py-2 border rounded"><option value="Operativo / Bueno">Bueno</option><option value="Por reponer">Por reponer</option><option value="Agotado">Agotado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-emerald-700 text-white py-2 rounded font-bold">Guardar</button></div></form></div></div>
-
 
     <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 mt-2">
@@ -252,29 +286,56 @@
         </section>
     </main>
 
+    <!-- PORTAL ASPIRANTE -->
+    <div id="aspiranteView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 shadow-xs">
+            <span class="bg-amber-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Portal de Aspirante</span>
+            <h2 id="saludoAspirante" class="text-xl font-bold mt-1 text-amber-900">Bienvenido a la Academia</h2>
+            <p class="text-slate-600 mt-1">Revisa tus citaciones a clases y manuales de formación.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div onclick="openCalendarView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500 shadow-sm"><i class="ph ph-calendar text-3xl text-amber-600 mb-2"></i><h3 class="font-bold text-sm">Calendario de Aspirantes</h3></div>
+            <div class="bg-white rounded-xl border p-6 text-center shadow-sm"><i class="ph ph-book-open text-3xl text-indigo-600 mb-2"></i><h3 class="font-bold text-sm">Manual del Aspirante</h3></div>
+        </div>
+    </div>
+
+    <!-- PORTAL VOLUNTARIO RASO -->
+    <div id="voluntarioRasoView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 shadow-xs">
+            <span class="bg-indigo-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Portal de Voluntario Activo</span>
+            <h2 id="saludoVoluntario" class="text-xl font-bold mt-1 text-indigo-900">Panel Personal</h2>
+            <p class="text-slate-600 mt-1">Consulta tus actividades y calendario general de la compañía.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div onclick="openCalendarView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-indigo-500 shadow-sm"><i class="ph ph-calendar-blank text-3xl text-indigo-600 mb-2"></i><h3 class="font-bold text-sm">Calendario Compañía</h3></div>
+            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500 shadow-sm"><i class="ph ph-clock text-3xl text-emerald-600 mb-2"></i><h3 class="font-bold text-sm">Mis Horas de Guardia</h3></div>
+        </div>
+    </div>
+
     <!-- PANEL MANDO CAPITÁN Y TTE PRIMERO -->
     <div id="capitanTenientePrimeroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Operativo</span><h2 class="text-xl font-bold mt-1">Supervisión Mando Operativo</h2></div>
+        <div class="bg-white rounded-xl shadow-xs border p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+            <div>
+                <span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Operativo</span>
+                <h2 class="text-xl font-bold mt-1">Supervisión Mando y Aspirantes</h2>
+            </div>
+            <button onclick="openGestionAspirantesModal()" id="btnGestionarAspirantes" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded font-bold shadow-sm flex items-center gap-1.5"><i class="ph ph-user-switch"></i> Promover Aspirantes</button>
+        </div>
         
-        <!-- Tarjetas Exclusivas -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <!-- EXCLUSIVO CAPITAN -->
             <div id="cardAsignarTarea" onclick="openModalCrearTarea()" class="hidden bg-white rounded-xl border p-5 hover:border-purple-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Asignar Tareas</h3><p class="text-[11px] text-slate-500 mt-0.5">Delegar órdenes a oficiales</p><span class="mt-3 text-[11px] font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded">Crear Tarea &rarr;</span></div>
             <div id="cardNovedades" onclick="openVerNovedadesView()" class="hidden bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Libro de Novedades</h3><p class="text-[11px] text-slate-500 mt-0.5">Revisar reportes de oficiales</p><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Buzón &rarr;</span></div>
-            <!-- EXCLUSIVO TTE 1 -->
             <div id="cardCertificados" onclick="openCertificadosView()" class="hidden bg-white rounded-xl border p-5 hover:border-violet-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Cursos y Certificados</h3><p class="text-[11px] text-slate-500 mt-0.5">Control académico de voluntarios</p><span class="mt-3 text-[11px] font-semibold text-violet-700 bg-violet-50 px-3 py-1 rounded">Gestionar &rarr;</span></div>
-            <!-- MÓDULOS DE EPP COMPARTIDOS CAPITÁN / TTE 1 -->
             <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 hover:border-teal-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega EPP (NFPA 1971)</h3><p class="text-[11px] text-slate-500 mt-0.5">Control de vida útil y stock</p><span class="mt-3 text-[11px] font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded">Ver Bodega &rarr;</span></div>
             <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal Voluntarios</h3><p class="text-[11px] text-slate-500 mt-0.5">Asignación y caducidades</p><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP Asignado &rarr;</span></div>
-            <!-- NUEVO MÓDULO: RESUMEN MENSUAL ASISTENCIA -->
             <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Resumen Mensual Horas</h3><p class="text-[11px] text-slate-500 mt-0.5">Matriz de cumplimiento y asistencia</p><span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Matriz &rarr;</span></div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
-            <div onclick="openRosterView()" class="bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Lista y Asistencia</h3><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Lista &rarr;</span></div>
-            <div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-5 hover:border-cyan-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Tiempo en Vivo</h3><span class="mt-3 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-3 py-1 rounded">Ver Timer &rarr;</span></div>
-            <div onclick="openFichasView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Fichas Voluntarios</h3><span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Fichas &rarr;</span></div>
-            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Matriz Mensual</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Resumen &rarr;</span></div>
+            <div onclick="openRosterView()" class="bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Lista y Asistencia</h3></div>
+            <div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-5 hover:border-cyan-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Tiempo en Vivo</h3></div>
+            <div onclick="openFichasView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Fichas Voluntarios</h3></div>
+            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Matriz Mensual</h3></div>
         </div>
 
         <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Inventarios Material Menor</h3>
@@ -303,7 +364,6 @@
         <div class="bg-white rounded-xl shadow-xs border p-4 flex flex-col sm:flex-row justify-between items-center gap-3">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button>
             <h2 class="font-bold uppercase text-amber-800">Libro de Novedades</h2>
-            <!-- BARRA DE FILTROS NOVEDADES -->
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <input type="text" id="filtroNovedadTexto" oninput="renderNovedades()" placeholder="Buscar texto..." class="px-3 py-1.5 border rounded outline-none w-full sm:w-48 bg-slate-50">
                 <select id="filtroNovedadOficial" onchange="renderNovedades()" class="px-3 py-1.5 border rounded outline-none bg-slate-50 font-semibold">
@@ -327,7 +387,7 @@
         </div>
     </div>
 
-    <!-- NUEVA VISTA: RESUMEN MENSUAL DE HORAS Y ASISTENCIA -->
+    <!-- RESUMEN MENSUAL DE HORAS -->
     <div id="resumenMensualView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button>
@@ -366,7 +426,7 @@
     
     <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 id="cuartelTitle" class="font-bold uppercase text-emerald-900">Inventario Cuartel</h2><button onclick="openCuartelItemModal()" class="bg-emerald-700 text-white px-3.5 py-1.5 rounded font-semibold transition-colors shadow-sm">Agregar Artículo</button></div><div class="bg-white border rounded-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100/70 text-[10px] uppercase text-slate-500"><th class="px-5 py-3">Artículo</th><th class="px-5 py-3">Ubicación</th><th class="px-5 py-3 text-center">Stock</th><th class="px-5 py-3 text-center">Estado</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="cuartelInventoryTableBody" class="divide-y"></tbody></table></div></div>
 
-    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="bg-fuchsia-700 text-white px-3 py-1 rounded">Agendar</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-2 bg-white p-5 rounded-xl border"><div class="flex justify-between mb-4"><button onclick="changeMonth(-1)" class="font-bold">Ant</button><h3 id="currentMonthYear" class="font-bold"></h3><button onclick="changeMonth(1)" class="font-bold">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="bg-slate-50 p-5 rounded-xl border"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b pb-2">Seleccione día</h3><div id="dayEventsList"></div></div></div></div>
+    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="hidden bg-fuchsia-700 text-white px-3 py-1 rounded font-bold shadow-sm">Agendar Evento</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-2 bg-white p-5 rounded-xl border"><div class="flex justify-between mb-4"><button onclick="changeMonth(-1)" class="font-bold px-2 py-1 bg-slate-100 rounded">Ant</button><h3 id="currentMonthYear" class="font-bold text-sm"></h3><button onclick="changeMonth(1)" class="font-bold px-2 py-1 bg-slate-100 rounded">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="bg-slate-50 p-5 rounded-xl border"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b pb-2 text-slate-800">Seleccione día</h3><div id="dayEventsList" class="space-y-3"></div></div></div></div>
     
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left bg-white border rounded-xl overflow-hidden"><thead class="bg-slate-100/70 border-b text-[10px] uppercase font-bold text-slate-600"><th class="px-5 py-3">Fecha y Hora</th><th class="px-5 py-3">Oficial Responsable</th><th class="px-5 py-3">Voluntario Liberado</th><th class="px-5 py-3">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y"></tbody></table></div>
 
@@ -413,6 +473,7 @@
         const oficialesOperativos = ["Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         const oficialesOperativosAltos = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         
+        let usersAccounts = {}; 
         let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], estadoGuardia = { activo: "Tenienteprimero" };
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
         let calendarEvents = [], remorsionesLog = [];
@@ -421,10 +482,12 @@
 
         function formatCargoStr(c) {
             if(c==='Tenienteprimero') return 'Teniente 1°'; if(c==='Tenientesegundo') return 'Teniente 2°';
-            if(c==='Tenientetercero') return 'Teniente 3°'; if(c==='Capitan') return 'Capitán'; return c;
+            if(c==='Tenientetercero') return 'Teniente 3°'; if(c==='Capitan') return 'Capitán'; 
+            if(c==='VoluntarioRaso') return 'Voluntario Raso'; if(c==='Aspirante') return 'Aspirante'; return c;
         }
 
         // FIREBASE LISTENERS
+        db.ref('usersAccounts').on('value', snap => { usersAccounts = snap.val() || {}; });
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
         db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); });
@@ -440,8 +503,8 @@
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
         window.addEventListener('DOMContentLoaded', () => {
-            const activeCargo = localStorage.getItem('active_cargo');
-            if (activeCargo) activateSession(activeCargo);
+            const activeUserStr = localStorage.getItem('active_user_session');
+            if (activeUserStr) activateSession(JSON.parse(activeUserStr));
             verificarBloqueoSalida();
             verificarAlertasAutomaticas();
         });
@@ -472,8 +535,8 @@
             const textoAlerta = document.getElementById('textoAlertaOperativa');
             if(!banner || !textoAlerta) return;
 
-            const cargoActual = localStorage.getItem('active_cargo');
-            if (!cargoActual || !oficialesOperativosAltos.includes(cargoActual)) {
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if (!user || !oficialesOperativosAltos.includes(user.cargo)) {
                 banner.classList.add('hidden');
                 return;
             }
@@ -499,25 +562,82 @@
 
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-        function logout() { localStorage.removeItem('active_cargo'); window.location.reload(); }
-        function handleLogin(e) { e.preventDefault(); const cargo = document.getElementById('loginCargo').value; const pass = document.getElementById('loginPassword').value; if (credentials[cargo] && credentials[cargo] === pass) { localStorage.setItem('active_cargo', cargo); closeLoginModal(); activateSession(cargo); } else { alert("Contraseña incorrecta."); } }
-
-        function hideAllViews() {
-            ['accessView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+        
+        function toggleRegistroMode(isRegister) {
+            if(isRegister) {
+                document.getElementById('modalTitleLogin').innerHTML = `<i class="ph ph-user-plus text-base"></i> Registro de Nuevo Miembro`;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+            } else {
+                document.getElementById('modalTitleLogin').innerHTML = `<i class="ph ph-lock-key text-base"></i> Iniciar Sesión`;
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
+            }
         }
 
-        function activateSession(cargo) {
-            document.getElementById('activeUserBadge').textContent = formatCargoStr(cargo);
+        // REGISTRO INDIVIDUAL
+        function handleRegister(e) {
+            e.preventDefault();
+            const tipo = document.getElementById('regTipoPerfil').value;
+            const nombre = document.getElementById('regNombre').value.trim();
+            const rut = document.getElementById('regRut').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            const userId = rut.replace(/[^0-9kK]/g, '').toLowerCase();
+            if(usersAccounts[userId]) { alert("Ya existe una cuenta registrada con este RUT."); return; }
+
+            usersAccounts[userId] = { id: userId, tipo: tipo, nombre: nombre, rut: rut, password: password };
+            db.ref('usersAccounts').set(usersAccounts);
+            alert("¡Registro exitoso! Ya puedes iniciar sesión con tu RUT y contraseña.");
+            toggleRegistroMode(false);
+        }
+
+        function handleLogin(e) { 
+            e.preventDefault(); 
+            const cargoSelect = document.getElementById('loginCargo').value; 
+            const pass = document.getElementById('loginPassword').value; 
+            
+            // Verificar Oficial
+            if (credentials[cargoSelect] && credentials[cargoSelect] === pass) { 
+                const sessionData = { cargo: cargoSelect, nombre: formatCargoStr(cargoSelect), tipo: cargoSelect };
+                localStorage.setItem('active_user_session', JSON.stringify(sessionData));
+                closeLoginModal(); activateSession(sessionData); 
+                return;
+            } 
+
+            // Verificar Usuario (Aspirante/Voluntario)
+            let found = Object.values(usersAccounts).find(u => u.tipo === cargoSelect && u.password === pass);
+            if(found) {
+                const sessionData = { cargo: found.tipo, nombre: found.nombre, rut: found.rut, tipo: found.tipo };
+                localStorage.setItem('active_user_session', JSON.stringify(sessionData));
+                closeLoginModal(); activateSession(sessionData);
+            } else {
+                alert("Cargo o contraseña incorrectos.");
+            }
+        }
+
+        function logout() { localStorage.removeItem('active_user_session'); window.location.reload(); }
+
+        function hideAllViews() {
+            ['accessView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+        }
+
+        function activateSession(user) {
+            document.getElementById('activeUserBadge').textContent = user.nombre;
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews();
             
+            const cargo = user.cargo;
+
             if (['Capitan', 'Tenienteprimero', 'Tenientesegundo', 'Tenientetercero', 'Ayudante'].includes(cargo)) {
                 document.getElementById('bloqueadosBtnContainer').classList.remove('hidden');
                 document.getElementById('calendarBtnContainer').classList.remove('hidden');
                 document.getElementById('guardiaBanner').classList.remove('hidden');
                 document.getElementById('btnVerTareas').classList.remove('hidden');
                 document.getElementById('btnGenerarPdf').classList.remove('hidden');
+                document.getElementById('btnAddEvent').classList.remove('hidden');
+
                 if(cargo === 'Capitan') {
                     document.getElementById('remorsionBtnContainer').classList.remove('hidden');
                     document.getElementById('btnModificarGuardia').classList.remove('hidden');
@@ -528,22 +648,32 @@
                     document.getElementById('btnCrearNovedad').classList.remove('hidden');
                 }
                 renderBadgeTareas();
+            } else if (cargo === 'Aspirante' || cargo === 'VoluntarioRaso') {
+                document.getElementById('calendarBtnContainer').classList.remove('hidden');
+                document.getElementById('btnAddEvent').classList.add('hidden');
             }
 
             if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
                 document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
                 document.getElementById('cardAsignarTarea').classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardNovedades').classList.toggle('hidden', cargo !== 'Capitan');
+                document.getElementById('btnGestionarAspirantes').classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardCertificados').classList.toggle('hidden', cargo !== 'Tenienteprimero');
             } else if (cargo === 'Ayudante') document.getElementById('ayudanteView').classList.remove('hidden');
             else if (cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
             else if (cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
-            else document.getElementById('accessView').classList.remove('hidden');
+            else if (cargo === 'Aspirante') {
+                document.getElementById('saludoAspirante').textContent = `Bienvenido, Aspirante ${user.nombre}`;
+                document.getElementById('aspiranteView').classList.remove('hidden');
+            } else if (cargo === 'VoluntarioRaso') {
+                document.getElementById('saludoVoluntario').textContent = `Bienvenido, Voluntario ${user.nombre}`;
+                document.getElementById('voluntarioRasoView').classList.remove('hidden');
+            } else document.getElementById('accessView').classList.remove('hidden');
 
             verificarAlertasAutomaticas();
         }
 
-        function backToMainPanel() { activateSession(localStorage.getItem('active_cargo')); }
+        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); }
 
         // ================= GESTIÓN DE FIRMAS POR TEXTO =================
         function abrirModalFirmasPdf() {
@@ -573,17 +703,39 @@
 
         // PERFILES
         function openProfileModal() {
-            const cargo = localStorage.getItem('active_cargo'); if (!cargo) return;
-            const data = profiles[cargo] || { name: cargo, rut: "N/D", phone: "N/D" };
-            document.getElementById('profileCargoBadge').textContent = cargo; document.getElementById('profileDisplayName').textContent = data.name; document.getElementById('profileNameVal').textContent = data.name; document.getElementById('profileRutVal').textContent = data.rut; document.getElementById('profilePhoneVal').textContent = data.phone; document.getElementById('profileModal').classList.remove('hidden');
+            const user = JSON.parse(localStorage.getItem('active_user_session')); if (!user) return;
+            document.getElementById('profileCargoBadge').textContent = formatCargoStr(user.tipo); 
+            document.getElementById('profileDisplayName').textContent = user.nombre; 
+            document.getElementById('profileNameVal').textContent = user.nombre; 
+            document.getElementById('profileRutVal').textContent = user.rut || "N/A"; 
+            document.getElementById('profileModal').classList.remove('hidden');
         }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function openEditProfileModal() { closeProfileModal(); document.getElementById('editProfileModal').classList.remove('hidden'); }
-        function closeEditProfileModal() { document.getElementById('editProfileModal').classList.add('hidden'); }
-        function saveProfileData(e) {
-            e.preventDefault(); const cargo = localStorage.getItem('active_cargo');
-            profiles[cargo] = { name: document.getElementById('editNameInput').value.trim(), rut: document.getElementById('editRutInput').value.trim(), phone: document.getElementById('editPhoneInput').value.trim() };
-            db.ref('perfiles').set(profiles); closeEditProfileModal(); openProfileModal();
+        
+        // ================= GESTIÓN Y ASCENSO DE ASPIRANTES POR EL CAPITÁN =================
+        function openGestionAspirantesModal() {
+            const tbody = document.getElementById('aspirantesTableBody'); tbody.innerHTML = '';
+            const aspirantes = Object.values(usersAccounts).filter(u => u.tipo === 'Aspirante');
+            if(aspirantes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">No hay aspirantes registrados actualmente.</td></tr>`;
+            } else {
+                aspirantes.forEach(asp => {
+                    tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-3 py-2 font-bold">${asp.nombre}</td><td class="px-3 py-2 text-slate-500 font-mono">${asp.rut}</td><td class="px-3 py-2 text-right"><button onclick="promoverAspirante('${asp.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded font-bold text-[10px]">Promover a Voluntario Raso</button></td></tr>`;
+                });
+            }
+            document.getElementById('gestionAspirantesModal').classList.remove('hidden');
+        }
+        function closeGestionAspirantesModal() { document.getElementById('gestionAspirantesModal').classList.add('hidden'); }
+
+        function promoverAspirante(id) {
+            if(confirm("¿Estás seguro de promover a este aspirante a Voluntario Raso? Su perfil y accesos cambiarán de inmediato.")) {
+                if(usersAccounts[id]) {
+                    usersAccounts[id].tipo = 'VoluntarioRaso';
+                    db.ref('usersAccounts').set(usersAccounts);
+                    alert("¡Ascenso completado con éxito!");
+                    openGestionAspirantesModal();
+                }
+            }
         }
 
         // ================= SISTEMA DE TAREAS =================
@@ -597,15 +749,15 @@
             db.ref('tareas').set(tareas); closeModalCrearTarea(); alert("Tarea asignada correctamente.");
         }
         function renderBadgeTareas() {
-            const cargo = localStorage.getItem('active_cargo');
-            const misPendientes = tareas.filter(t => t.to === cargo && t.status === 'pendiente');
+            const user = JSON.parse(localStorage.getItem('active_user_session')); if(!user) return;
+            const misPendientes = tareas.filter(t => t.to === user.cargo && t.status === 'pendiente');
             const badge = document.getElementById('badgeTareas');
             if(badge) badge.textContent = misPendientes.length;
         }
         function openModalVerTareas() {
             const container = document.getElementById('tareasContainer'); container.innerHTML = '';
-            const cargo = localStorage.getItem('active_cargo');
-            const misTareas = tareas.filter(t => t.to === cargo).sort((a,b) => b.id - a.id);
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const misTareas = tareas.filter(t => t.to === user.cargo).sort((a,b) => b.id - a.id);
             if(misTareas.length === 0) { container.innerHTML = `<p class="text-slate-400 text-center py-4">Sin tareas pendientes.</p>`; }
             else {
                 misTareas.forEach(t => {
@@ -625,8 +777,8 @@
         function openModalCrearNovedad() { document.getElementById('txtNovedadDesc').value=''; document.getElementById('modalCrearNovedad').classList.remove('hidden'); }
         function closeModalCrearNovedad() { document.getElementById('modalCrearNovedad').classList.add('hidden'); }
         function saveNovedad(e) {
-            e.preventDefault(); const text = document.getElementById('txtNovedadDesc').value.trim(); const cargo = localStorage.getItem('active_cargo');
-            crearRegistroNovedad(cargo, text); closeModalCrearNovedad(); alert("Novedad enviada al Capitán.");
+            e.preventDefault(); const text = document.getElementById('txtNovedadDesc').value.trim(); const user = JSON.parse(localStorage.getItem('active_user_session'));
+            crearRegistroNovedad(user.cargo, text); closeModalCrearNovedad(); alert("Novedad enviada al Capitán.");
         }
         function crearRegistroNovedad(autor, texto) {
             novedades.unshift({ id: Date.now(), by: formatCargoStr(autor), text: texto, date: new Date().toLocaleString('es-CL') });
@@ -651,7 +803,7 @@
             });
 
             if(filtradas.length === 0) { 
-                tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No se encontraron novedades con los filtros seleccionados.</td></tr>`; 
+                tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No se encontraron novedades.</td></tr>`; 
                 return;
             }
             filtradas.forEach(n => { 
@@ -680,9 +832,9 @@
 
         function openModalEntregarGuardia() {
             const select = document.getElementById('selectNuevoGuardia'); select.innerHTML = '';
-            const cargo = localStorage.getItem('active_cargo');
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
             oficialesOperativos.forEach(of => {
-                if(of !== cargo) select.innerHTML += `<option value="${of}">${formatCargoStr(of)}</option>`;
+                if(of !== user.cargo) select.innerHTML += `<option value="${of}">${formatCargoStr(of)}</option>`;
             });
             document.getElementById('modalEntregarGuardia').classList.remove('hidden');
         }
@@ -690,10 +842,10 @@
         function saveEntregarGuardia(e) {
             e.preventDefault();
             const nuevoGuardia = document.getElementById('selectNuevoGuardia').value;
-            const cargoApp = localStorage.getItem('active_cargo');
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
             estadoGuardia.activo = nuevoGuardia;
             db.ref('estadoGuardia').set(estadoGuardia);
-            crearRegistroNovedad(cargoApp === 'Capitan' ? 'Capitan' : "SISTEMA", `Relevo de Guardia: ${formatCargoStr(cargoApp)} ha entregado la guardia al ${formatCargoStr(nuevoGuardia)}.`);
+            crearRegistroNovedad(user.cargo === 'Capitan' ? 'Capitan' : "SISTEMA", `Relevo de Guardia: ${formatCargoStr(user.cargo)} ha entregado la guardia al ${formatCargoStr(nuevoGuardia)}.`);
             closeModalEntregarGuardia(); alert(`Guardia asignada al ${formatCargoStr(nuevoGuardia)}.`);
         }
 
@@ -855,8 +1007,8 @@
             const m = roster.find(x => x.id === id); if (!m) return;
             document.getElementById('detailMemberName').textContent = m.name; document.getElementById('detailMemberRole').textContent = m.role; document.getElementById('detailMember3m').textContent = m.count3m || 0; document.getElementById('detailMember1y').textContent = m.count1y || 0;
             
-            const cargo = localStorage.getItem('active_cargo');
-            const esOficialAlto = oficialesOperativosAltos.includes(cargo);
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const esOficialAlto = user && oficialesOperativosAltos.includes(user.cargo);
             const medSection = document.getElementById('medicoTacticaSection');
             if (esOficialAlto) {
                 medSection.classList.remove('hidden');
@@ -944,8 +1096,11 @@
         function renderVisitors() {
             const tbody = document.getElementById('visitorsTableBody'); if (!tbody) return; tbody.innerHTML = '';
             if (visitors.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-10 text-center text-slate-400">Sin voluntarios de guardia.</td></tr>`; return; }
-            const cargo = localStorage.getItem('active_cargo'); const esOficialAsignador = (cargo === 'Capitan' || cargo === 'Ayudante' || cargo === 'Tenienteprimero');
+            
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const esOficialAsignador = user && (user.cargo === 'Capitan' || user.cargo === 'Ayudante' || user.cargo === 'Tenienteprimero');
             const sorted = [...visitors].sort((a, b) => b.id - a.id);
+            
             sorted.forEach(v => {
                 let statusHtml = v.status === 'active' ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">En cuartel</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px]">Salió</span>`;
                 let reasonHtml = v.reason ? `<span class="text-slate-800 font-medium">${v.reason}</span>` : `<span class="text-amber-600 italic">Pendiente</span>`;
@@ -1019,9 +1174,9 @@
             e.preventDefault();
             if(!selectedVoluntarioParaLiberar || !blockedList[selectedVoluntarioParaLiberar]) return;
             const item = blockedList[selectedVoluntarioParaLiberar];
-            const cargo = localStorage.getItem('active_cargo') || "Oficial";
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {cargo: 'Oficial'};
             const motivo = document.getElementById('motivoRemorsion').value.trim();
-            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: formatCargoStr(cargo), voluntario: item.name, motivo: motivo });
+            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: formatCargoStr(user.cargo), voluntario: item.name, motivo: motivo });
             db.ref('remorsiones').set(remorsionesLog);
             delete blockedList[selectedVoluntarioParaLiberar]; db.ref('blockedList').set(blockedList);
             closeRemoverRestriccionModal(); alert(`Restricción liberada con éxito.`);
@@ -1058,8 +1213,9 @@
         // ================= INVENTARIOS CARROS Y CUARTEL =================
         function openCarro(code) { currentCarro = code; hideAllViews(); document.getElementById('carroInventoryView').classList.remove('hidden'); document.getElementById('carroTitle').textContent = `Inventario - ${code}`; renderInventory(); }
         function backToCarros() { 
-            hideAllViews(); const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            hideAllViews(); 
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if(user && user.cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
             else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden'); 
         }
         function renderInventory() {
@@ -1083,8 +1239,9 @@
 
         function openCuartelSeccion(s) { currentCuartelSeccion = s; hideAllViews(); document.getElementById('cuartelInventoryView').classList.remove('hidden'); document.getElementById('cuartelTitle').textContent = `Inventario - ${s}`; renderCuartelInventory(); }
         function backToCuartelMenu() { 
-            hideAllViews(); const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            hideAllViews(); 
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if(user && user.cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
             else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
         }
         function renderCuartelInventory() {
@@ -1106,7 +1263,7 @@
         }
         function deleteCuartelItem(id) { if (confirm("¿Eliminar artículo?")) { cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id); db.ref('cuartel').set(cuartelInventarios); } }
 
-        // ================= CALENDARIO =================
+        // ================= CALENDARIO (CON VISIBILIDAD) =================
         function openCalendarView() { hideAllViews(); document.getElementById('calendarView').classList.remove('hidden'); renderCalendar(); }
         function renderCalendar() {
             const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = '';
@@ -1115,11 +1272,22 @@
             const firstDay = new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay(); const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 0).getDate();
             for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
             const today = new Date();
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {};
+
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${calDate.getFullYear()}-${String(calDate.getMonth()+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                const hasEvent = calendarEvents.some(e => e.date === dateStr);
+                
+                const eventosDia = calendarEvents.filter(e => {
+                    if (e.date !== dateStr) return false;
+                    if (user.tipo === 'Aspirante') return e.visibility === 'aspirante' || e.visibility === 'todos';
+                    if (user.tipo === 'VoluntarioRaso') return e.visibility === 'voluntario' || e.visibility === 'todos';
+                    return true;
+                });
+
+                const hasEvent = eventosDia.length > 0;
                 let bgClass = "bg-white text-slate-700 hover:bg-slate-50";
-                if (dateStr === selectedDateStr) bgClass = "bg-fuchsia-100 text-fuchsia-900 border-fuchsia-300 font-bold shadow-inner"; else if (calDate.getFullYear() === today.getFullYear() && calDate.getMonth() === today.getMonth() && i === today.getDate()) bgClass = "bg-fuchsia-600 text-white font-bold shadow-md";
+                if (dateStr === selectedDateStr) bgClass = "bg-fuchsia-100 text-fuchsia-900 border-fuchsia-300 font-bold shadow-inner"; 
+                else if (calDate.getFullYear() === today.getFullYear() && calDate.getMonth() === today.getMonth() && i === today.getDate()) bgClass = "bg-fuchsia-600 text-white font-bold shadow-md";
                 let dot = hasEvent ? `<div class="w-1.5 h-1.5 bg-fuchsia-500 rounded-full mx-auto mt-0.5"></div>` : `<div class="w-1.5 h-1.5 mx-auto mt-0.5"></div>`;
                 grid.innerHTML += `<div onclick="selectDate('${dateStr}')" class="p-2 border rounded cursor-pointer ${bgClass} transition-colors"><span class="block">${i}</span>${dot}</div>`;
             }
@@ -1130,17 +1298,26 @@
             const list = document.getElementById('dayEventsList'); const label = document.getElementById('selectedDateLabel');
             if (!selectedDateStr) { label.textContent = "Seleccione un día"; list.innerHTML = `<p class="text-slate-500 italic text-[11px]">No hay actividades.</p>`; return; }
             label.textContent = `Actividades del ${selectedDateStr}`;
-            const dayEvents = calendarEvents.filter(e => e.date === selectedDateStr);
-            if (dayEvents.length === 0) { list.innerHTML = `<p class="text-slate-500 italic text-[11px]">Día libre.</p>`; return; }
-            list.innerHTML = ''; const cargo = localStorage.getItem('active_cargo');
+            
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {};
+            const dayEvents = calendarEvents.filter(e => {
+                if (e.date !== selectedDateStr) return false;
+                if (user.tipo === 'Aspirante') return e.visibility === 'aspirante' || e.visibility === 'todos';
+                if (user.tipo === 'VoluntarioRaso') return e.visibility === 'voluntario' || e.visibility === 'todos';
+                return true;
+            });
+
+            if (dayEvents.length === 0) { list.innerHTML = `<p class="text-slate-500 italic text-[11px]">Sin eventos programados para tu grupo.</p>`; return; }
+            list.innerHTML = '';
             dayEvents.forEach(ev => {
-                let deleteBtn = (cargo === 'Capitan' || cargo === 'Ayudante') ? `<button onclick="deleteEvent(${ev.id})" class="text-rose-600 font-bold text-[10px] mt-2 bg-rose-50 px-2 py-1 rounded">Eliminar Actividad</button>` : '';
-                list.innerHTML += `<div class="bg-white p-3 rounded-lg border border-l-4 border-l-fuchsia-500 shadow-sm"><h4 class="font-bold text-xs text-slate-800">${ev.title}</h4><p class="text-[11px] mt-1 text-slate-600">${ev.description}</p>${deleteBtn}</div>`;
+                let badgeVis = ev.visibility === 'aspirante' ? `<span class="bg-amber-100 text-amber-800 text-[9px] px-2 py-0.5 rounded font-bold">Solo Aspirantes</span>` : ev.visibility === 'voluntario' ? `<span class="bg-indigo-100 text-indigo-800 text-[9px] px-2 py-0.5 rounded font-bold">Solo Voluntarios</span>` : `<span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-0.5 rounded font-bold">General</span>`;
+                let deleteBtn = (user.cargo === 'Capitan' || user.cargo === 'Ayudante') ? `<button onclick="deleteEvent(${ev.id})" class="text-rose-600 font-bold text-[10px] mt-2 bg-rose-50 px-2 py-1 rounded">Eliminar Actividad</button>` : '';
+                list.innerHTML += `<div class="bg-white p-3 rounded-lg border border-l-4 border-l-fuchsia-500 shadow-sm space-y-1"><div class="flex justify-between items-start"><h4 class="font-bold text-xs text-slate-800">${ev.title}</h4>${badgeVis}</div><p class="text-[11px] mt-1 text-slate-600">${ev.description}</p>${deleteBtn}</div>`;
             });
         }
-        function openEventModal() { if (!selectedDateStr) { alert("Seleccione un día en el calendario primero."); return; } document.getElementById('eventDate').value = selectedDateStr; document.getElementById('eventTitle').value=''; document.getElementById('eventDescription').value=''; document.getElementById('eventModal').classList.remove('hidden'); }
+        function openEventModal() { if (!selectedDateStr) { alert("Seleccione un día en el calendario primero."); return; } document.getElementById('eventDate').value = selectedDateStr; document.getElementById('eventTitle').value=''; document.getElementById('eventDescription').value=''; document.getElementById('eventVisibility').value='todos'; document.getElementById('eventModal').classList.remove('hidden'); }
         function closeEventModal() { document.getElementById('eventModal').classList.add('hidden'); }
-        function saveEvent(e) { e.preventDefault(); calendarEvents.push({ id: Date.now(), date: document.getElementById('eventDate').value, title: document.getElementById('eventTitle').value, description: document.getElementById('eventDescription').value }); db.ref('calendario').set(calendarEvents); closeEventModal(); selectDate(document.getElementById('eventDate').value); }
+        function saveEvent(e) { e.preventDefault(); calendarEvents.push({ id: Date.now(), date: document.getElementById('eventDate').value, title: document.getElementById('eventTitle').value, description: document.getElementById('eventDescription').value, visibility: document.getElementById('eventVisibility').value }); db.ref('calendario').set(calendarEvents); closeEventModal(); selectDate(document.getElementById('eventDate').value); }
         function deleteEvent(id) { if (confirm("¿Eliminar actividad del calendario?")) { calendarEvents = calendarEvents.filter(e => e.id !== id); db.ref('calendario').set(calendarEvents); selectDate(selectedDateStr); } }
 
         // ================= AUDITORÍA, EXPORTACIÓN Y PDF =================
@@ -1149,9 +1326,11 @@
         
         function exportarExcel() {
             if (visitors.length === 0) { alert("No hay datos para exportar."); return; }
-            let csv = "Nombre,RUT,Motivo,Entrada,Salida\n";
-            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
-            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            let csv = "Nombre,RUT,Motivo,Entrada,Salida
+";
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"
+`; });
+            const blob = new Blob(["﻿" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Registro_Bomberos_${new Date().toLocaleDateString('es-CL')}.csv`; link.click();
         }
 
