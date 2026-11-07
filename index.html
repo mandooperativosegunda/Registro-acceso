@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <!-- BANNER DE ALERTA AUTOMÁTICA EPP (EXCLUSIVO OFICIALES OPERATIVOS) -->
+    <!-- BANNER DE ALERTA AUTOMÁTICA EPP -->
     <div id="alertaOperativaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-3">
         <div class="bg-rose-50 border-l-4 border-rose-600 p-3 rounded-r-lg shadow-xs flex items-center justify-between text-xs text-rose-900">
             <div class="flex items-center gap-2">
@@ -111,7 +111,7 @@
                 <div id="loginError" class="hidden p-2 rounded bg-red-50 text-red-700 font-medium"></div>
                 <div>
                     <label class="block font-semibold mb-1">Seleccionar Cargo / Perfil</label>
-                    <select id="loginCargo" required class="w-full px-3 py-2 border rounded">
+                    <select id="loginCargo" onchange="toggleLoginNombreField()" required class="w-full px-3 py-2 border rounded">
                         <option value="">-- Seleccione --</option>
                         <option value="Directora">Directora</option>
                         <option value="Tesorero">Tesorero</option>
@@ -121,9 +121,14 @@
                         <option value="Tenienteprimero">Teniente Primero</option>
                         <option value="Tenientesegundo">Teniente Segundo</option>
                         <option value="Tenientetercero">Teniente Tercero</option>
-                        <option value="Aspirante">Aspirante (Registrado)</option>
-                        <option value="VoluntarioRaso">Voluntario Raso (Registrado)</option>
+                        <option value="Aspirante">Aspirante</option>
+                        <option value="VoluntarioRaso">Voluntario Raso</option>
                     </select>
+                </div>
+                <!-- Campo Nombre desplegable exclusivo para Aspirante o Voluntario Raso -->
+                <div id="loginNombreContainer" class="hidden">
+                    <label class="block font-semibold mb-1">Nombre con el que te registraste</label>
+                    <input type="text" id="loginNombreInput" placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border rounded bg-slate-50">
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">Contraseña</label>
@@ -174,13 +179,13 @@
     <div id="modalCrearTarea" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-purple-900 text-white"><h3 class="font-bold">Asignar Tarea</h3><button onclick="closeModalCrearTarea()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveTarea(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1">Destinatario</label><select id="selectDestinoTarea" required class="w-full px-3 py-2 border rounded"><option value="Tenienteprimero">Teniente Primero</option><option value="Tenientesegundo">Teniente Segundo</option><option value="Tenientetercero">Teniente Tercero</option><option value="Ayudante">Ayudante</option></select></div><div><label class="block font-semibold mb-1">Instrucciones</label><textarea id="txtTareaDesc" required rows="3" class="w-full px-3 py-2 border rounded"></textarea></div><button type="submit" class="w-full bg-purple-700 text-white py-2 rounded font-bold">Enviar</button></form></div></div>
     <div id="modalVerTareas" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-3 flex justify-between bg-fuchsia-800 text-white shrink-0"><h3 class="font-bold">Buzón de Tareas</h3><button onclick="closeModalVerTareas()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3" id="tareasContainer"></div></div></div>
 
-    <!-- MODALES DE CONTROL (BLOQUEADOS, LIBERACION, ETC) -->
+    <!-- MODALES DE CONTROL -->
     <div id="bloqueadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-3 flex justify-between bg-amber-700 text-white shrink-0"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-lock-keyhole text-base"></i> Voluntarios Bloqueados (2 hrs)</h3><button onclick="closeBloqueadosModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar space-y-3"><p class="text-slate-500 text-[11px]">Haz clic sobre el voluntario que deseas liberar manualmente antes de cumplir su tiempo de espera:</p><div class="border rounded-lg overflow-hidden bg-white"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-100 text-[10px] uppercase font-bold text-slate-600"><th class="px-3 py-2">Voluntario</th><th class="px-3 py-2 text-center">Restante</th><th class="px-3 py-2 text-right">Acción</th></tr></thead><tbody id="bloqueadosTableBody" class="divide-y"><tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">Sin voluntarios bloqueados.</td></tr></tbody></table></div></div></div></div>
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-rose-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-lock-open text-base"></i> Liberar Voluntario</h3><button onclick="closeRemoverRestriccionModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="ejecutarRemorsionRestriccion(event)" class="p-5 space-y-3"><div><label class="block font-semibold mb-1">Voluntario</label><input type="text" id="voluntarioRestriccionNombre" disabled class="w-full px-3 py-2 border rounded bg-slate-100 font-bold"></div><div><label class="block font-semibold mb-1">Motivo Operativo</label><textarea id="motivoRemorsion" required rows="3" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-rose-500 outline-none"></textarea></div><button type="submit" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2 rounded font-semibold transition-colors">Confirmar Liberación</button></form></div></div>
     <div id="assignReasonModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-cyan-900 text-white"><h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-clipboard-text"></i> Asignar Motivo</h3><button onclick="closeAssignReasonModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveAssignedReason(event)" class="p-5 space-y-3"><input type="hidden" id="assignVisitorId"><div><label class="block font-semibold">Voluntario</label><input type="text" id="assignVisitorName" disabled class="w-full px-3 py-2 bg-slate-100 border rounded font-bold"></div><div><label class="block font-semibold">Motivo</label><input type="text" id="assignVisitorReasonInput" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-cyan-700 text-white py-2 rounded">Guardar</button></form></div></div>
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold">Agregar a la Lista</h3><button onclick="closeMemberModal()"><i class="ph ph-x text-lg"></i></button></div><form id="memberForm" onsubmit="saveMember(event)" class="p-5 space-y-3"><input type="hidden" id="memberId"><div><label class="block font-semibold">Categoría</label><select id="memberCategory" required class="w-full px-3 py-2 border rounded"><option value="Voluntario">Voluntario</option><option value="Aspirante">Aspirante</option><option value="Honorario">Honorario</option></select></div><div><label class="block font-semibold">Cargo</label><input type="text" id="memberRole" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Nombre</label><input type="text" id="memberName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Motivo Inicial</label><input type="text" id="memberReason" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded font-bold">Guardar</button></form></div></div>
     
-    <!-- MODAL GESTIÓN CERTIFICADOS (TTE 1) -->
+    <!-- MODAL GESTIÓN CERTIFICADOS -->
     <div id="fichaCertificadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-5 py-3 border-b flex justify-between bg-violet-900 text-white shrink-0">
@@ -208,8 +213,8 @@
         </div>
     </div>
 
-    <!-- MODAL BODEGA EPP (CON FECHA DE FABRICACIÓN NFPA 1971) -->
-    <div id="agregarBodegaEppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-teal-900 text-white"><h3 class="font-bold">Ingresar EPP a Bodega (NFPA 1971)</h3><button onclick="closeAgregarBodegaEppModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveBodegaEpp(event)" class="p-5 space-y-3"><input type="hidden" id="bodegaEppId"><div><label class="block font-semibold mb-1">Tipo de Artículo</label><select id="bodegaEppNameSelect" onchange="toggleOtroEppInput()" required class="w-full px-3 py-2 border rounded bg-slate-50"><option value="">-- Seleccione equipo --</option><option value="Uniforme estructural">Uniforme estructural</option><option value="Uniforme forestal">Uniforme forestal</option><option value="Uniforme rescate">Uniforme rescate</option><option value="Casco estructural">Casco estructural</option><option value="Guantes estructurales">Guantes estructurales</option><option value="Bota estructural">Bota estructural</option><option value="Esclavina estructural">Esclavina estructural</option><option value="Linterna de casco">Linterna de casco</option><option value="OTRO">Otro nuevo (Especificar)...</option></select></div><div id="otroEppContainer" class="hidden"><label class="block font-semibold mb-1">Nombre del Nuevo EPP</label><input type="text" id="bodegaEppNameOtro" placeholder="Ej. Antiparras..." class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-3"><div><label class="block font-semibold mb-1">Talla (Opcional)</label><input type="text" id="bodegaEppSize" placeholder="Ej. L, 42..." class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold mb-1">Cantidad Inicial</label><input type="number" id="bodegaEppStock" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div></div><div><label class="block font-semibold mb-1">Fecha de Fabricación (Para cálculo vida útil)</label><input type="date" id="bodegaEppFabricacion" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-teal-700 text-white py-2 rounded mt-2 font-bold">Guardar</button></form></div></div>
+    <!-- MODAL BODEGA EPP -->
+    <div id="agregarBodegaEppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-teal-900 text-white"><h3 class="font-bold">Ingresar EPP a Bodega (NFPA 1971)</h3><button onclick="closeAgregarBodegaEppModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveBodegaEpp(event)" class="p-5 space-y-3"><input type="hidden" id="bodegaEppId"><div><label class="block font-semibold mb-1">Tipo de Artículo</label><select id="bodegaEppNameSelect" onchange="toggleOtroEppInput()" required class="w-full px-3 py-2 border rounded bg-slate-50"><option value="">-- Seleccione equipo --</option><option value="Uniforme estructural">Uniforme estructural</option><option value="Uniforme forestal">Uniforme forestal</option><option value="Uniforme rescate">Uniforme rescate</option><option value="Casco estructural">Casco estructural</option><option value="Guantes estructurales">Guantes estructurales</option><option value="Bota estructural">Bota estructural</option><option value="Esclavina estructural">Esclavina estructural</option><option value="Linterna de casco">Linterna de casco</option><option value="OTRO">Otro nuevo (Especificar)...</option></select></div><div id="otroEppContainer" class="hidden"><label class="block font-semibold mb-1">Nombre del Nuevo EPP</label><input type="text" id="bodegaEppNameOtro" placeholder="Ej. Antiparras..." class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-3"><div><label class="block font-semibold mb-1">Talla (Opcional)</label><input type="text" id="bodegaEppSize" placeholder="Ej. L, 42..." class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold mb-1">Cantidad Inicial</label><input type="number" id="bodegaEppStock" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div></div><div><label class="block font-semibold mb-1">Fecha de Fabricación</label><input type="date" id="bodegaEppFabricacion" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-teal-700 text-white py-2 rounded mt-2 font-bold">Guardar</button></form></div></div>
 
     <!-- MODAL FICHA DE EPP DEL VOLUNTARIO -->
     <div id="fichaEppVoluntarioModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[90vh]"><div class="px-5 py-3 border-b flex justify-between bg-orange-900 text-white shrink-0"><h3 class="text-sm font-bold flex items-center gap-2"><i class="ph ph-hard-hat text-base"></i> Ficha EPP Voluntario</h3><button onclick="closeFichaEppVoluntarioModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-5"><div class="bg-orange-50 border border-orange-100 rounded-lg p-3 flex items-center gap-3"><div class="w-10 h-10 bg-orange-700 text-white rounded-full flex items-center justify-center text-lg font-bold"><i class="ph ph-user"></i></div><div><span id="eppFichaRole" class="text-[10px] font-bold text-orange-600 uppercase">Cargo</span><h4 id="eppFichaName" class="text-sm font-bold text-slate-900">Nombre Voluntario</h4></div></div><div class="bg-slate-50 border border-slate-200 rounded-lg p-4"><h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-plus-circle text-orange-600"></i> Asignar / Entregar EPP</h5><form onsubmit="entregarEpp(event)" class="flex gap-2"><input type="hidden" id="eppFichaMemberId"><select id="selectEppToAssign" required class="flex-grow px-3 py-2 border rounded focus:ring-2 focus:ring-orange-500 outline-none bg-white"></select><button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-bold transition-colors">Entregar</button></form></div><div><h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-list-checks text-emerald-600"></i> EPP en posesión del voluntario</h5><div class="border border-slate-200 rounded-lg overflow-hidden bg-white"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-100 text-[10px] text-slate-500 uppercase font-bold"><th class="px-3 py-2">Artículo</th><th class="px-3 py-2">Talla</th><th class="px-3 py-2 text-center">Estado / Vida Útil</th><th class="px-3 py-2 text-right">Acción</th></tr></thead><tbody id="eppFichaTableBody" class="divide-y divide-slate-100"><tr><td colspan="4" class="px-3 py-4 text-center text-slate-400">Este voluntario no tiene EPP asignado.</td></tr></tbody></table></div></div></div></div></div>
@@ -233,7 +238,7 @@
 
     <div id="fichaEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 class="font-bold">Editar Ficha</h3><button onclick="closeFichaEditModal()"><i class="ph ph-x text-lg"></i></button></div><form id="fichaEditForm" onsubmit="saveFichaEdit(event)" class="p-5 space-y-3"><input type="hidden" id="fichaEditId"><div><label class="block font-semibold">Nombre</label><input type="text" id="fichaEditName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Cargo</label><input type="text" id="fichaEditRole" required class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">3 Meses</label><input type="number" id="fichaEdit3m" min="0" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Anual</label><input type="number" id="fichaEdit1y" min="0" required class="w-full px-3 py-2 border rounded"></div></div><div class="pt-2"><button type="submit" class="w-full bg-blue-700 text-white py-2 rounded">Actualizar</button></div></form></div></div>
     
-    <!-- MODAL PROMOCION DE ASPIRANTES (CAPITAN) -->
+    <!-- MODAL PROMOCION DE ASPIRANTES -->
     <div id="gestionAspirantesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[85vh]">
             <div class="px-5 py-3 flex justify-between bg-amber-800 text-white shrink-0">
@@ -252,7 +257,7 @@
         </div>
     </div>
 
-    <!-- MODAL CALENDARIO (CON VISIBILIDAD) -->
+    <!-- MODAL CALENDARIO -->
     <div id="eventModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-fuchsia-900 text-white"><h3 class="font-bold">Agendar Actividad</h3><button onclick="closeEventModal()"><i class="ph ph-x text-lg"></i></button></div><form id="eventForm" onsubmit="saveEvent(event)" class="p-5 space-y-3"><input type="hidden" id="eventDate"><div><label class="block font-semibold">Título</label><input type="text" id="eventTitle" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Descripción</label><textarea id="eventDescription" required rows="3" class="w-full px-3 py-2 border rounded"></textarea></div><div><label class="block font-semibold">Dirigido a:</label><select id="eventVisibility" class="w-full px-3 py-2 border rounded bg-slate-50 font-semibold"><option value="todos">Todos (Compañía)</option><option value="aspirante">Solo Aspirantes</option><option value="voluntario">Solo Voluntarios Rasos</option></select></div><div class="pt-2"><button type="submit" class="w-full bg-fuchsia-700 text-white py-2 rounded font-bold">Guardar</button></div></form></div></div>
     
     <!-- MODALES INVENTARIO -->
@@ -431,7 +436,7 @@
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left bg-white border rounded-xl overflow-hidden"><thead class="bg-slate-100/70 border-b text-[10px] uppercase font-bold text-slate-600"><th class="px-5 py-3">Fecha y Hora</th><th class="px-5 py-3">Oficial Responsable</th><th class="px-5 py-3">Voluntario Liberado</th><th class="px-5 py-3">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y"></tbody></table></div>
 
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN A PDF DEL PARTE DE GUARDIA -->
+    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN A PDF -->
     <div id="pdfExportContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans">
         <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -519,13 +524,10 @@
             actualizarBadgeBloqueados();
         }, 1000);
 
-        // ================= SISTEMA DE NOTIFICACIONES AUTOMÁTICAS =================
         function actualizarBadgeBloqueados() {
             const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000;
             let count = 0;
-            for(let k in blockedList) {
-                if(now - blockedList[k].timestamp < limitMs) count++;
-            }
+            for(let k in blockedList) { if(now - blockedList[k].timestamp < limitMs) count++; }
             const badge = document.getElementById('badgeBloqueadosNav');
             if(badge) badge.textContent = count;
         }
@@ -536,33 +538,40 @@
             if(!banner || !textoAlerta) return;
 
             const user = JSON.parse(localStorage.getItem('active_user_session'));
-            if (!user || !oficialesOperativosAltos.includes(user.cargo)) {
-                banner.classList.add('hidden');
-                return;
-            }
+            if (!user || !oficialesOperativosAltos.includes(user.cargo)) { banner.classList.add('hidden'); return; }
 
             const anioActual = new Date().getFullYear();
             let eppVencidosCount = 0;
-
             bodegaEpp.forEach(item => {
                 let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
                 let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
-                if(anioActual >= (fabAnio + vidaUtil)) {
-                    eppVencidosCount++;
-                }
+                if(anioActual >= (fabAnio + vidaUtil)) eppVencidosCount++;
             });
 
             if(eppVencidosCount > 0) {
                 textoAlerta.textContent = `¡Alerta Automática NFPA! Hay ${eppVencidosCount} artículo(s) de EPP en bodega que han superado su vida útil reglamentaria.`;
                 banner.classList.remove('hidden');
-            } else {
-                banner.classList.add('hidden');
-            }
+            } else { banner.classList.add('hidden'); }
         }
 
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
         
+        // Control de despliegue del campo Nombre al elegir Aspirante o Voluntario Raso
+        function toggleLoginNombreField() {
+            const cargo = document.getElementById('loginCargo').value;
+            const container = document.getElementById('loginNombreContainer');
+            const input = document.getElementById('loginNombreInput');
+            if (cargo === 'Aspirante' || cargo === 'VoluntarioRaso') {
+                container.classList.remove('hidden');
+                input.setAttribute('required', 'true');
+            } else {
+                container.classList.add('hidden');
+                input.removeAttribute('required');
+                input.value = '';
+            }
+        }
+
         function toggleRegistroMode(isRegister) {
             if(isRegister) {
                 document.getElementById('modalTitleLogin').innerHTML = `<i class="ph ph-user-plus text-base"></i> Registro de Nuevo Miembro`;
@@ -575,7 +584,6 @@
             }
         }
 
-        // REGISTRO INDIVIDUAL
         function handleRegister(e) {
             e.preventDefault();
             const tipo = document.getElementById('regTipoPerfil').value;
@@ -588,7 +596,7 @@
 
             usersAccounts[userId] = { id: userId, tipo: tipo, nombre: nombre, rut: rut, password: password };
             db.ref('usersAccounts').set(usersAccounts);
-            alert("¡Registro exitoso! Ya puedes iniciar sesión con tu RUT y contraseña.");
+            alert("¡Registro exitoso! Ya puedes iniciar sesión con tu perfil personal.");
             toggleRegistroMode(false);
         }
 
@@ -597,7 +605,7 @@
             const cargoSelect = document.getElementById('loginCargo').value; 
             const pass = document.getElementById('loginPassword').value; 
             
-            // Verificar Oficial
+            // Verificar Oficial / Directiva
             if (credentials[cargoSelect] && credentials[cargoSelect] === pass) { 
                 const sessionData = { cargo: cargoSelect, nombre: formatCargoStr(cargoSelect), tipo: cargoSelect };
                 localStorage.setItem('active_user_session', JSON.stringify(sessionData));
@@ -605,12 +613,17 @@
                 return;
             } 
 
-            // Verificar Usuario (Aspirante/Voluntario)
-            let found = Object.values(usersAccounts).find(u => u.tipo === cargoSelect && u.password === pass);
-            if(found) {
-                const sessionData = { cargo: found.tipo, nombre: found.nombre, rut: found.rut, tipo: found.tipo };
-                localStorage.setItem('active_user_session', JSON.stringify(sessionData));
-                closeLoginModal(); activateSession(sessionData);
+            // Verificar Aspirante o Voluntario Raso (Validando el nombre ingresado y la contraseña)
+            if (cargoSelect === 'Aspirante' || cargoSelect === 'VoluntarioRaso') {
+                const nombreIngresado = document.getElementById('loginNombreInput').value.trim().toLowerCase();
+                let found = Object.values(usersAccounts).find(u => u.tipo === cargoSelect && u.nombre.toLowerCase() === nombreIngresado && u.password === pass);
+                if (found) {
+                    const sessionData = { cargo: found.tipo, nombre: found.nombre, rut: found.rut, tipo: found.tipo };
+                    localStorage.setItem('active_user_session', JSON.stringify(sessionData));
+                    closeLoginModal(); activateSession(sessionData);
+                } else {
+                    alert("Nombre o contraseña incorrectos para este perfil individual.");
+                }
             } else {
                 alert("Cargo o contraseña incorrectos.");
             }
@@ -675,7 +688,6 @@
 
         function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); }
 
-        // ================= GESTIÓN DE FIRMAS POR TEXTO =================
         function abrirModalFirmasPdf() {
             document.getElementById('labelInputGuardia').textContent = `Nombre Oficial de Guardia (${formatCargoStr(estadoGuardia.activo)}):`;
             document.getElementById('inputNombreGuardia').value = '';
@@ -683,25 +695,20 @@
             document.getElementById('modalFirmasPdf').classList.remove('hidden');
         }
 
-        function cerrarModalFirmasPdf() {
-            document.getElementById('modalFirmasPdf').classList.add('hidden');
-        }
+        function cerrarModalFirmasPdf() { document.getElementById('modalFirmasPdf').classList.add('hidden'); }
 
         function ejecutarGeneracionPdfTexto() {
             const nombreGuardia = document.getElementById('inputNombreGuardia').value.trim();
             const nombreCapitan = document.getElementById('inputNombreCapitan').value.trim();
-
             if(!nombreGuardia) { alert("Por favor ingrese el nombre del Oficial de Guardia."); return; }
             if(!nombreCapitan) { alert("Por favor ingrese el nombre del Capitán de Compañía."); return; }
 
             db.ref('nombreCapitanFirma').set(nombreCapitan);
             nombreCapitánGuardado = nombreCapitan;
-
             cerrarModalFirmasPdf();
             generarPartePdfConTexto(nombreGuardia, nombreCapitan);
         }
 
-        // PERFILES
         function openProfileModal() {
             const user = JSON.parse(localStorage.getItem('active_user_session')); if (!user) return;
             document.getElementById('profileCargoBadge').textContent = formatCargoStr(user.tipo); 
@@ -712,7 +719,6 @@
         }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
         
-        // ================= GESTIÓN Y ASCENSO DE ASPIRANTES POR EL CAPITÁN =================
         function openGestionAspirantesModal() {
             const tbody = document.getElementById('aspirantesTableBody'); tbody.innerHTML = '';
             const aspirantes = Object.values(usersAccounts).filter(u => u.tipo === 'Aspirante');
@@ -738,7 +744,6 @@
             }
         }
 
-        // ================= SISTEMA DE TAREAS =================
         function openModalCrearTarea() { document.getElementById('txtTareaDesc').value = ''; document.getElementById('modalCrearTarea').classList.remove('hidden'); }
         function closeModalCrearTarea() { document.getElementById('modalCrearTarea').classList.add('hidden'); }
         function saveTarea(e) {
@@ -773,7 +778,6 @@
             let t = tareas.find(x => x.id === id); if(t) { t.status = 'completada'; db.ref('tareas').set(tareas); openModalVerTareas(); }
         }
 
-        // ================= SISTEMA NOVEDADES (CON FILTROS Y BÚSQUEDA) =================
         function openModalCrearNovedad() { document.getElementById('txtNovedadDesc').value=''; document.getElementById('modalCrearNovedad').classList.remove('hidden'); }
         function closeModalCrearNovedad() { document.getElementById('modalCrearNovedad').classList.add('hidden'); }
         function saveNovedad(e) {
@@ -802,16 +806,10 @@
                 return matchTexto && matchOficial;
             });
 
-            if(filtradas.length === 0) { 
-                tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No se encontraron novedades.</td></tr>`; 
-                return;
-            }
-            filtradas.forEach(n => { 
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 text-slate-500 whitespace-nowrap">${n.date}</td><td class="px-5 py-3 font-bold text-slate-800">${n.by}</td><td class="px-5 py-3">${n.text}</td></tr>`; 
-            });
+            if(filtradas.length === 0) { tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No se encontraron novedades.</td></tr>`; return; }
+            filtradas.forEach(n => { tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 text-slate-500 whitespace-nowrap">${n.date}</td><td class="px-5 py-3 font-bold text-slate-800">${n.by}</td><td class="px-5 py-3">${n.text}</td></tr>`; });
         }
 
-        // ================= NUEVO MÓDULO: RESUMEN MENSUAL DE ASISTENCIA =================
         function openResumenMensualView() {
             hideAllViews();
             document.getElementById('resumenMensualView').classList.remove('hidden');
@@ -819,10 +817,7 @@
         }
         function renderResumenMensual() {
             const tbody = document.getElementById('resumenMensualTableBody'); if(!tbody) return; tbody.innerHTML = '';
-            if(roster.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin voluntarios registrados en la lista.</td></tr>`;
-                return;
-            }
+            if(roster.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin voluntarios registrados en la lista.</td></tr>`; return; }
             roster.forEach(m => {
                 let horas = m.garitaHours || 0;
                 let estadoBadge = horas >= 16 ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Cumplido</span>` : `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">En Progreso</span>`;
@@ -833,9 +828,7 @@
         function openModalEntregarGuardia() {
             const select = document.getElementById('selectNuevoGuardia'); select.innerHTML = '';
             const user = JSON.parse(localStorage.getItem('active_user_session'));
-            oficialesOperativos.forEach(of => {
-                if(of !== user.cargo) select.innerHTML += `<option value="${of}">${formatCargoStr(of)}</option>`;
-            });
+            oficialesOperativos.forEach(of => { if(of !== user.cargo) select.innerHTML += `<option value="${of}">${formatCargoStr(of)}</option>`; });
             document.getElementById('modalEntregarGuardia').classList.remove('hidden');
         }
         function closeModalEntregarGuardia() { document.getElementById('modalEntregarGuardia').classList.add('hidden'); }
@@ -849,11 +842,10 @@
             closeModalEntregarGuardia(); alert(`Guardia asignada al ${formatCargoStr(nuevoGuardia)}.`);
         }
 
-        // ================= SISTEMA DE CERTIFICADOS (TTE 1) =================
         function openCertificadosView() { hideAllViews(); document.getElementById('certificadosView').classList.remove('hidden'); renderCertificadosView(); }
         function renderCertificadosView() {
             const tbody = document.getElementById('certificadosTableBody'); if(!tbody) return; tbody.innerHTML='';
-            if(roster.length===0) { tbody.innerHTML=`<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Lista vacía. Ayudante debe ingresar personal.</td></tr>`; return; }
+            if(roster.length===0) { tbody.innerHTML=`<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Lista vacía.</td></tr>`; return; }
             roster.forEach(m => {
                 let count = m.certificados ? m.certificados.length : 0;
                 let badge = count > 0 ? `<span class="bg-violet-100 text-violet-800 px-2 py-0.5 rounded font-bold">${count} cursos</span>` : `<span class="text-slate-400">-</span>`;
@@ -886,7 +878,6 @@
             db.ref('roster').set(roster); openFichaCertificados(memberId);
         }
 
-        // ================= SISTEMA BODEGA EPP (CON NFPA 1971) =================
         function openBodegaEppView() { hideAllViews(); document.getElementById('bodegaEppView').classList.remove('hidden'); renderBodegaEpp(); }
         function renderBodegaEpp() {
             const tbody = document.getElementById('bodegaEppTableBody'); if (!tbody) return; tbody.innerHTML = '';
@@ -923,7 +914,6 @@
         }
         function deleteBodegaEpp(id) { if (confirm("¿Eliminar este artículo de la bodega permanentemente?")) { bodegaEpp = bodegaEpp.filter(i => i.id !== id); db.ref('bodegaEpp').set(bodegaEpp); verificarAlertasAutomaticas(); } }
 
-        // ================= SISTEMA EPP VOLUNTARIOS =================
         function openEppVoluntariosView() { hideAllViews(); document.getElementById('eppVoluntariosView').classList.remove('hidden'); renderEppVoluntarios(); }
         function renderEppVoluntarios() {
             const tbody = document.getElementById('eppVoluntariosTableBody'); if (!tbody) return; tbody.innerHTML = '';
@@ -977,7 +967,6 @@
             db.ref('bodegaEpp').set(bodegaEpp); db.ref('roster').set(roster); openFichaEppModal(memberId);
         }
 
-        // ================= ASISTENCIA Y FICHAS (CON FICHA MÉDICA TÁCTICA) =================
         function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
         function renderRoster() {
             const tbody = document.getElementById('rosterTableBody'); if (!tbody) return; tbody.innerHTML = '';
@@ -1017,9 +1006,7 @@
                 document.getElementById('medicoContacto').textContent = m.medico?.contacto || 'No registrado';
                 document.getElementById('medicoAlergias').textContent = m.medico?.alergias || 'Ninguna';
                 document.getElementById('medicoCert').textContent = m.medico?.cert || 'Ninguna';
-            } else {
-                medSection.classList.add('hidden');
-            }
+            } else { medSection.classList.add('hidden'); }
 
             const motBody = document.getElementById('detailMotivosTableBody'); motBody.innerHTML = '';
             let motivos = m.historialMotivos || [];
@@ -1066,7 +1053,6 @@
             if (member) { member.name = document.getElementById('fichaEditName').value; member.role = document.getElementById('fichaEditRole').value; member.count3m = parseInt(document.getElementById('fichaEdit3m').value); member.count1y = parseInt(document.getElementById('fichaEdit1y').value); db.ref('roster').set(roster); closeFichaEditModal(); }
         }
 
-        // ================= CONTROL DE ACCESO Y BLOQUEOS =================
         function validarRutInput(input) { input.value = input.value.replace(/[^0-9kK.-]/g, ''); }
 
         const visitorForm = document.getElementById('visitorForm');
@@ -1081,7 +1067,7 @@
                     const diffMs = Date.now() - blockedList[key].timestamp;
                     const limitMs = 2 * 60 * 60 * 1000;
                     if (diffMs < limitMs) {
-                        alert(`El voluntario ${name} está bloqueado por salida. Restan ${Math.floor((limitMs - diffMs)/60000)} minutos. Un Oficial debe liberarlo desde su panel.`);
+                        alert(`El voluntario ${name} está bloqueado por salida. Restan ${Math.floor((limitMs - diffMs)/60000)} minutos.`);
                         return;
                     } else {
                         delete blockedList[key];
@@ -1149,7 +1135,6 @@
             if (changed) db.ref('blockedList').set(blockedList);
         }
 
-        // ================= GESTION DE BLOQUEADOS =================
         function openBloqueadosModal() { document.getElementById('bloqueadosModal').classList.remove('hidden'); renderBloqueadosTable(); }
         function closeBloqueadosModal() { document.getElementById('bloqueadosModal').classList.add('hidden'); }
         function renderBloqueadosTable() {
@@ -1182,7 +1167,6 @@
             closeRemoverRestriccionModal(); alert(`Restricción liberada con éxito.`);
         }
 
-        // ================= TIEMPO EN VIVO =================
         function openLiveHoursView() { hideAllViews(); document.getElementById('liveHoursView').classList.remove('hidden'); renderLiveHours(); }
         function renderLiveHours() {
             const tbody = document.getElementById('liveHoursTableBody'); if (!tbody) return;
@@ -1204,13 +1188,12 @@
                 if (v.status === 'active' && !v.abGranted && (now - v.startTimestamp >= LIMIT_MS)) {
                     v.abGranted = true; updated = true;
                     let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
-                    if (miembro && miembro.status !== 'AB') { miembro.status = 'AB'; }
+                    if (miembro && miembro.status !== 'AB') miembro.status = 'AB';
                 }
             });
             if (updated) { db.ref('visitantes').set(visitors); db.ref('roster').set(roster); }
         }
 
-        // ================= INVENTARIOS CARROS Y CUARTEL =================
         function openCarro(code) { currentCarro = code; hideAllViews(); document.getElementById('carroInventoryView').classList.remove('hidden'); document.getElementById('carroTitle').textContent = `Inventario - ${code}`; renderInventory(); }
         function backToCarros() { 
             hideAllViews(); 
@@ -1263,7 +1246,6 @@
         }
         function deleteCuartelItem(id) { if (confirm("¿Eliminar artículo?")) { cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id); db.ref('cuartel').set(cuartelInventarios); } }
 
-        // ================= CALENDARIO (CON VISIBILIDAD) =================
         function openCalendarView() { hideAllViews(); document.getElementById('calendarView').classList.remove('hidden'); renderCalendar(); }
         function renderCalendar() {
             const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = '';
@@ -1320,7 +1302,6 @@
         function saveEvent(e) { e.preventDefault(); calendarEvents.push({ id: Date.now(), date: document.getElementById('eventDate').value, title: document.getElementById('eventTitle').value, description: document.getElementById('eventDescription').value, visibility: document.getElementById('eventVisibility').value }); db.ref('calendario').set(calendarEvents); closeEventModal(); selectDate(document.getElementById('eventDate').value); }
         function deleteEvent(id) { if (confirm("¿Eliminar actividad del calendario?")) { calendarEvents = calendarEvents.filter(e => e.id !== id); db.ref('calendario').set(calendarEvents); selectDate(selectedDateStr); } }
 
-        // ================= AUDITORÍA, EXPORTACIÓN Y PDF =================
         function openRemorsionView() { hideAllViews(); document.getElementById('remorsionView').classList.remove('hidden'); renderRemorsionesLog(); }
         function renderRemorsionesLog() { const tbody = document.getElementById('remorsionTableBody'); if (!tbody) return; tbody.innerHTML = ''; if (remorsionesLog.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-5 text-center text-slate-400">Sin liberaciones.</td></tr>`; return; } remorsionesLog.forEach(log => { tbody.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-3 text-slate-500 text-[10px]">${log.fecha}</td><td class="p-3 font-bold text-indigo-900">${log.oficial}</td><td class="p-3 font-semibold">${log.voluntario}</td><td class="p-3 text-slate-700">${log.motivo}</td></tr>`; }); }
         
@@ -1344,23 +1325,13 @@
             const ulVol = document.getElementById('pdfListaVoluntarios');
             ulVol.innerHTML = '';
             const activas = visitors.filter(v => v.status === 'active');
-            if(activas.length === 0) {
-                ulVol.innerHTML = `<li>Sin voluntarios activos en cuartel actualmente.</li>`;
-            } else {
-                activas.forEach(v => {
-                    ulVol.innerHTML += `<li><strong>${v.fullName}</strong> (RUT: ${v.documentId}) - Motivo: ${v.reason || 'Sin motivo'} [Entrada: ${v.entryTime}]</li>`;
-                });
-            }
+            if(activas.length === 0) ulVol.innerHTML = `<li>Sin voluntarios activos en cuartel actualmente.</li>`;
+            else activas.forEach(v => { ulVol.innerHTML += `<li><strong>${v.fullName}</strong> (RUT: ${v.documentId}) - Motivo: ${v.reason || 'Sin motivo'} [Entrada: ${v.entryTime}]</li>`; });
 
             const ulNov = document.getElementById('pdfListaNovedades');
             ulNov.innerHTML = '';
-            if(novedades.length === 0) {
-                ulNov.innerHTML = `<li>Sin novedades registradas en el turno.</li>`;
-            } else {
-                novedades.slice(0, 10).forEach(n => {
-                    ulNov.innerHTML += `<li>[${n.date}] <strong>${n.by}:</strong> ${n.text}</li>`;
-                });
-            }
+            if(novedades.length === 0) ulNov.innerHTML = `<li>Sin novedades registradas en el turno.</li>`;
+            else novedades.slice(0, 10).forEach(n => { ulNov.innerHTML += `<li>[${n.date}] <strong>${n.by}:</strong> ${n.text}</li>`; });
 
             const element = document.getElementById('pdfExportContainer');
             element.classList.remove('hidden');
@@ -1373,9 +1344,7 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().from(element).set(opt).save().then(() => {
-                element.classList.add('hidden');
-            });
+            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
     </script>
 </body>
