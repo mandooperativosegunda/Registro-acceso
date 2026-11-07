@@ -24,9 +24,9 @@
     <nav class="bg-indigo-900 border-b border-indigo-950 text-white sticky top-0 z-40 px-4 py-2.5 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <!-- LOGO DE LA COMPAÑÍA -->
+                <!-- LOGO DE LA COMPAÑÍA ACTUALIZADO -->
                 <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center p-0.5 shadow-inner overflow-hidden shrink-0">
-                    <img src="https://raw.githubusercontent.com/google-gemini/cookbook/main/images/371.png" alt="Logo Segunda Compañía" class="w-full h-full object-contain">
+                    <img src="43358.jpg" alt="Logo Segunda Compañía" class="w-full h-full object-cover">
                 </div>
                 <div>
                     <h1 class="text-base font-bold leading-tight tracking-wide">Segunda Compañía</h1>
@@ -714,7 +714,6 @@
 
         // ================= CONTROL DE ACCESO Y BLOQUEOS (CON RESTRICCIÓN DE RUT) =================
         function validarRutInput(input) {
-            // Remueve todo lo que no sea número, k, K, punto o guion
             input.value = input.value.replace(/[^0-9kK.-]/g, '');
         }
 
