@@ -11,11 +11,12 @@
     <!-- Librería html2pdf para generación de partes de guardia en PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Great+Vibes&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .signature-font { font-family: 'Great Vibes', cursive; font-size: 28px; }
     </style>
 </head>
 <body class="min-h-screen text-slate-800">
@@ -40,7 +41,7 @@
                 <button id="bloqueadosBtnContainer" onclick="openBloqueadosModal()" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock text-sm"></i><span class="hidden sm:inline">Bloqueados</span></button>
                 <button id="calendarBtnContainer" onclick="openCalendarView()" class="hidden flex items-center gap-1.5 bg-fuchsia-700 hover:bg-fuchsia-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-calendar-blank text-sm"></i><span class="hidden sm:inline">Calendario</span></button>
                 <button id="remorsionBtnContainer" onclick="openRemorsionView()" class="hidden flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-lock-open text-sm"></i><span class="hidden sm:inline">Auditoría</span></button>
-                <button id="btnGenerarPdf" onclick="generarPartePdf()" class="hidden flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-file-pdf text-sm"></i><span class="hidden sm:inline">Parte PDF</span></button>
+                <button id="btnGenerarPdf" onclick="abrirModalFirmasPdf()" class="hidden flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-file-pdf text-sm"></i><span class="hidden sm:inline">Parte PDF</span></button>
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-md font-medium text-xs"><i class="ph ph-download-simple text-sm"></i><span class="hidden sm:inline">CSV</span></button>
             </div>
         </div>
@@ -59,6 +60,36 @@
                 <button onclick="openModalEntregarGuardia()" id="btnModificarGuardia" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded font-bold transition-colors border border-slate-300"><i class="ph ph-pencil mr-1"></i> Modificar Guardia</button>
                 <button onclick="openModalCrearNovedad()" id="btnCrearNovedad" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded font-bold transition-colors shadow-sm"><i class="ph ph-warning mr-1"></i> Enviar Novedad</button>
                 <button onclick="openModalVerTareas()" id="btnVerTareas" class="hidden bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-1.5 rounded font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="ph ph-envelope-simple text-sm"></i> Tareas <span id="badgeTareas" class="bg-white text-fuchsia-700 px-1.5 rounded-full text-[10px]">0</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ESCRITURA DE FIRMAS PARA EL PDF -->
+    <div id="modalFirmasPdf" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-5 py-3 flex justify-between bg-blue-900 text-white shrink-0">
+                <h3 class="font-bold flex items-center gap-1.5"><i class="ph ph-signature text-base"></i> Firmas de Texto para el Parte PDF</h3>
+                <button onclick="cerrarModalFirmasPdf()"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
+                <p class="text-slate-600 text-[11px]">Escriba el nombre y apellido para generar la firma formal en el documento:</p>
+                
+                <!-- Ingreso Firma Oficial de Guardia -->
+                <div class="border rounded-lg p-3 bg-slate-50 space-y-2">
+                    <label id="labelInputGuardia" class="block font-bold text-slate-800">Nombre Oficial de Guardia:</label>
+                    <input type="text" id="inputNombreGuardia" placeholder="Ej. Tte. Juan Pérez" class="w-full px-3 py-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Ingreso Firma Capitán de Compañía -->
+                <div class="border rounded-lg p-3 bg-slate-50 space-y-2">
+                    <label class="block font-bold text-slate-800">Nombre Capitán de Compañía (Permanente):</label>
+                    <input type="text" id="inputNombreCapitan" placeholder="Ej. Cap. Carlos Gómez" class="w-full px-3 py-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-[10px] text-slate-500 italic">La firma del capitán se mantendrá guardada para los próximos reportes hasta que decida cambiarla.</p>
+                </div>
+
+                <button onclick="ejecutarGeneracionPdfTexto()" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded font-bold shadow-sm transition-colors text-sm flex items-center justify-center gap-2">
+                    <i class="ph ph-file-pdf text-base"></i> Generar Parte PDF Firmado
+                </button>
             </div>
         </div>
     </div>
@@ -302,10 +333,12 @@
                 <ul id="pdfListaNovedades" class="list-disc pl-5 space-y-1"></ul>
             </div>
             <div class="pt-10 flex justify-between text-center">
-                <div class="border-t border-slate-400 w-48 pt-1">
-                    <p class="font-bold">Oficial de Guardia</p>
+                <div class="border-t border-slate-400 w-48 pt-2">
+                    <div id="pdfTextoFirmaGuardia" class="h-12 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1"></div>
+                    <p class="font-bold" id="pdfLabelFirmaGuardia">Oficial de Guardia</p>
                 </div>
-                <div class="border-t border-slate-400 w-48 pt-1">
+                <div class="border-t border-slate-400 w-48 pt-2">
+                    <div id="pdfTextoFirmaCapitan" class="h-12 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1"></div>
                     <p class="font-bold">Capitán de Compañía</p>
                 </div>
             </div>
@@ -325,6 +358,7 @@
         let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], estadoGuardia = { activo: "Tenienteprimero" };
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
         let calendarEvents = [], remorsionesLog = [];
+        let nombreCapitánGuardado = "";
         let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "", selectedVoluntarioParaLiberar = null;
 
         function formatCargoStr(c) {
@@ -345,6 +379,7 @@
         db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); renderCuartelInventory(); });
         db.ref('calendario').on('value', snap => { calendarEvents = snap.val() || []; renderCalendar(); renderDayEvents(); });
         db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
+        db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
@@ -406,6 +441,39 @@
         }
 
         function backToMainPanel() { activateSession(localStorage.getItem('active_cargo')); }
+
+        // ================= GESTIÓN DE FIRMAS POR TEXTO =================
+        function abrirModalFirmasPdf() {
+            document.getElementById('labelInputGuardia').textContent = `Nombre Oficial de Guardia (${formatCargoStr(estadoGuardia.activo)}):`;
+            document.getElementById('inputNombreGuardia').value = '';
+            document.getElementById('inputNombreCapitan').value = nombreCapitánGuardado || '';
+            document.getElementById('modalFirmasPdf').classList.remove('hidden');
+        }
+
+        function cerrarModalFirmasPdf() {
+            document.getElementById('modalFirmasPdf').classList.add('hidden');
+        }
+
+        function ejecutarGeneracionPdfTexto() {
+            const nombreGuardia = document.getElementById('inputNombreGuardia').value.trim();
+            const nombreCapitan = document.getElementById('inputNombreCapitan').value.trim();
+
+            if(!nombreGuardia) {
+                alert("Por favor ingrese el nombre del Oficial de Guardia.");
+                return;
+            }
+            if(!nombreCapitan) {
+                alert("Por favor ingrese el nombre del Capitán de Compañía.");
+                return;
+            }
+
+            // Guardar nombre del capitán permanentemente en Firebase
+            db.ref('nombreCapitanFirma').set(nombreCapitan);
+            nombreCapitánGuardado = nombreCapitan;
+
+            cerrarModalFirmasPdf();
+            generarPartePdfConTexto(nombreGuardia, nombreCapitan);
+        }
 
         // PERFILES
         function openProfileModal() {
@@ -955,9 +1023,15 @@
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Registro_Bomberos_${new Date().toLocaleDateString('es-CL')}.csv`; link.click();
         }
 
-        function generarPartePdf() {
+        function generarPartePdfConTexto(nombreGuardia, nombreCapitan) {
             document.getElementById('pdfFechaActual').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
-            document.getElementById('pdfOficialGuardia').textContent = formatCargoStr(estadoGuardia.activo);
+            const cargoActualStr = formatCargoStr(estadoGuardia.activo);
+            document.getElementById('pdfOficialGuardia').textContent = cargoActualStr;
+            document.getElementById('pdfLabelFirmaGuardia').textContent = `Oficial de Guardia (${cargoActualStr})`;
+
+            // Inyectar los nombres con una tipografía de firma estilizada en el PDF
+            document.getElementById('pdfTextoFirmaGuardia').innerHTML = `<span class="signature-font">${nombreGuardia}</span>`;
+            document.getElementById('pdfTextoFirmaCapitan').innerHTML = `<span class="signature-font">${nombreCapitan}</span>`;
 
             const ulVol = document.getElementById('pdfListaVoluntarios');
             ulVol.innerHTML = '';
