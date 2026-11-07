@@ -84,20 +84,15 @@
             </div>
             <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
                 <p class="text-slate-600 text-[11px]">Escriba el nombre y apellido para generar la firma formal en el documento:</p>
-                
-                <!-- Ingreso Firma Oficial de Guardia -->
                 <div class="border rounded-lg p-3 bg-slate-50 space-y-2">
                     <label id="labelInputGuardia" class="block font-bold text-slate-800">Nombre Oficial de Guardia:</label>
                     <input type="text" id="inputNombreGuardia" placeholder="Ej. Tte. Juan Pérez" class="w-full px-3 py-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-
-                <!-- Ingreso Firma Capitán de Compañía -->
                 <div class="border rounded-lg p-3 bg-slate-50 space-y-2">
                     <label class="block font-bold text-slate-800">Nombre Capitán de Compañía (Permanente):</label>
                     <input type="text" id="inputNombreCapitan" placeholder="Ej. Cap. Carlos Gómez" class="w-full px-3 py-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-blue-500">
                     <p class="text-[10px] text-slate-500 italic">La firma del capitán se mantendrá guardada para los próximos reportes hasta que decida cambiarla.</p>
                 </div>
-
                 <button onclick="ejecutarGeneracionPdfTexto()" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded font-bold shadow-sm transition-colors text-sm flex items-center justify-center gap-2">
                     <i class="ph ph-file-pdf text-base"></i> Generar Parte PDF Firmado
                 </button>
@@ -271,13 +266,15 @@
             <!-- MÓDULOS DE EPP COMPARTIDOS CAPITÁN / TTE 1 -->
             <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 hover:border-teal-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Bodega EPP (NFPA 1971)</h3><p class="text-[11px] text-slate-500 mt-0.5">Control de vida útil y stock</p><span class="mt-3 text-[11px] font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded">Ver Bodega &rarr;</span></div>
             <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal Voluntarios</h3><p class="text-[11px] text-slate-500 mt-0.5">Asignación y caducidades</p><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP Asignado &rarr;</span></div>
+            <!-- NUEVO MÓDULO: RESUMEN MENSUAL ASISTENCIA -->
+            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Resumen Mensual Horas</h3><p class="text-[11px] text-slate-500 mt-0.5">Matriz de cumplimiento y asistencia</p><span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Matriz &rarr;</span></div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
             <div onclick="openRosterView()" class="bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Lista y Asistencia</h3><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Lista &rarr;</span></div>
             <div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-5 hover:border-cyan-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Tiempo en Vivo</h3><span class="mt-3 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-3 py-1 rounded">Ver Timer &rarr;</span></div>
             <div onclick="openFichasView()" class="bg-white rounded-xl border p-5 hover:border-blue-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Fichas Voluntarios</h3><span class="mt-3 text-[11px] font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded">Ver Fichas &rarr;</span></div>
-            <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 hover:border-orange-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">EPP Personal</h3><span class="mt-3 text-[11px] font-semibold text-orange-700 bg-orange-50 px-3 py-1 rounded">Ver EPP &rarr;</span></div>
+            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-5 hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Matriz Mensual</h3><span class="mt-3 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">Ver Resumen &rarr;</span></div>
         </div>
 
         <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Inventarios Material Menor</h3>
@@ -295,14 +292,63 @@
     </div>
 
     <!-- PANELES DE OTROS OFICIALES -->
-    <div id="ayudanteView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Ayudante</span><h2 class="text-xl font-bold mt-1">Gestión de Asistencia</h2></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div onclick="openRosterView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500"><h3 class="font-bold text-sm">Lista y Asistencia</h3></div><div onclick="openFichasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-blue-500"><h3 class="font-bold text-sm">Fichas Voluntarios</h3></div><div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-cyan-500"><h3 class="font-bold text-sm">Tiempo en Vivo</h3></div></div></div>
+    <div id="ayudanteView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Ayudante</span><h2 class="text-xl font-bold mt-1">Gestión de Asistencia</h2></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div onclick="openRosterView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500"><h3 class="font-bold text-sm">Lista y Asistencia</h3></div><div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Matriz Mensual Horas</h3></div><div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-cyan-500"><h3 class="font-bold text-sm">Tiempo en Vivo</h3></div></div></div>
     
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-1">Gestión Material Menor y EPP</h2></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"><div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-orange-500"><h3 class="font-bold text-sm">EPP Personal</h3></div><div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-teal-500"><h3 class="font-bold text-sm">Bodega EPP</h3></div></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div onclick="openCarro('B2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">B-2</h3></div><div onclick="openCarro('BX2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">BX-2</h3></div><div onclick="openCarro('RH2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">RH-2</h3></div><div onclick="openCarro('Bodega')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">Bodega M.M.</h3></div></div></div>
 
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Tercero</span><h2 class="text-xl font-bold mt-1">Gestión de Cuartel</h2></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3></div><div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Elementos de Aseo</h3></div></div></div>
 
     <!-- VISTAS DE MÓDULOS -->
-    <div id="novedadesView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-amber-800">Libro de Novedades</h2><div></div></div><div class="bg-white rounded-xl shadow-xs border overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100 border-b text-[10px] uppercase text-slate-600"><th class="px-5 py-3">Fecha/Hora</th><th class="px-5 py-3">Oficial Informante</th><th class="px-5 py-3 w-1/2">Detalle de Novedad</th></thead><tbody id="novedadesTableBody" class="divide-y"></tbody></table></div></div>
+    <div id="novedadesView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border p-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 class="font-bold uppercase text-amber-800">Libro de Novedades</h2>
+            <!-- BARRA DE FILTROS NOVEDADES -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="text" id="filtroNovedadTexto" oninput="renderNovedades()" placeholder="Buscar texto..." class="px-3 py-1.5 border rounded outline-none w-full sm:w-48 bg-slate-50">
+                <select id="filtroNovedadOficial" onchange="renderNovedades()" class="px-3 py-1.5 border rounded outline-none bg-slate-50 font-semibold">
+                    <option value="">-- Todos los Oficiales --</option>
+                    <option value="Capitán">Capitán</option>
+                    <option value="Teniente 1°">Teniente 1°</option>
+                    <option value="Teniente 2°">Teniente 2°</option>
+                    <option value="Teniente 3°">Teniente 3°</option>
+                </select>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-100 border-b text-[10px] uppercase text-slate-600">
+                    <th class="px-5 py-3">Fecha/Hora</th>
+                    <th class="px-5 py-3">Oficial Informante</th>
+                    <th class="px-5 py-3 w-1/2">Detalle de Novedad</th>
+                </thead>
+                <tbody id="novedadesTableBody" class="divide-y"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- NUEVA VISTA: RESUMEN MENSUAL DE HORAS Y ASISTENCIA -->
+    <div id="resumenMensualView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 class="font-bold uppercase text-blue-900">Matriz Mensual de Cumplimiento y Horas</h2>
+            <div></div>
+        </div>
+        <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100/70 border-b text-[10px] uppercase font-bold text-slate-600">
+                        <th class="px-5 py-3">Voluntario</th>
+                        <th class="px-5 py-3">Cargo</th>
+                        <th class="px-5 py-3 text-center">Horas Acumuladas</th>
+                        <th class="px-5 py-3 text-center">Asistencias Trimestrales</th>
+                        <th class="px-5 py-3 text-center">Estado Mensual</th>
+                    </tr>
+                </thead>
+                <tbody id="resumenMensualTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
 
     <div id="certificadosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-violet-800">Cursos y Certificados</h2><div></div></div><div class="bg-white rounded-xl shadow-xs border overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-100 border-b text-[10px] uppercase text-slate-600"><th class="px-5 py-3">Voluntario</th><th class="px-5 py-3">Cargo</th><th class="px-5 py-3 text-center">N° Cursos</th><th class="px-5 py-3 text-right">Acción</th></thead><tbody id="certificadosTableBody" class="divide-y"></tbody></table></div></div>
 
@@ -365,7 +411,6 @@
 
         const credentials = { "Directora": "Directorabalmaceda1", "Tesorero": "Tesorerobalmaceda2", "Secretaria": "Secretariabalmaceda3", "Capitan": "CapitánBalmaceda1", "Ayudante": "Ayudantebalmaceda2", "Tenienteprimero": "Tenienteprimerobalmaceda", "Tenientesegundo": "Tenientesegundobalmaceda", "Tenientetercero": "Tenientetercerobalmaceda" };
         const oficialesOperativos = ["Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
-        // Lista de cargos oficiales operativos autorizados para ver la alerta de EPP
         const oficialesOperativosAltos = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         
         let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], estadoGuardia = { activo: "Tenienteprimero" };
@@ -382,7 +427,7 @@
         // FIREBASE LISTENERS
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
-        db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); });
+        db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
         db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
@@ -427,7 +472,6 @@
             const textoAlerta = document.getElementById('textoAlertaOperativa');
             if(!banner || !textoAlerta) return;
 
-            // Verificar si el usuario activo actual es un oficial operativo autorizado
             const cargoActual = localStorage.getItem('active_cargo');
             if (!cargoActual || !oficialesOperativosAltos.includes(cargoActual)) {
                 banner.classList.add('hidden');
@@ -459,7 +503,7 @@
         function handleLogin(e) { e.preventDefault(); const cargo = document.getElementById('loginCargo').value; const pass = document.getElementById('loginPassword').value; if (credentials[cargo] && credentials[cargo] === pass) { localStorage.setItem('active_cargo', cargo); closeLoginModal(); activateSession(cargo); } else { alert("Contraseña incorrecta."); } }
 
         function hideAllViews() {
-            ['accessView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'rosterView', 'certificadosView', 'novedadesView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            ['accessView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
         }
 
         function activateSession(cargo) {
@@ -496,7 +540,6 @@
             else if (cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
             else document.getElementById('accessView').classList.remove('hidden');
 
-            // Actualizar alertas automáticas al cambiar de sesión
             verificarAlertasAutomaticas();
         }
 
@@ -518,16 +561,9 @@
             const nombreGuardia = document.getElementById('inputNombreGuardia').value.trim();
             const nombreCapitan = document.getElementById('inputNombreCapitan').value.trim();
 
-            if(!nombreGuardia) {
-                alert("Por favor ingrese el nombre del Oficial de Guardia.");
-                return;
-            }
-            if(!nombreCapitan) {
-                alert("Por favor ingrese el nombre del Capitán de Compañía.");
-                return;
-            }
+            if(!nombreGuardia) { alert("Por favor ingrese el nombre del Oficial de Guardia."); return; }
+            if(!nombreCapitan) { alert("Por favor ingrese el nombre del Capitán de Compañía."); return; }
 
-            // Guardar nombre del capitán permanentemente en Firebase
             db.ref('nombreCapitanFirma').set(nombreCapitan);
             nombreCapitánGuardado = nombreCapitan;
 
@@ -585,7 +621,7 @@
             let t = tareas.find(x => x.id === id); if(t) { t.status = 'completada'; db.ref('tareas').set(tareas); openModalVerTareas(); }
         }
 
-        // ================= SISTEMA NOVEDADES Y GUARDIA =================
+        // ================= SISTEMA NOVEDADES (CON FILTROS Y BÚSQUEDA) =================
         function openModalCrearNovedad() { document.getElementById('txtNovedadDesc').value=''; document.getElementById('modalCrearNovedad').classList.remove('hidden'); }
         function closeModalCrearNovedad() { document.getElementById('modalCrearNovedad').classList.add('hidden'); }
         function saveNovedad(e) {
@@ -596,11 +632,50 @@
             novedades.unshift({ id: Date.now(), by: formatCargoStr(autor), text: texto, date: new Date().toLocaleString('es-CL') });
             db.ref('novedades').set(novedades);
         }
-        function openVerNovedadesView() { hideAllViews(); document.getElementById('novedadesView').classList.remove('hidden'); renderNovedades(); }
+        function openVerNovedadesView() { 
+            hideAllViews(); 
+            document.getElementById('novedadesView').classList.remove('hidden'); 
+            document.getElementById('filtroNovedadTexto').value = '';
+            document.getElementById('filtroNovedadOficial').value = '';
+            renderNovedades(); 
+        }
         function renderNovedades() {
             const tbody = document.getElementById('novedadesTableBody'); if(!tbody) return; tbody.innerHTML='';
-            if(novedades.length===0) { tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">Sin novedades registradas.</td></tr>`; return;}
-            novedades.forEach(n => { tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 text-slate-500 whitespace-nowrap">${n.date}</td><td class="px-5 py-3 font-bold text-slate-800">${n.by}</td><td class="px-5 py-3">${n.text}</td></tr>`; });
+            const textoFiltro = (document.getElementById('filtroNovedadTexto').value || "").toLowerCase();
+            const oficialFiltro = document.getElementById('filtroNovedadOficial').value;
+
+            let filtradas = novedades.filter(n => {
+                let matchTexto = n.text.toLowerCase().includes(textoFiltro) || n.by.toLowerCase().includes(textoFiltro);
+                let matchOficial = !oficialFiltro || n.by.includes(oficialFiltro);
+                return matchTexto && matchOficial;
+            });
+
+            if(filtradas.length === 0) { 
+                tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No se encontraron novedades con los filtros seleccionados.</td></tr>`; 
+                return;
+            }
+            filtradas.forEach(n => { 
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 text-slate-500 whitespace-nowrap">${n.date}</td><td class="px-5 py-3 font-bold text-slate-800">${n.by}</td><td class="px-5 py-3">${n.text}</td></tr>`; 
+            });
+        }
+
+        // ================= NUEVO MÓDULO: RESUMEN MENSUAL DE ASISTENCIA =================
+        function openResumenMensualView() {
+            hideAllViews();
+            document.getElementById('resumenMensualView').classList.remove('hidden');
+            renderResumenMensual();
+        }
+        function renderResumenMensual() {
+            const tbody = document.getElementById('resumenMensualTableBody'); if(!tbody) return; tbody.innerHTML = '';
+            if(roster.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Sin voluntarios registrados en la lista.</td></tr>`;
+                return;
+            }
+            roster.forEach(m => {
+                let horas = m.garitaHours || 0;
+                let estadoBadge = horas >= 16 ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Cumplido</span>` : `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">En Progreso</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-bold text-slate-900">${m.name}</td><td class="px-5 py-3">${m.role}</td><td class="px-5 py-3 text-center font-mono font-bold text-indigo-700">${horas} hrs</td><td class="px-5 py-3 text-center font-bold text-blue-700">${m.count3m || 0}</td><td class="px-5 py-3 text-center">${estadoBadge}</td></tr>`;
+            });
         }
 
         function openModalEntregarGuardia() {
@@ -780,7 +855,6 @@
             const m = roster.find(x => x.id === id); if (!m) return;
             document.getElementById('detailMemberName').textContent = m.name; document.getElementById('detailMemberRole').textContent = m.role; document.getElementById('detailMember3m').textContent = m.count3m || 0; document.getElementById('detailMember1y').textContent = m.count1y || 0;
             
-            // Mostrar u ocultar sección médica según cargo de oficial
             const cargo = localStorage.getItem('active_cargo');
             const esOficialAlto = oficialesOperativosAltos.includes(cargo);
             const medSection = document.getElementById('medicoTacticaSection');
@@ -840,10 +914,8 @@
             if (member) { member.name = document.getElementById('fichaEditName').value; member.role = document.getElementById('fichaEditRole').value; member.count3m = parseInt(document.getElementById('fichaEdit3m').value); member.count1y = parseInt(document.getElementById('fichaEdit1y').value); db.ref('roster').set(roster); closeFichaEditModal(); }
         }
 
-        // ================= CONTROL DE ACCESO Y BLOQUEOS (CON RESTRICCIÓN DE RUT) =================
-        function validarRutInput(input) {
-            input.value = input.value.replace(/[^0-9kK.-]/g, '');
-        }
+        // ================= CONTROL DE ACCESO Y BLOQUEOS =================
+        function validarRutInput(input) { input.value = input.value.replace(/[^0-9kK.-]/g, ''); }
 
         const visitorForm = document.getElementById('visitorForm');
         if(visitorForm) {
@@ -1089,7 +1161,6 @@
             document.getElementById('pdfOficialGuardia').textContent = cargoActualStr;
             document.getElementById('pdfLabelFirmaGuardia').textContent = `Oficial de Guardia (${cargoActualStr})`;
 
-            // Inyectar los nombres con una tipografía de firma estilizada en el PDF
             document.getElementById('pdfTextoFirmaGuardia').innerHTML = `<span class="signature-font">${nombreGuardia}</span>`;
             document.getElementById('pdfTextoFirmaCapitan').innerHTML = `<span class="signature-font">${nombreCapitan}</span>`;
 
