@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    <!-- BANNER DE ALERTA AUTOMÁTICA EPP / OPERATIVA -->
+    <!-- BANNER DE ALERTA AUTOMÁTICA EPP (EXCLUSIVO OFICIALES OPERATIVOS) -->
     <div id="alertaOperativaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-3">
         <div class="bg-rose-50 border-l-4 border-rose-600 p-3 rounded-r-lg shadow-xs flex items-center justify-between text-xs text-rose-900">
             <div class="flex items-center gap-2">
@@ -365,6 +365,8 @@
 
         const credentials = { "Directora": "Directorabalmaceda1", "Tesorero": "Tesorerobalmaceda2", "Secretaria": "Secretariabalmaceda3", "Capitan": "CapitánBalmaceda1", "Ayudante": "Ayudantebalmaceda2", "Tenienteprimero": "Tenienteprimerobalmaceda", "Tenientesegundo": "Tenientesegundobalmaceda", "Tenientetercero": "Tenientetercerobalmaceda" };
         const oficialesOperativos = ["Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
+        // Lista de cargos oficiales operativos autorizados para ver la alerta de EPP
+        const oficialesOperativosAltos = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         
         let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], estadoGuardia = { activo: "Tenienteprimero" };
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
@@ -424,6 +426,13 @@
             const banner = document.getElementById('alertaOperativaBanner');
             const textoAlerta = document.getElementById('textoAlertaOperativa');
             if(!banner || !textoAlerta) return;
+
+            // Verificar si el usuario activo actual es un oficial operativo autorizado
+            const cargoActual = localStorage.getItem('active_cargo');
+            if (!cargoActual || !oficialesOperativosAltos.includes(cargoActual)) {
+                banner.classList.add('hidden');
+                return;
+            }
 
             const anioActual = new Date().getFullYear();
             let eppVencidosCount = 0;
@@ -486,6 +495,9 @@
             else if (cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
             else if (cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
             else document.getElementById('accessView').classList.remove('hidden');
+
+            // Actualizar alertas automáticas al cambiar de sesión
+            verificarAlertasAutomaticas();
         }
 
         function backToMainPanel() { activateSession(localStorage.getItem('active_cargo')); }
@@ -770,7 +782,7 @@
             
             // Mostrar u ocultar sección médica según cargo de oficial
             const cargo = localStorage.getItem('active_cargo');
-            const esOficialAlto = ['Capitan', 'Tenienteprimero', 'Tenientesegundo', 'Tenientetercero'].includes(cargo);
+            const esOficialAlto = oficialesOperativosAltos.includes(cargo);
             const medSection = document.getElementById('medicoTacticaSection');
             if (esOficialAlto) {
                 medSection.classList.remove('hidden');
