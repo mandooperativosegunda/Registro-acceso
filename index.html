@@ -77,18 +77,6 @@
         </div>
     </div>
 
-    <!-- MODAL LOGIN -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs">
-            <div class="px-5 py-3 border-b flex justify-between items-center bg-slate-50"><h3 class="font-bold text-sm">Acceso de Oficiales</h3><button onclick="closeLoginModal()"><i class="ph ph-x text-lg"></i></button></div>
-            <form onsubmit="handleLogin(event)" class="p-5 space-y-3">
-                <div><label class="block font-semibold mb-1">Cargo / Oficial</label><select id="loginCargo" class="w-full px-3 py-2 border rounded-lg"><option value="Capitan">Capitán</option><option value="Tenienteprimero">Teniente 1°</option><option value="Tenientesegundo">Teniente 2°</option><option value="Tenientetercero">Teniente 3°</option><option value="Ayudante">Ayudante</option><option value="Directora">Directora</option><option value="Tesorero">Tesorero</option><option value="Secretaria">Secretaria</option></select></div>
-                <div><label class="block font-semibold mb-1">Contraseña</label><input type="password" id="loginPass" required class="w-full px-3 py-2 border rounded-lg"></div>
-                <button type="submit" class="w-full bg-indigo-900 hover:bg-indigo-950 text-white py-2.5 rounded-lg font-bold transition">Ingresar al Sistema</button>
-            </form>
-        </div>
-    </div>
-
     <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6">
         <section class="lg:col-span-4 h-fit">
@@ -149,22 +137,6 @@
         </div>
     </div>
 
-    <!-- VISTAS SECUNDARIAS (ROSTER, FICHAS, BODEGAS, ETC.) -->
-    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
-        <button onclick="backToMainPanel()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-bold">&larr; Volver al Panel</button>
-        <div class="bg-white rounded-xl border p-5"><h3 class="font-bold text-sm mb-3">Roster de Compañía</h3><table class="w-full text-left"><thead><tr class="border-b"><th class="py-2">Nombre</th><th class="py-2">Cargo / Rol</th></tr></thead><tbody id="rosterTableBody"></tbody></table></div>
-    </div>
-
-    <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
-        <button onclick="backToMainPanel()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-bold">&larr; Volver al Panel</button>
-        <div class="bg-white rounded-xl border p-5"><h3 class="font-bold text-sm mb-3">Fichas de Voluntarios y Ficha Médica</h3><table class="w-full text-left"><thead><tr class="border-b"><th class="py-2">Nombre</th><th class="py-2">Rol</th><th class="py-2 text-center">Asist. 3m</th><th class="py-2 text-center">Asist. 1y</th><th class="py-2 text-right">Acciones</th></tr></thead><tbody id="fichasTableBody"></tbody></table></div>
-    </div>
-
-    <div id="bodegaEppView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
-        <button onclick="backToMainPanel()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-bold">&larr; Volver al Panel</button>
-        <div class="bg-white rounded-xl border p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm" id="bodegaEppTitle">Bodega EPP</h3></div><table class="w-full text-left"><thead><tr class="border-b"><th class="py-2">Artículo (Año Fab.)</th><th class="py-2">Talla</th><th class="py-2 text-center">Stock</th><th class="py-2 text-right">Acción</th></tr></thead><tbody id="bodegaEppTableBody"></tbody></table></div>
-    </div>
-
     <!-- SCRIPT JAVASCRIPT PRINCIPAL -->
     <script>
         const firebaseConfig = { apiKey: "AIzaSyB0Hs4NiPoQd---DnInGb4Bd7TAB8toYaYI", authDomain: "sistema-segunda-cia.firebaseapp.com", databaseURL: "https://sistema-segunda-cia-default-rtdb.firebaseio.com" };
@@ -184,34 +156,37 @@
             if(c==='Tenientetercero') return 'Teniente 3°'; if(c==='Capitan') return 'Capitán'; return c;
         }
 
-        // FIREBASE LISTENERS SEGUROS
+        // FIREBASE LISTENERS SEGUROS (Evita que el botón de registro falle por conversión de Arrays a Objetos)
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         
         db.ref('visitantes').on('value', snap => { 
             const val = snap.val();
             visitors = Array.isArray(val) ? val : (val ? Object.values(val) : []);
             renderVisitors(); 
+            if(document.getElementById('liveHoursView') && !document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); 
         });
 
         db.ref('roster').on('value', snap => { 
             const val = snap.val();
             roster = Array.isArray(val) ? val : (val ? Object.values(val) : []);
-            renderRoster(); renderFichas(); 
+            renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); 
         });
 
-        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; });
+        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); });
 
         db.ref('tareas').on('value', snap => { 
             const val = snap.val();
             tareas = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderBadgeTareas(); 
         });
 
         db.ref('novedades').on('value', snap => { 
             const val = snap.val();
             novedades = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderNovedades(); 
         });
 
-        db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
+        db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); const lbl = document.getElementById('lblTenienteGuardia'); if(lbl) lbl.textContent = formatCargoStr(estadoGuardia.activo); });
 
         db.ref('bodegaEpp').on('value', snap => { 
             const val = snap.val();
@@ -219,27 +194,34 @@
             renderBodegaEpp(); 
         });
 
-        db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); });
-        db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); });
+        db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); renderInventory(); });
+        db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); renderCuartelInventory(); });
 
         db.ref('calendario').on('value', snap => { 
             const val = snap.val();
             calendarEvents = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderCalendar(); renderDayEvents(); 
         });
 
         db.ref('remorsiones').on('value', snap => { 
             const val = snap.val();
             remorsionesLog = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+            renderRemorsionesLog(); 
         });
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeCargo = localStorage.getItem('active_cargo');
             if(activeCargo) activateSession(activeCargo);
+            verificarBloqueoSalida();
         });
 
         setInterval(() => {
             const clock = document.getElementById('currentTime');
             if(clock) clock.textContent = new Date().toLocaleTimeString('es-CL');
+            verificarBloqueoSalida();
+            checkAndGrantAB();
+            if(document.getElementById('liveHoursView') && !document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours();
+            if(document.getElementById('bloqueadosModal') && !document.getElementById('bloqueadosModal').classList.contains('hidden')) renderBloqueadosTable();
         }, 1000);
 
         function openLoginModal() { document.getElementById('loginModal')?.classList.remove('hidden'); }
@@ -260,17 +242,9 @@
         }
 
         function hideAllViews() {
-            ['accessView', 'capitanTenientePrimeroView', 'rosterView', 'fichasView', 'bodegaEppView'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
-        }
-
-        function backToMainPanel() {
-            hideAllViews();
-            const cargo = localStorage.getItem('active_cargo');
-            if(cargo === 'Capitan' || cargo === 'Tenienteprimero') {
-                document.getElementById('capitanTenientePrimeroView')?.classList.remove('hidden');
-            } else {
-                document.getElementById('accessView')?.classList.remove('hidden');
-            }
+            ['accessView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'rosterView', 'fichasView', 'liveHoursView', 'bodegaEppView', 'carroInventoryView', 'cuartelInventoryView', 'certificadosView', 'novedadesView'].forEach(id => {
+                document.getElementById(id)?.classList.add('hidden');
+            });
         }
 
         function activateSession(cargo) {
@@ -291,6 +265,7 @@
                     document.getElementById('btnEntregarGuardia')?.classList.remove('hidden');
                     document.getElementById('btnCrearNovedad')?.classList.remove('hidden');
                 }
+                renderBadgeTareas();
             }
 
             if(cargo === 'Capitan' || cargo === 'Tenienteprimero') {
@@ -299,6 +274,12 @@
                 document.getElementById('cardNovedades')?.classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardPartePDF')?.classList.toggle('hidden', cargo !== 'Capitan');
                 document.getElementById('cardCertificados')?.classList.toggle('hidden', cargo !== 'Tenienteprimero');
+            } else if(cargo === 'Ayudante') {
+                document.getElementById('ayudanteView')?.classList.remove('hidden');
+            } else if(cargo === 'Tenientesegundo') {
+                document.getElementById('tenienteSegundoView')?.classList.remove('hidden');
+            } else if(cargo === 'Tenientetercero') {
+                document.getElementById('tenienteTerceroView')?.classList.remove('hidden');
             } else {
                 document.getElementById('accessView')?.classList.remove('hidden');
             }
@@ -335,25 +316,51 @@
             db.ref('visitantes').set(visitors);
         }
 
-        // --- NAVEGACIÓN ENTRE VISTAS ---
-        function openRosterView() { hideAllViews(); document.getElementById('rosterView')?.classList.remove('hidden'); }
-        function openFichasView() { hideAllViews(); document.getElementById('fichasView')?.classList.remove('hidden'); }
-        function openCarro(c) { 
-            hideAllViews(); 
-            document.getElementById('bodegaEppView')?.classList.remove('hidden'); 
-            document.getElementById('bodegaEppTitle').textContent = `Inventario / Bodega: ${c}`;
-        }
-        function openCuartelSeccion(s) { 
-            hideAllViews(); 
-            document.getElementById('bodegaEppView')?.classList.remove('hidden'); 
-            document.getElementById('bodegaEppTitle').textContent = `Cuartel - Sección: ${s}`;
-        }
-
-        function renderRoster() {
-            const tbody = document.getElementById('rosterTableBody'); if(!tbody) return; tbody.innerHTML = '';
-            roster.forEach(m => { tbody.innerHTML += `<tr class="border-b"><td class="py-2 font-bold">${m.name}</td><td class="py-2 text-slate-600">${m.role}</td></tr>`; });
+        // --- FUNCIONES Y MODALES DE APOYO ---
+        function exportToCSV() {
+            let csv = 'Nombre,Motivo,Hora Ingreso\n';
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.reason}","${v.entryTime}"\n`; });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "registro_guardia.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
+        function verificarBloqueoSalida() {}
+        function checkAndGrantAB() {}
+        function renderBloqueadosTable() {}
+        function renderBadgeTareas() {}
+        function renderNovedades() {}
+        function renderInventory() {}
+        function renderCuartelInventory() {}
+        function renderCalendar() {}
+        function renderDayEvents() {}
+        function renderRemorsionesLog() {}
+        function renderRoster() {}
+        function renderLiveHours() {}
+        function renderEppVoluntarios() {}
+        function renderCertificadosView() {}
+        function openRosterView() {}
+        function openLiveHoursView() {}
+        function openFichasView() {}
+        function openEppVoluntariosView() {}
+        function openCertificadosView() {}
+        function openCarro(c) {}
+        function openCuartelSeccion(s) {}
+        function openVerNovedadesView() {}
+        function openModalCrearTarea() {}
+        function openVerTareas() {}
+        function openBloqueadosModal() {}
+        function openCalendarModal() {}
+        function openRemorsionModal() {}
+        function openModalEntregarGuardia() {}
+        function openModalModificarGuardia() {}
+        function openModalCrearNovedad() {}
+        function deleteBodegaEpp(id) { bodegaEpp = bodegaEpp.filter(x => x.id !== id); db.ref('bodegaEpp').set(bodegaEpp); }
+        
         // --- MÓDULO EPP BODEGA & ALERTA VENCIMIENTO ---
         function renderBodegaEpp() {
             const tbody = document.getElementById('bodegaEppTableBody'); if (!tbody) return; tbody.innerHTML = '';
@@ -441,20 +448,6 @@
             
             html2pdf().set(opt).from(element).save();
         }
-
-        function exportToCSV() {
-            let csv = 'Nombre,Motivo,Hora Ingreso\n';
-            visitors.forEach(v => { csv += `"${v.fullName}","${v.reason}","${v.entryTime}"\n`; });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", "registro_guardia.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function deleteBodegaEpp(id) { bodegaEpp = bodegaEpp.filter(x => x.id !== id); db.ref('bodegaEpp').set(bodegaEpp); }
     </script>
 </body>
 </html>
