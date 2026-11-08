@@ -46,7 +46,7 @@
         </div>
     </nav>
 
-    <!-- BARRA ESTADO DE GUARDIA Y NOTIFICACIONES (MÁS COMPACTA) -->
+    <!-- BARRA ESTADO DE GUARDIA Y NOTIFICACIONES -->
     <div id="guardiaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-3">
         <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs shadow-xs">
             <div class="flex items-center gap-2">
@@ -107,7 +107,6 @@
                 <button onclick="closeLoginModal()"><i class="ph ph-x text-lg"></i></button>
             </div>
             
-            <!-- FORMULARIO DE LOGIN -->
             <form id="loginForm" onsubmit="handleLogin(event)" class="p-5 space-y-4 text-xs">
                 <div id="loginError" class="hidden p-2 rounded bg-red-50 text-red-700 font-medium"></div>
                 <div>
@@ -132,7 +131,6 @@
                         </optgroup>
                     </select>
                 </div>
-                <!-- Campo Nombre o RUT desplegable exclusivo para Aspirante o Bombero -->
                 <div id="loginNombreContainer" class="hidden">
                     <label class="block font-semibold mb-1">Nombre o RUT con el que te registraste</label>
                     <input type="text" id="loginNombreInput" placeholder="Ej. Juan Pérez o 21.111.222-3" class="w-full px-3 py-2 border rounded bg-slate-50">
@@ -148,7 +146,6 @@
                 </div>
             </form>
 
-            <!-- FORMULARIO DE REGISTRO INDIVIDUAL -->
             <form id="registerForm" onsubmit="handleRegister(event)" class="p-5 space-y-3 text-xs hidden">
                 <div class="bg-indigo-50 p-2.5 rounded text-indigo-900 font-semibold mb-2">Crea tu cuenta individual de Aspirante o Bombero.</div>
                 <div>
@@ -221,7 +218,7 @@
     </div>
 
     <!-- MODAL BODEGA EPP -->
-    <div id="agregarBodegaEppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-teal-900 text-white"><h3 class="font-bold">Ingresar EPP a Bodega (NFPA 1971)</h3><button onclick="closeAgregarBodegaEppModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveBodegaEpp(event)" class="p-5 space-y-3"><input type="hidden" id="bodegaEppId"><div><label class="block font-semibold mb-1">Tipo de Artículo</label><select id="bodegaEppNameSelect" onchange="toggleOtroEppInput()" required class="w-full px-3 py-2 border rounded bg-slate-50"><option value="">-- Seleccione equipo --</option><option value="Uniforme estructural">Uniforme estructural</option><option value="Uniforme forestal">Uniforme forestal</option><option value="Uniforme rescate">Uniforme rescate</option><option value="Casco estructural">Casco estructural</option><option value="Guantes estructurales">Guantes estructurales</option><option value="Bota estructural">Bota estructural</option><option value="Esclavina estructural">Esclavina estructural</option><option value="Linterna de casco">Linterna de casco</option><option value="OTRO">Otro nuevo (Especificar)...</option></select></div><div id="otroEppContainer" class="hidden"><label class="block font-semibold mb-1">Nombre del Nuevo EPP</label><input type="text" id="bodegaEppNameOtro" placeholder="Ej. Antiparras..." class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-3"><div><label class="block font-semibold mb-1">Talla (Opcional)</label><input type="text" id="bodegaEppSize" placeholder="Ej. L, 42..." class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold mb-1">Cantidad Inicial</label><input type="number" id="bodegaEppStock" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div></div><div><label class="block font-semibold mb-1">Fecha de Fabricación</label><input type="date" id="bodegaEppFabricacion" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-teal-700 text-white py-2 rounded mt-2 font-bold">Guardar</button></form></div></div>
+    <div id="agregarBodegaEppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-teal-900 text-white"><h3 class="font-bold">Ingresar EPP a Bodega (NFPA 1971)</h3><button onclick="closeAgregarBodegaEppModal()"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveBodegaEpp(event)" class="p-5 space-y-3"><input type="hidden" id="bodegaEppId"><div><label class="block font-semibold mb-1">Tipo de Artículo</label><select id="bodegaEppNameSelect" onchange="toggleOtroEppInput()" required class="w-full px-3 py-2 border rounded bg-slate-50"><option value="">-- Seleccione equipo --</option><option value="Uniforme estructural">Uniforme estructural</option><option value="Uniforme forestal">Uniforme forestal</option><option value="Uniforme rescate">Uniforme rescate</option><option value="Casco estructural">Casco estructural</option><option value="Guantes estructurales">Guantes estructurales</option><option value="Bota estructural">Bota estructural</option><option value="Esclavina estructural">Esclavina estructural</option><option value="Linterna de casco">Linterna de casco</option><option value="OTRO">Otro nuevo (Especificar)...</option></select></div><div id="otroEppContainer" class="hidden"><label class="block font-semibold mb-1">Nombre del Nuevo EPP</label><input type="text" id="bodegaEppNameOtro" placeholder="Ej. Antiparras..." class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold mb-1">Talla (Opcional)</label><input type="text" id="bodegaEppSize" placeholder="Ej. L, 42..." class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold mb-1">Cantidad Inicial</label><input type="number" id="bodegaEppStock" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div></div><div><label class="block font-semibold mb-1">Fecha de Fabricación</label><input type="date" id="bodegaEppFabricacion" required class="w-full px-3 py-2 border rounded"></div><button type="submit" class="w-full bg-teal-700 text-white py-2 rounded mt-2 font-bold">Guardar</button></form></div></div>
 
     <!-- MODAL FICHA DE EPP DEL BOMBERO -->
     <div id="fichaEppVoluntarioModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[90vh]"><div class="px-5 py-3 border-b flex justify-between bg-orange-900 text-white shrink-0"><h3 class="text-sm font-bold flex items-center gap-2"><i class="ph ph-hard-hat text-base"></i> Ficha EPP Bombero</h3><button onclick="closeFichaEppVoluntarioModal()"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-5"><div class="bg-orange-50 border border-orange-100 rounded-lg p-3 flex items-center gap-3"><div class="w-10 h-10 bg-orange-700 text-white rounded-full flex items-center justify-center text-lg font-bold"><i class="ph ph-user"></i></div><div><span id="eppFichaRole" class="text-[10px] font-bold text-orange-600 uppercase">Cargo</span><h4 id="eppFichaName" class="text-sm font-bold text-slate-900">Nombre Bombero</h4></div></div><div class="bg-slate-50 border border-slate-200 rounded-lg p-4"><h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-plus-circle text-orange-600"></i> Asignar / Entregar EPP</h5><form onsubmit="entregarEpp(event)" class="flex gap-2"><input type="hidden" id="eppFichaMemberId"><select id="selectEppToAssign" required class="flex-grow px-3 py-2 border rounded focus:ring-2 focus:ring-orange-500 outline-none bg-white"></select><button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-bold transition-colors">Entregar</button></form></div><div><h5 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5"><i class="ph ph-list-checks text-emerald-600"></i> EPP en posesión del bombero</h5><div class="border border-slate-200 rounded-lg overflow-hidden bg-white"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-100 text-[10px] text-slate-500 uppercase font-bold"><th class="px-3 py-2">Artículo</th><th class="px-3 py-2">Talla</th><th class="px-3 py-2 text-center">Estado / Vida Útil</th><th class="px-3 py-2 text-right">Acción</th></tr></thead><tbody id="eppFichaTableBody" class="divide-y divide-slate-100"><tr><td colspan="4" class="px-3 py-4 text-center text-slate-400">Este bombero no tiene EPP asignado.</td></tr></tbody></table></div></div></div></div></div>
@@ -302,7 +299,7 @@
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-indigo-900 text-white"><h3 id="itemModalTitle" class="text-sm font-bold">Agregar Material Menor</h3><button onclick="closeItemModal()"><i class="ph ph-x text-lg"></i></button></div><form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-5 space-y-3"><input type="hidden" id="itemId"><div><label class="block font-semibold">Nombre Equipo</label><input type="text" id="itemName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Marca/Modelo</label><input type="text" id="itemModel" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Categoría</label><input type="text" id="itemCategory" required class="w-full px-3 py-2 border rounded"></div><div id="modalGavetaField" class="hidden"><label class="block font-semibold">Gaveta</label><select id="itemGaveta" class="w-full px-3 py-2 border rounded"><option value="Gaveta 1">Gaveta 1</option><option value="Gaveta 2">Gaveta 2</option><option value="Gaveta 3">Gaveta 3</option><option value="Gaveta 4">Gaveta 4</option><option value="Gaveta trasera">Gaveta trasera</option><option value="Techo">Techo</option></select></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">Cantidad</label><input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Estado</label><select id="itemStatus" class="w-full px-3 py-2 border rounded"><option value="Operativo">Operativo</option><option value="Revisión">Revisión</option><option value="Dañado">Dañado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-indigo-700 text-white py-2 rounded font-bold">Registrar</button></div></form></div></div>
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/70 backdrop-blur-xs"><div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 text-xs"><div class="px-5 py-3 flex justify-between bg-emerald-900 text-white"><h3 id="cuartelModalTitle" class="text-sm font-bold">Agregar Artículo</h3><button onclick="closeCuartelItemModal()"><i class="ph ph-x text-lg"></i></button></div><form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-5 space-y-3"><input type="hidden" id="cuartelItemId"><div><label class="block font-semibold">Nombre</label><input type="text" id="cuartelItemName" required class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Ubicación</label><input type="text" id="cuartelItemUbicacion" required class="w-full px-3 py-2 border rounded"></div><div class="grid grid-cols-2 gap-2"><div><label class="block font-semibold">Stock</label><input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3 py-2 border rounded"></div><div><label class="block font-semibold">Estado</label><select id="cuartelItemStatus" class="w-full px-3 py-2 border rounded"><option value="Operativo / Bueno">Bueno</option><option value="Por reponer">Por reponer</option><option value="Agotado">Agotado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-emerald-700 text-white py-2 rounded font-bold">Guardar</button></div></form></div></div>
 
-    <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) - SIN TARJETA DE GUARDS -->
+    <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 mt-2">
         <section class="lg:col-span-4 h-fit space-y-4">
             <div class="bg-white rounded-xl shadow-xs border text-xs overflow-hidden">
@@ -330,7 +327,7 @@
         </section>
     </main>
 
-    <!-- VISTA DE GUARDIAS DIURNAS Y NOCTURNAS (AISLADA) -->
+    <!-- VISTA DE GUARDIAS DIURNAS Y NOCTURNAS -->
     <div id="guardiasView" class="hidden max-w-5xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-4 flex justify-between items-center">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-100 font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button>
@@ -339,7 +336,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- GUARDIA DIURNA -->
             <div class="bg-white rounded-xl shadow-xs border p-5 space-y-4 relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg shadow-xs" id="countDiurnaBadge">0 en guardia</div>
                 <div class="flex items-center gap-3">
@@ -360,7 +356,6 @@
                 </div>
             </div>
 
-            <!-- GUARDIA NOCTURNA -->
             <div class="bg-white rounded-xl shadow-xs border p-5 space-y-4 relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-indigo-700 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg shadow-xs" id="countNocturnaBadge">0 en guardia</div>
                 <div class="flex items-center gap-3">
@@ -420,10 +415,10 @@
             <button onclick="openGestionAspirantesModal()" id="btnGestionarAspirantes" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded font-bold shadow-sm flex items-center gap-1.5"><i class="ph ph-user-switch"></i> Promover Aspirantes</button>
         </div>
         
-        <!-- GRÁFICO DE ASISTENCIA GENERAL (REDUCIDO) -->
+        <!-- GRÁFICO DE ASISTENCIA ENLAZADO DIRECTAMENTE CON LA LISTA -->
         <div class="bg-white rounded-xl shadow-xs border p-4 mb-6 max-w-xl mx-auto">
             <h3 class="font-bold text-slate-800 mb-2 text-center flex items-center justify-center gap-1.5"><i class="ph ph-chart-bar text-sm text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
-            <div class="h-44 relative">
+            <div style="position: relative; width: 100%; height: 170px;">
                 <canvas id="graficoAsistenciaGeneral"></canvas>
             </div>
         </div>
@@ -462,10 +457,9 @@
     <!-- PANELES DE OTROS OFICIALES -->
     <div id="ayudanteView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Ayudante</span><h2 class="text-xl font-bold mt-1">Gestión de Asistencia</h2></div>
-        <!-- GRÁFICO DE ASISTENCIA GENERAL (REDUCIDO) -->
         <div class="bg-white rounded-xl shadow-xs border p-4 mb-6 max-w-xl mx-auto">
             <h3 class="font-bold text-slate-800 mb-2 text-center flex items-center justify-center gap-1.5"><i class="ph ph-chart-bar text-sm text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
-            <div class="h-44 relative"><canvas id="graficoAsistenciaAyudante"></canvas></div>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaAyudante"></canvas></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
@@ -477,10 +471,9 @@
     
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-1">Gestión Material Menor y EPP</h2></div>
-        <!-- GRÁFICO DE ASISTENCIA GENERAL (REDUCIDO) -->
         <div class="bg-white rounded-xl shadow-xs border p-4 mb-6 max-w-xl mx-auto">
             <h3 class="font-bold text-slate-800 mb-2 text-center flex items-center justify-center gap-1.5"><i class="ph ph-chart-bar text-sm text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
-            <div class="h-44 relative"><canvas id="graficoAsistenciaTte2"></canvas></div>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaTte2"></canvas></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
@@ -492,10 +485,9 @@
 
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="bg-white rounded-xl shadow-xs border p-5"><span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded uppercase">Panel Teniente Tercero</span><h2 class="text-xl font-bold mt-1">Gestión de Cuartel</h2></div>
-        <!-- GRÁFICO DE ASISTENCIA GENERAL (REDUCIDO) -->
         <div class="bg-white rounded-xl shadow-xs border p-4 mb-6 max-w-xl mx-auto">
             <h3 class="font-bold text-slate-800 mb-2 text-center flex items-center justify-center gap-1.5"><i class="ph ph-chart-bar text-sm text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
-            <div class="h-44 relative"><canvas id="graficoAsistenciaTte3"></canvas></div>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaTte3"></canvas></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
@@ -596,7 +588,7 @@
     <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="bg-white rounded-xl p-4 flex justify-between items-center"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded font-semibold"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left bg-white border rounded-xl overflow-hidden"><thead class="bg-slate-100/70 border-b text-[10px] uppercase font-bold text-slate-600"><th class="px-5 py-3">Fecha y Hora</th><th class="px-5 py-3">Oficial Responsable</th><th class="px-5 py-3">Bombero Liberado</th><th class="px-5 py-3">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y"></tbody></table></div>
 
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN A PDF -->
+    <!-- CONTENEDORES OCULTOS PARA PDF -->
     <div id="pdfExportContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans">
         <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -627,7 +619,6 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA PDF DE FICHA DE VOLUNTARIO -->
     <div id="pdfFichaContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
         <div class="text-center border-b-2 border-blue-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-blue-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -660,7 +651,6 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA PDF DE INVENTARIOS -->
     <div id="pdfInventarioContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
         <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -702,7 +692,7 @@
         let nombreCapitánGuardado = "";
         let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "", selectedVoluntarioParaLiberar = null;
         let selectedFichaIdForPdf = null;
-        let chartInstance = null;
+        let chartInstances = {};
 
         function formatCargoStr(c) {
             if(c==='Tenienteprimero') return 'Teniente 1°'; if(c==='Tenientesegundo') return 'Teniente 2°';
@@ -732,7 +722,7 @@
             if (activeUserStr) activateSession(JSON.parse(activeUserStr));
             verificarBloqueoSalida();
             verificarAlertasAutomaticas();
-            actualizarGraficoAsistencia();
+            setTimeout(actualizarGraficoAsistencia, 300);
         });
 
         setInterval(() => {
@@ -775,33 +765,34 @@
             } else { banner.classList.add('hidden'); }
         }
 
-        // GRÁFICO DE ASISTENCIA GENERAL CON CHART.JS (ALTURA REDUCIDA)
+        // GRÁFICO ENLAZADO DIRECTAMENTE CON LA LISTA DE ASISTENCIA
         function actualizarGraficoAsistencia() {
             ['graficoAsistenciaGeneral', 'graficoAsistenciaAyudante', 'graficoAsistenciaTte2', 'graficoAsistenciaTte3'].forEach(canvasId => {
                 const canvas = document.getElementById(canvasId);
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
                 
+                // Extraer nombres y asistencias reales de la lista (roster)
                 let nombres = roster.map(m => m.name.split(' ')[0]);
                 let asistencias = roster.map(m => m.count3m || 0);
 
                 if (nombres.length === 0) {
-                    nombres = ['Sin registros'];
+                    nombres = ['Sin registros en lista'];
                     asistencias = [0];
                 }
 
-                if (chartInstance) {
-                    try { chartInstance.destroy(); } catch(e){}
+                if (chartInstances[canvasId]) {
+                    try { chartInstances[canvasId].destroy(); } catch(e){}
                 }
 
-                chartInstance = new Chart(ctx, {
+                chartInstances[canvasId] = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: nombres,
                         datasets: [{
                             label: 'Asistencias Trimestrales',
                             data: asistencias,
-                            backgroundColor: 'rgba(79, 70, 229, 0.7)',
+                            backgroundColor: 'rgba(79, 70, 229, 0.75)',
                             borderColor: 'rgb(79, 70, 229)',
                             borderWidth: 1,
                             borderRadius: 4
@@ -951,12 +942,11 @@
             } else document.getElementById('accessView').classList.remove('hidden');
 
             verificarAlertasAutomaticas();
-            setTimeout(actualizarGraficoAsistencia, 200);
+            setTimeout(actualizarGraficoAsistencia, 250);
         }
 
-        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); }
+        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
 
-        // FUNCIONES DE LAS NUEVAS GUARDIAS DIURNAS Y NOCTURNAS
         function openGuardiasView() {
             hideAllViews();
             document.getElementById('guardiasView').classList.remove('hidden');
@@ -1025,7 +1015,6 @@
                 });
             }
         }
-
 
         function abrirModalFirmasPdf() {
             document.getElementById('labelInputGuardia').textContent = `Nombre Oficial de Guardia (${formatCargoStr(estadoGuardia.activo)}):`;
@@ -1356,7 +1345,6 @@
         }
         function closeFichaDetailModal() { document.getElementById('fichaDetailModal').classList.add('hidden'); }
 
-        // DESCARGAR PDF DE LA FICHA DEL VOLUNTARIO
         function descargarFichaVoluntarioPdf() {
             const m = roster.find(x => x.id === selectedFichaIdForPdf); if(!m) return;
             document.getElementById('pdfFichaFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
@@ -1618,32 +1606,19 @@
         }
         function deleteCuartelItem(id) { if (confirm("¿Eliminar artículo?")) { cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id); db.ref('cuartel').set(cuartelInventarios); } }
 
-        // DESCARGAR INVENTARIO EN PDF CON FIRMAS DE TENIENTES
         function descargarInventarioPdf(tipo) {
-            let titulo = "";
-            let items = [];
-            let tenienteFirma = "";
-            let tenienteLabel = "";
-
+            let titulo = ""; let items = []; let tenienteFirma = ""; let tenienteLabel = "";
             if (tipo === 'carro') {
-                titulo = `INVENTARIO DE MATERIAL MENOR - CARRO ${currentCarro}`;
-                items = inventories[currentCarro] || [];
-                tenienteFirma = "Teniente 2°";
-                tenienteLabel = "Teniente 2° a Cargo de Material Menor";
+                titulo = `INVENTARIO DE MATERIAL MENOR - CARRO ${currentCarro}`; items = inventories[currentCarro] || []; tenienteFirma = "Teniente 2°"; tenienteLabel = "Teniente 2° a Cargo de Material Menor";
             } else {
-                titulo = `INVENTARIO DE CUARTEL - SECCIÓN ${currentCuartelSeccion.toUpperCase()}`;
-                items = cuartelInventarios[currentCuartelSeccion] || [];
-                tenienteFirma = "Teniente 3°";
-                tenienteLabel = "Teniente 3° a Cargo de Cuartel y Ornato";
+                titulo = `INVENTARIO DE CUARTEL - SECCIÓN ${currentCuartelSeccion.toUpperCase()}`; items = cuartelInventarios[currentCuartelSeccion] || []; tenienteFirma = "Teniente 3°"; tenienteLabel = "Teniente 3° a Cargo de Cuartel y Ornato";
             }
-
             document.getElementById('pdfInvTitulo').textContent = titulo;
             document.getElementById('pdfInvFecha').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
             document.getElementById('pdfInvLabelTeniente').textContent = tenienteLabel;
             document.getElementById('pdfInvFirmaTeniente').innerHTML = `<span class="signature-font">${tenienteFirma} Responsable</span>`;
 
-            const tbody = document.getElementById('pdfInvTablaBody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('pdfInvTablaBody'); tbody.innerHTML = '';
             if(items.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" class="border p-3 text-center text-slate-400">Sin elementos registrados en este inventario.</td></tr>`;
             } else {
@@ -1656,13 +1631,7 @@
 
             const element = document.getElementById('pdfInventarioContainer');
             element.classList.remove('hidden');
-            const opt = {
-                margin: 10,
-                filename: `Inventario_${tipo}_${currentCarro || currentCuartelSeccion}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+            const opt = { margin: 10, filename: `Inventario_${tipo}_${currentCarro || currentCuartelSeccion}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
 
@@ -1756,14 +1725,7 @@
             const element = document.getElementById('pdfExportContainer');
             element.classList.remove('hidden');
 
-            const opt = {
-                margin:       10,
-                filename:     `Parte_Guardia_Segunda_${new Date().toISOString().split('T')[0]}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
+            const opt = { margin: 10, filename: `Parte_Guardia_Segunda_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
     </script>
