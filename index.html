@@ -404,7 +404,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div onclick="openCalendarView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500 shadow-sm"><i class="ph ph-calendar text-3xl text-amber-600 mb-2"></i><h3 class="font-bold text-sm">Calendario de Aspirantes</h3></div>
-            <div class="bg-white rounded-xl border p-6 text-center shadow-sm"><i class="ph ph-book-open text-3xl text-indigo-600 mb-2"></i><h3 class="font-bold text-sm">Manual del Aspirante</h3></div>
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500 shadow-sm"><i class="ph ph-shield-check text-3xl text-amber-600 mb-2"></i><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
         </div>
     </div>
 
@@ -415,8 +415,9 @@
             <h2 id="saludoVoluntario" class="text-xl font-bold mt-1 text-indigo-900">Panel Personal</h2>
             <p class="text-slate-600 mt-1">Consulta tus actividades y calendario general de la compañía.</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openCalendarView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-indigo-500 shadow-sm"><i class="ph ph-calendar-blank text-3xl text-indigo-600 mb-2"></i><h3 class="font-bold text-sm">Calendario Compañía</h3></div>
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500 shadow-sm"><i class="ph ph-shield-check text-3xl text-emerald-600 mb-2"></i><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
             <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500 shadow-sm"><i class="ph ph-clock text-3xl text-emerald-600 mb-2"></i><h3 class="font-bold text-sm">Mis Horas de Guardia</h3></div>
         </div>
     </div>
@@ -440,6 +441,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-5 hover:border-indigo-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3><p class="text-[11px] text-slate-500 mt-0.5">Control y turnos de guardia</p><span class="mt-3 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded">Ver Guardias &rarr;</span></div>
             <div id="cardAsignarTarea" onclick="openModalCrearTarea()" class="hidden bg-white rounded-xl border p-5 hover:border-purple-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Asignar Tareas</h3><p class="text-[11px] text-slate-500 mt-0.5">Delegar órdenes a oficiales</p><span class="mt-3 text-[11px] font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded">Crear Tarea &rarr;</span></div>
             <div id="cardNovedades" onclick="openVerNovedadesView()" class="hidden bg-white rounded-xl border p-5 hover:border-amber-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Libro de Novedades</h3><p class="text-[11px] text-slate-500 mt-0.5">Revisar reportes de oficiales</p><span class="mt-3 text-[11px] font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded">Ver Buzón &rarr;</span></div>
             <div id="cardCertificados" onclick="openCertificadosView()" class="hidden bg-white rounded-xl border p-5 hover:border-violet-500 cursor-pointer flex flex-col items-center text-center"><h3 class="font-bold text-sm">Cursos y Certificados</h3><p class="text-[11px] text-slate-500 mt-0.5">Control académico de bomberos</p><span class="mt-3 text-[11px] font-semibold text-violet-700 bg-violet-50 px-3 py-1 rounded">Gestionar &rarr;</span></div>
@@ -477,7 +479,12 @@
             <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-chart-bar text-base text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
             <div class="h-64 relative"><canvas id="graficoAsistenciaAyudante"></canvas></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div onclick="openRosterView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500"><h3 class="font-bold text-sm">Lista y Asistencia</h3></div><div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Matriz Mensual Horas</h3></div><div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-cyan-500"><h3 class="font-bold text-sm">Tiempo en Vivo</h3></div></div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openRosterView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-amber-500"><h3 class="font-bold text-sm">Lista y Asistencia</h3></div>
+            <div onclick="openResumenMensualView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Matriz Mensual Horas</h3></div>
+            <div onclick="openLiveHoursView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-cyan-500"><h3 class="font-bold text-sm">Tiempo en Vivo</h3></div>
+        </div>
     </div>
     
     <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
@@ -487,7 +494,12 @@
             <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-chart-bar text-base text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
             <div class="h-64 relative"><canvas id="graficoAsistenciaTte2"></canvas></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"><div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-orange-500"><h3 class="font-bold text-sm">EPP Personal</h3></div><div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-teal-500"><h3 class="font-bold text-sm">Bodega EPP</h3></div></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div onclick="openCarro('B2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">B-2</h3></div><div onclick="openCarro('BX2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">BX-2</h3></div><div onclick="openCarro('RH2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">RH-2</h3></div><div onclick="openCarro('Bodega')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">Bodega M.M.</h3></div></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openEppVoluntariosView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-orange-500"><h3 class="font-bold text-sm">EPP Personal</h3></div>
+            <div onclick="openBodegaEppView()" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-teal-500"><h3 class="font-bold text-sm">Bodega EPP</h3></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div onclick="openCarro('B2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">B-2</h3></div><div onclick="openCarro('BX2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">BX-2</h3></div><div onclick="openCarro('RH2')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">RH-2</h3></div><div onclick="openCarro('Bodega')" class="bg-white rounded-xl border p-5 text-center cursor-pointer hover:border-indigo-500"><h3 class="font-bold">Bodega M.M.</h3></div></div>
     </div>
 
     <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
@@ -497,7 +509,11 @@
             <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-chart-bar text-base text-indigo-600"></i> Gráfico de Asistencia General de Compañía</h3>
             <div class="h-64 relative"><canvas id="graficoAsistenciaTte3"></canvas></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3></div><div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Elementos de Aseo</h3></div></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div onclick="openGuardiasView()" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openCuartelSeccion('Inmuebles')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Inmuebles y Ornato</h3></div>
+            <div onclick="openCuartelSeccion('Aseo')" class="bg-white rounded-xl border p-6 text-center cursor-pointer hover:border-emerald-500"><h3 class="font-bold text-sm">Elementos de Aseo</h3></div>
+        </div>
     </div>
 
     <!-- VISTAS DE MÓDULOS -->
@@ -966,7 +982,6 @@
             if(!guardiasData.diurna) guardiasData.diurna = [];
             if(!guardiasData.nocturna) guardiasData.nocturna = [];
 
-            // Verificar si ya está inscrito en alguna
             let yaInscritoDiurna = guardiasData.diurna.some(g => g.nombre === user.nombre);
             let yaInscritoNocturna = guardiasData.nocturna.some(g => g.nombre === user.nombre);
 
