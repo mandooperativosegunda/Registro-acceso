@@ -24,7 +24,7 @@
 </head>
 <body class="min-h-screen text-slate-200">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR DARK MODE TÁCTICA CON MENÚ DE TRES PUNTOS -->
     <nav class="bg-[#0b0f19]/90 border-b border-slate-800 text-white sticky top-0 z-40 px-4 py-3 backdrop-blur-md shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
@@ -37,11 +37,13 @@
                 </div>
             </div>
 
+            <!-- BOTONES ACCESO DIRECTO + BOTÓN MENÚ TRES PUNTOS -->
             <div class="flex items-center gap-2">
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 px-3.5 py-1.5 rounded-lg font-medium text-xs transition-all shadow-md text-white"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar / Registro</span></button>
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 py-1.5 rounded-lg font-medium text-xs transition-colors"><i class="ph ph-user-gear text-sm text-cyan-400"></i><span class="hidden sm:inline">Perfil</span></button>
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700/80 hover:bg-emerald-600 text-emerald-100 px-3 py-1.5 rounded-lg font-medium text-xs transition-colors border border-emerald-600/50"><i class="ph ph-download-simple text-sm"></i><span class="hidden sm:inline">CSV</span></button>
                 
+                <!-- BOTÓN MENÚ DE TRES PUNTOS -->
                 <div class="relative">
                     <button onclick="toggleMenuTresPuntos(event)" class="flex items-center justify-center bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-lg border border-slate-700 text-slate-300 hover:text-white transition-colors" title="Menú de Opciones">
                         <i class="ph ph-dots-three-vertical text-lg"></i>
@@ -61,7 +63,7 @@
         </div>
     </nav>
 
-    <!-- BANNER DE GUARDIA -->
+    <!-- BARRA ESTADO DE GUARDIA Y NOTIFICACIONES -->
     <div id="guardiaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-4">
         <div class="glass-card rounded-xl px-4 py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs shadow-lg border-l-4 border-l-cyan-500">
             <div class="flex items-center gap-2.5">
@@ -80,7 +82,18 @@
         </div>
     </div>
 
-    <!-- MODAL DE FIRMAS PARA EL PARTE PDF -->
+    <!-- BANNER DE ALERTA AUTOMÁTICA EPP -->
+    <div id="alertaOperativaBanner" class="hidden max-w-7xl mx-auto px-4 md:px-6 pt-4">
+        <div class="bg-rose-950/60 border-l-4 border-rose-500 p-3.5 rounded-r-xl shadow-lg flex items-center justify-between text-xs text-rose-200 border border-rose-900/50">
+            <div class="flex items-center gap-2.5">
+                <i class="ph ph-warning-octagon text-xl text-rose-400 animate-bounce"></i>
+                <span id="textoAlertaOperativa" class="font-semibold">Alerta de Bodega EPP: Hay artículos próximos a vencer o vencidos bajo norma NFPA 1971.</span>
+            </div>
+            <button onclick="openBodegaEppView()" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-rose-500 transition-colors shadow">Revisar Bodega</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE FIRMAS PARA EL PDF -->
     <div id="modalFirmasPdf" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs overflow-hidden flex flex-col max-h-[90vh] border border-slate-800">
             <div class="px-5 py-4 flex justify-between bg-slate-950 text-white shrink-0 border-b border-slate-800">
@@ -88,7 +101,7 @@
                 <button onclick="cerrarModalFirmasPdf()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
             </div>
             <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
-                <p class="text-slate-400 text-[11px]">Escriba el nombre y apellido para generar la firma formal por teclado en el documento:</p>
+                <p class="text-slate-400 text-[11px]">Escriba el nombre y apellido para generar la firma formal en el documento:</p>
                 <div class="border border-slate-800 rounded-xl p-3.5 bg-slate-950/50 space-y-2">
                     <label id="labelInputGuardia" class="block font-bold text-slate-300">Nombre Oficial de Guardia:</label>
                     <input type="text" id="inputNombreGuardia" placeholder="Ej. Tte. Juan Pérez" class="w-full px-3.5 py-2.5 border border-slate-700 rounded-lg bg-slate-900 text-white font-medium outline-none focus:ring-2 focus:ring-cyan-500">
@@ -105,26 +118,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE FIRMA DE ACEPTACIÓN DEL CAPITÁN (SOLICITUDES) -->
-    <div id="modalFirmaCapitanAprobacion" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
-        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden">
-            <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800">
-                <h3 class="font-bold flex items-center gap-2 text-emerald-400"><i class="ph ph-signature text-base"></i> Firma de Aceptación (Capitán)</h3>
-                <button onclick="cerrarModalFirmaCapitanAprobacion()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
-            </div>
-            <form onsubmit="ejecutarAprobacionConFirma(event)" class="p-5 space-y-3.5">
-                <input type="hidden" id="solicitudIdToApprove">
-                <p class="text-slate-400 text-[11px]">Para aceptar y firmar esta solicitud formalmente, ingrese su nombre y apellido como Capitán:</p>
-                <div>
-                    <label class="block font-semibold mb-1 text-slate-300">Nombre del Capitán (Firma por teclado)</label>
-                    <input type="text" id="inputFirmaCapitanaAprobacion" required placeholder="Ej. Cap. Carlos Gómez" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none focus:border-emerald-500">
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl font-bold shadow">Aprobar y Firmar Solicitud</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- OTROS MODALES Y VISTAS -->
+    <!-- MODAL AUTENTICACIÓN Y REGISTRO -->
     <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-slate-800 overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-800 flex justify-between bg-slate-950 text-white">
@@ -200,7 +194,7 @@
         </div>
     </div>
     
-    <!-- PERFIL Y OTROS MODALES -->
+    <!-- MODAL PERFIL ENRIQUECIDO -->
     <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-slate-800 text-xs overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-800 flex justify-between bg-slate-950 text-white">
@@ -228,7 +222,7 @@
         </div>
     </div>
 
-    <!-- MODAL SOLICITUD DE PERMISO / TRÁMITE CON FIRMA POR TECLADO DEL BOMBERO -->
+    <!-- MODAL SOLICITUD DE PERMISO / JUSTIFICACIÓN (BOMBERO) -->
     <div id="modalSolicitudPermiso" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden">
             <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800">
@@ -247,40 +241,35 @@
                 </div>
                 <div>
                     <label class="block font-semibold mb-1 text-slate-300">Detalle / Motivo de la Solicitud</label>
-                    <textarea id="solicitudDetalle" required rows="3" placeholder="Explique brevemente el motivo..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea>
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1 text-slate-300">Firma del Bombero (Nombre y Apellido escritos por teclado)</label>
-                    <input type="text" id="solicitudFirmaTeclado" required placeholder="Ej. Juan Pérez González" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none focus:border-cyan-500">
-                    <p class="text-[10px] text-slate-500 mt-1 italic">Este nombre generará la firma formal escrita en el documento PDF.</p>
+                    <textarea id="solicitudDetalle" required rows="4" placeholder="Explique brevemente el motivo..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea>
                 </div>
                 <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar al Capitán y Ayudante</button>
             </form>
         </div>
     </div>
     
-    <!-- OTROS MODALES Y VISTAS -->
+    <!-- MODALES OPERATIVOS -->
     <div id="modalEntregarGuardia" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-arrows-left-right text-base"></i> Entregar Guardia</h3><button onclick="closeModalEntregarGuardia()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveEntregarGuardia(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Seleccionar Relevo</label><select id="selectNuevoGuardia" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"></select></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Confirmar</button></form></div></div>
     <div id="modalCrearNovedad" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph ph-warning text-base"></i> Enviar Novedad al Capitán</h3><button onclick="closeModalCrearNovedad()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveNovedad(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Detalle</label><textarea id="txtNovedadDesc" required rows="4" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea></div><button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar</button></form></div></div>
     <div id="modalCrearTarea" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-purple-400">Asignar Tarea</h3><button onclick="closeModalCrearTarea()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveTarea(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Destinatario</label><select id="selectDestinoTarea" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Tenienteprimero">Teniente Primero</option><option value="Tenientesegundo">Teniente Segundo</option><option value="Tenientetercero">Teniente Tercero</option><option value="Ayudante">Ayudante</option></select></div><div><label class="block font-semibold mb-1.5 text-slate-300">Instrucciones</label><textarea id="txtTareaDesc" required rows="3" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea></div><button type="submit" class="w-full bg-purple-700 hover:bg-purple-600 text-white py-2.5 rounded-xl font-bold shadow">Enviar</button></form></div></div>
     <div id="modalVerTareas" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0"><h3 class="font-bold text-purple-400">Buzón de Tareas</h3><button onclick="closeModalVerTareas()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3" id="tareasContainer"></div></div></div>
 
-    <!-- MODAL GESTIÓN DE SOLICITUDES -->
+    <!-- MODAL GESTIÓN DE SOLICITUDES (CAPITÁN Y AYUDANTE) -->
     <div id="gestionSolicitudesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
-        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-3xl w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
+        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
             <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0">
                 <h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-files text-base"></i> Solicitudes y Permisos Recibidos</h3>
                 <button onclick="closeGestionSolicitudesView()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
             </div>
             <div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3">
-                <p class="text-slate-400 text-[11px]">Listado de trámites y permisos enviados por los bomberos activos con su respectiva firma. Al aprobar, el Capitán ingresará su firma por teclado:</p>
+                <p class="text-slate-400 text-[11px]">Listado de trámites y permisos enviados por los bomberos activos. Puedes revisarlos, aprobarlos o descargarlos en PDF:</p>
                 <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800">
                                 <th class="px-3.5 py-2.5">Fecha</th>
                                 <th class="px-3.5 py-2.5">Bombero</th>
-                                <th class="px-3.5 py-2.5">Tipo / Motivo / Firma Bombero</th>
+                                <th class="px-3.5 py-2.5">Tipo / Motivo</th>
                                 <th class="px-3.5 py-2.5 text-center">Estado</th>
                                 <th class="px-3.5 py-2.5 text-right">Acciones</th>
                             </tr>
@@ -294,12 +283,13 @@
         </div>
     </div>
 
-    <!-- OTROS MODALES DE CONTROL -->
+    <!-- MODALES DE CONTROL -->
     <div id="bloqueadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0"><h3 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph ph-lock-keyhole text-base"></i> Bomberos Bloqueados (2 hrs)</h3><button onclick="closeBloqueadosModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar space-y-3"><p class="text-slate-400 text-[11px]">Haz clic sobre el bombero que deseas liberar manualmente antes de cumplir su tiempo de espera:</p><div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800"><th class="px-3 py-2.5">Bombero</th><th class="px-3 py-2.5 text-center">Restante</th><th class="px-3 py-2.5 text-right">Acción</th></tr></thead><tbody id="bloqueadosTableBody" class="divide-y divide-slate-800"><tr><td colspan="3" class="px-3 py-4 text-center text-slate-500">Sin bomberos bloqueados.</td></tr></tbody></table></div></div></div></div>
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-rose-400"><i class="ph ph-lock-open text-base"></i> Liberar Bombero</h3><button onclick="closeRemoverRestriccionModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="ejecutarRemorsionRestriccion(event)" class="p-5 space-y-3"><div><label class="block font-semibold mb-1.5 text-slate-300">Bombero</label><input type="text" id="voluntarioRestriccionNombre" disabled class="w-full px-3.5 py-2.5 border border-slate-800 rounded-xl bg-slate-950 text-slate-400 font-bold"></div><div><label class="block font-semibold mb-1.5 text-slate-300">Motivo Operativo</label><textarea id="motivoRemorsion" required rows="3" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"></textarea></div><button type="submit" class="w-full bg-rose-700 hover:bg-rose-600 text-white py-2.5 rounded-xl font-semibold transition-colors shadow">Confirmar Liberación</button></form></div></div>
     <div id="assignReasonModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-clipboard-text"></i> Asignar Motivo y Emergencia</h3><button onclick="closeAssignReasonModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveAssignedReason(event)" class="p-5 space-y-3"><input type="hidden" id="assignVisitorId"><div><label class="block font-semibold mb-1.5 text-slate-300">Bombero</label><input type="text" id="assignVisitorName" disabled class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 text-slate-400 rounded-xl font-bold"></div><div><label class="block font-semibold mb-1.5 text-slate-300">Motivo / Emergencia / Citación</label><input type="text" id="assignVisitorReasonInput" required placeholder="Ej. Incendio Estructural / Fuego en Chimenea" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></form></div></div>
     <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-cyan-400">Agregar a la Lista</h3><button onclick="closeMemberModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="memberForm" onsubmit="saveMember(event)" class="p-5 space-y-3"><input type="hidden" id="memberId"><div><label class="block font-semibold mb-1 text-slate-300">Categoría</label><select id="memberCategory" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Bombero">Bombero</option><option value="Aspirante">Aspirante</option><option value="Honorario">Honorario</option></select></div><div><label class="block font-semibold mb-1 text-slate-300">Cargo</label><input type="text" id="memberRole" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Nombre</label><input type="text" id="memberName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Motivo / Emergencia Asociada</label><input type="text" id="memberReason" required placeholder="Ej. Academia General / Tercera Alarma" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></form></div></div>
-
+    
+    <!-- MODAL GESTIÓN CERTIFICADOS -->
     <div id="fichaCertificadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-5 py-4 border-b border-slate-800 flex justify-between bg-slate-950 text-white shrink-0">
@@ -327,10 +317,13 @@
         </div>
     </div>
 
+    <!-- MODAL BODEGA EPP -->
     <div id="agregarBodegaEppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-teal-400">Ingresar EPP a Bodega (NFPA 1971)</h3><button onclick="closeAgregarBodegaEppModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveBodegaEpp(event)" class="p-5 space-y-3.5"><input type="hidden" id="bodegaEppId"><div><label class="block font-semibold mb-1 text-slate-300">Tipo de Artículo</label><select id="bodegaEppNameSelect" onchange="toggleOtroEppInput()" required class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none"><option value="">-- Seleccione equipo --</option><option value="Uniforme estructural">Uniforme estructural</option><option value="Uniforme forestal">Uniforme forestal</option><option value="Uniforme rescate">Uniforme rescate</option><option value="Casco estructural">Casco estructural</option><option value="Guantes estructurales">Guantes estructurales</option><option value="Bota estructural">Bota estructural</option><option value="Esclavina estructural">Esclavina estructural</option><option value="Linterna de casco">Linterna de casco</option><option value="OTRO">Otro nuevo (Especificar)...</option></select></div><div id="otroEppContainer" class="hidden"><label class="block font-semibold mb-1 text-slate-300">Nombre del Nuevo EPP</label><input type="text" id="bodegaEppNameOtro" placeholder="Ej. Antiparras..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">Talla (Opcional)</label><input type="text" id="bodegaEppSize" placeholder="Ej. L, 42..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Cantidad Inicial</label><input type="number" id="bodegaEppStock" min="1" required value="1" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div></div><div><label class="block font-semibold mb-1 text-slate-300">Fecha de Fabricación</label><input type="date" id="bodegaEppFabricacion" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white py-2.5 rounded-xl mt-1 font-bold shadow">Guardar</button></form></div></div>
 
+    <!-- MODAL FICHA DE EPP DEL BOMBERO -->
     <div id="fichaEppVoluntarioModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]"><div class="px-5 py-4 border-b border-slate-800 flex justify-between bg-slate-950 text-white shrink-0"><h3 class="text-sm font-bold flex items-center gap-2 text-orange-400"><i class="ph ph-hard-hat text-base"></i> Ficha EPP Bombero</h3><button onclick="closeFichaEppVoluntarioModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-5"><div class="bg-orange-950/30 border border-orange-900/40 rounded-xl p-3.5 flex items-center gap-3.5"><div class="w-10 h-10 bg-orange-600/20 text-orange-400 border border-orange-500/30 rounded-xl flex items-center justify-center text-lg font-bold"><i class="ph ph-user"></i></div><div><span id="eppFichaRole" class="text-[10px] font-bold text-orange-400 uppercase tracking-wider">Cargo</span><h4 id="eppFichaName" class="text-sm font-bold text-white mt-0.5">Nombre Bombero</h4></div></div><div class="bg-slate-950 border border-slate-800 rounded-xl p-4"><h5 class="font-bold text-slate-200 mb-2.5 flex items-center gap-1.5"><i class="ph ph-plus-circle text-orange-400"></i> Asignar / Entregar EPP</h5><form onsubmit="entregarEpp(event)" class="flex gap-2.5"><input type="hidden" id="eppFichaMemberId"><select id="selectEppToAssign" required class="flex-grow px-3.5 py-2.5 border border-slate-700 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-slate-900 text-white"></select><button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white px-4 py-2.5 rounded-xl font-bold transition-colors shadow">Entregar</button></form></div><div><h5 class="font-bold text-slate-200 mb-2.5 flex items-center gap-1.5"><i class="ph ph-list-checks text-emerald-400"></i> EPP en posesión del bombero</h5><div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-900 text-[10px] text-slate-400 uppercase font-bold border-b border-slate-800"><th class="px-3.5 py-2.5">Artículo</th><th class="px-3.5 py-2.5">Talla</th><th class="px-3.5 py-2.5 text-center">Estado / Vida Útil</th><th class="px-3.5 py-2.5 text-right">Acción</th></tr></thead><tbody id="eppFichaTableBody" class="divide-y divide-slate-800"><tr><td colspan="4" class="px-3.5 py-4 text-center text-slate-500">Este bombero no tiene EPP asignado.</td></tr></tbody></table></div></div></div></div></div>
 
+    <!-- MODAL FICHA DETALLADA -->
     <div id="fichaDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0">
@@ -387,6 +380,7 @@
 
     <div id="fichaEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-cyan-400">Editar Ficha</h3><button onclick="closeFichaEditModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="fichaEditForm" onsubmit="saveFichaEdit(event)" class="p-5 space-y-3.5"><input type="hidden" id="fichaEditId"><div><label class="block font-semibold mb-1 text-slate-300">Nombre</label><input type="text" id="fichaEditName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Cargo</label><input type="text" id="fichaEditRole" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">3 Meses</label><input type="number" id="fichaEdit3m" min="0" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Anual</label><input type="number" id="fichaEdit1y" min="0" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div></div><div class="pt-2"><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Actualizar</button></div></form></div></div>
     
+    <!-- MODAL PROMOCION DE ASPIRANTES -->
     <div id="gestionAspirantesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
             <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0">
@@ -405,12 +399,14 @@
         </div>
     </div>
 
+    <!-- MODAL CALENDARIO -->
     <div id="eventModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-fuchsia-400">Agendar Actividad</h3><button onclick="closeEventModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="eventForm" onsubmit="saveEvent(event)" class="p-5 space-y-3.5"><input type="hidden" id="eventDate"><div><label class="block font-semibold mb-1 text-slate-300">Título</label><input type="text" id="eventTitle" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Descripción</label><textarea id="eventDescription" required rows="3" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea></div><div><label class="block font-semibold mb-1 text-slate-300">Dirigido a:</label><select id="eventVisibility" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl font-semibold outline-none"><option value="todos">Todos (Compañía)</option><option value="aspirante">Solo Aspirantes</option><option value="voluntario">Solo Bomberos</option></select></div><div class="pt-2"><button type="submit" class="w-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></div></form></div></div>
     
+    <!-- MODALES INVENTARIO -->
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 id="itemModalTitle" class="text-sm font-bold text-cyan-400">Agregar Material Menor</h3><button onclick="closeItemModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-5 space-y-3.5"><input type="hidden" id="itemId"><div><label class="block font-semibold mb-1 text-slate-300">Nombre Equipo</label><input type="text" id="itemName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Marca/Modelo</label><input type="text" id="itemModel" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Categoría</label><input type="text" id="itemCategory" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div id="modalGavetaField" class="hidden"><label class="block font-semibold mb-1 text-slate-300">Gaveta</label><select id="itemGaveta" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Gaveta 1">Gaveta 1</option><option value="Gaveta 2">Gaveta 2</option><option value="Gaveta 3">Gaveta 3</option><option value="Gaveta 4">Gaveta 4</option><option value="Gaveta trasera">Gaveta trasera</option><option value="Techo">Techo</option></select></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">Cantidad</label><input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Estado</label><select id="itemStatus" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Operativo">Operativo</option><option value="Revisión">Revisión</option><option value="Dañado">Dañado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Registrar</button></div></form></div></div>
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 id="cuartelModalTitle" class="text-sm font-bold text-emerald-400">Agregar Artículo</h3><button onclick="closeCuartelItemModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-5 space-y-3.5"><input type="hidden" id="cuartelItemId"><div><label class="block font-semibold mb-1 text-slate-300">Nombre</label><input type="text" id="cuartelItemName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Ubicación</label><input type="text" id="cuartelItemUbicacion" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">Stock</label><input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Estado</label><select id="cuartelItemStatus" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Operativo / Bueno">Bueno</option><option value="Por reponer">Por reponer</option><option value="Agotado">Agotado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></div></form></div></div>
 
-    <!-- VISTA PRINCIPAL ACCESO -->
+    <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 mt-2">
         <section class="lg:col-span-4 h-fit space-y-4">
             <div class="glass-card rounded-2xl shadow-xl border text-xs overflow-hidden">
@@ -438,7 +434,7 @@
         </section>
     </main>
 
-    <!-- GUARDIAS -->
+    <!-- VISTA DE GUARDIAS DIURNAS Y NOCTURNAS -->
     <div id="guardiasView" class="hidden max-w-5xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800">
             <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
@@ -489,7 +485,7 @@
         </div>
     </div>
 
-    <!-- PORTALES -->
+    <!-- PORTALES DE USUARIO -->
     <div id="aspiranteView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="glass-card border border-slate-800 rounded-2xl p-6 shadow-xl">
             <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Portal de Aspirante</span>
@@ -502,6 +498,7 @@
         </div>
     </div>
 
+    <!-- PORTAL BOMBERO ACTIVO -->
     <div id="voluntarioRasoView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="glass-card border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -512,6 +509,7 @@
             <button onclick="openModalSolicitudPermiso()" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 py-3 rounded-xl font-bold shadow-lg shadow-cyan-900/30 transition-all flex items-center gap-2 shrink-0"><i class="ph ph-paper-plane-tilt text-sm"></i> Solicitar Permiso / Trámite</button>
         </div>
 
+        <!-- TARJETAS RESUMEN PERSONAL -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-2">
                 <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Horas de Guardia Acumuladas</span>
@@ -530,12 +528,14 @@
             </div>
         </div>
 
+        <!-- ACCESOS RÁPIDOS DEL BOMBERO -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openCalendarView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg group"><i class="ph ph-calendar-blank text-4xl text-cyan-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Calendario Compañía</h3></div>
             <div onclick="openGuardiasView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 transition-all shadow-lg group"><i class="ph ph-shield-check text-4xl text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Guardias Diurnas / Nocturnas</h3></div>
             <div onclick="openResumenMensualView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 transition-all shadow-lg group"><i class="ph ph-clock text-4xl text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Mis Horas de Guardia</h3></div>
         </div>
 
+        <!-- HISTORIAL PERSONAL DE ASISTENCIAS / EMERGENCIAS -->
         <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-3">
             <h3 class="font-bold text-white text-sm flex items-center gap-2"><i class="ph ph-list-dashes text-cyan-400 text-base"></i> Mi Historial Reciente de Emergencias y Citaciones</h3>
             <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
@@ -564,7 +564,9 @@
         
         <div class="glass-card rounded-2xl shadow-xl p-5 mb-6 max-w-xl mx-auto border border-slate-800">
             <h3 class="font-bold text-white mb-3 text-center flex items-center justify-center gap-2"><i class="ph ph-chart-bar text-sm text-cyan-400"></i> Gráfico de Asistencia General de Compañía</h3>
-            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaGeneral"></canvas></div>
+            <div style="position: relative; width: 100%; height: 170px;">
+                <canvas id="graficoAsistenciaGeneral"></canvas>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -576,9 +578,29 @@
             <div onclick="openEppVoluntariosView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-orange-500/50 cursor-pointer flex flex-col items-center text-center transition-all group shadow-lg"><h3 class="font-bold text-sm text-white group-hover:text-orange-400 transition-colors">EPP Personal Bomberos</h3><p class="text-[11px] text-slate-400 mt-1">Asignación y caducidades</p><span class="mt-3 text-[11px] font-semibold text-orange-400 bg-orange-950/50 border border-orange-800/40 px-3 py-1 rounded-lg">Ver EPP Asignado &rarr;</span></div>
             <div onclick="openResumenMensualView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-blue-500/50 cursor-pointer flex flex-col items-center text-center transition-all group shadow-lg"><h3 class="font-bold text-sm text-white group-hover:text-blue-400 transition-colors">Resumen Mensual Horas</h3><p class="text-[11px] text-slate-400 mt-1">Matriz de cumplimiento y asistencia</p><span class="mt-3 text-[11px] font-semibold text-blue-400 bg-blue-950/50 border border-blue-800/40 px-3 py-1 rounded-lg">Ver Matriz &rarr;</span></div>
         </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openRosterView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-amber-500/50 cursor-pointer flex flex-col items-center text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Lista y Asistencia</h3></div>
+            <div onclick="openLiveHoursView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-cyan-500/50 cursor-pointer flex flex-col items-center text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Tiempo en Vivo</h3></div>
+            <div onclick="openFichasView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-blue-500/50 cursor-pointer flex flex-col items-center text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Fichas Bomberos</h3></div>
+            <div onclick="openResumenMensualView()" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-emerald-500/50 cursor-pointer flex flex-col items-center text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Matriz Mensual</h3></div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-300 border-b border-slate-800 pb-2">Inventarios Material Menor</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openCarro('B2')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-cyan-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">B-2</h3></div>
+            <div onclick="openCarro('BX2')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-cyan-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">BX-2</h3></div>
+            <div onclick="openCarro('RH2')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-cyan-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">RH-2</h3></div>
+            <div onclick="openCarro('Bodega')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-cyan-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Bodega Mat. Menor</h3></div>
+        </div>
+        <h3 class="text-sm font-bold text-slate-300 border-b border-slate-800 pb-2">Inventarios Cuartel (Teniente 3°)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openCuartelSeccion('Inmuebles')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-emerald-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Inmuebles y Ornato</h3></div>
+            <div onclick="openCuartelSeccion('Aseo')" class="glass-card rounded-2xl border border-slate-800 p-5 hover:border-emerald-500/50 cursor-pointer text-center transition-all shadow"><h3 class="font-bold text-sm text-white">Elementos de Aseo</h3></div>
+        </div> 
     </div>
 
-    <!-- OTROS PANELES Y VISTAS -->
+    <!-- PANELES DE OTROS OFICIALES -->
     <div id="ayudanteView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800 flex justify-between items-center">
             <div>
@@ -589,23 +611,155 @@
                 <i class="ph ph-files"></i> Ver Solicitudes de Permiso
             </button>
         </div>
+        <div class="glass-card rounded-2xl shadow-xl p-5 mb-6 max-w-xl mx-auto border border-slate-800">
+            <h3 class="font-bold text-white mb-3 text-center flex items-center justify-center gap-2"><i class="ph ph-chart-bar text-sm text-cyan-400"></i> Gráfico de Asistencia General de Compañía</h3>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaAyudante"></canvas></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div onclick="openGuardiasView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-sm text-white">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openRosterView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-amber-500/50 shadow"><h3 class="font-bold text-sm text-white">Lista y Asistencia</h3></div>
+            <div onclick="openResumenMensualView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 shadow"><h3 class="font-bold text-sm text-white">Matriz Mensual Horas</h3></div>
+            <div onclick="openLiveHoursView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-sm text-white">Tiempo en Vivo</h3></div>
+        </div>
     </div>
     
-    <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800"><span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-2 text-white">Gestión Material Menor y EPP</h2></div></div>
-    <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs"><div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800"><span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Teniente Tercero</span><h2 class="text-xl font-bold mt-2 text-white">Gestión de Cuartel</h2></div></div>
+    <div id="tenienteSegundoView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800"><span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Teniente Segundo</span><h2 class="text-xl font-bold mt-2 text-white">Gestión Material Menor y EPP</h2></div>
+        <div class="glass-card rounded-2xl shadow-xl p-5 mb-6 max-w-xl mx-auto border border-slate-800">
+            <h3 class="font-bold text-white mb-3 text-center flex items-center justify-center gap-2"><i class="ph ph-chart-bar text-sm text-cyan-400"></i> Gráfico de Asistencia General de Compañía</h3>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaTte2"></canvas></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div onclick="openGuardiasView()" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-sm text-white">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openEppVoluntariosView()" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-orange-500/50 shadow"><h3 class="font-bold text-sm text-white">EPP Personal</h3></div>
+            <div onclick="openBodegaEppView()" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-teal-500/50 shadow"><h3 class="font-bold text-sm text-white">Bodega EPP</h3></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div onclick="openCarro('B2')" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-white">B-2</h3></div><div onclick="openCarro('BX2')" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-white">BX-2</h3></div><div onclick="openCarro('RH2')" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-white">RH-2</h3></div><div onclick="openCarro('Bodega')" class="glass-card rounded-2xl border border-slate-800 p-5 text-center cursor-pointer hover:border-cyan-500/50 shadow"><h3 class="font-bold text-white">Bodega M.M.</h3></div></div>
+    </div>
 
-    <div id="novedadesView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-amber-400 tracking-wider">Libro de Novedades</h2><div></div></div></div>
-    <div id="resumenMensualView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-blue-400 tracking-wider">Matriz Mensual de Cumplimiento y Horas</h2><div></div></div></div>
-    <div id="certificadosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-violet-400 tracking-wider">Cursos y Certificados</h2><div></div></div></div>
-    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-white">Lista Semanal de Asistencia</h2></div></div>
-    <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Fichas de Historial</h2></div></div>
-    <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2></div></div>
-    <div id="bodegaEppView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-teal-400 tracking-wider">Bodega de EPP (NFPA 1971)</h2></div></div>
-    <div id="eppVoluntariosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-orange-400 tracking-wider">Control EPP por Bombero</h2></div></div>
-    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Calendario Operativo</h2></div></div>
-    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Auditoría de Liberaciones</h2></div></div>
+    <div id="tenienteTerceroView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800"><span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Teniente Tercero</span><h2 class="text-xl font-bold mt-2 text-white">Gestión de Cuartel</h2></div>
+        <div class="glass-card rounded-2xl shadow-xl p-5 mb-6 max-w-xl mx-auto border border-slate-800">
+            <h3 class="font-bold text-white mb-3 text-center flex items-center justify-center gap-2"><i class="ph ph-chart-bar text-sm text-cyan-400"></i> Gráfico de Asistencia General de Compañía</h3>
+            <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaTte3"></canvas></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div onclick="openGuardiasView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 shadow"><h3 class="font-bold text-sm text-white">Guardias Diurnas / Nocturnas</h3></div>
+            <div onclick="openCuartelSeccion('Inmuebles')" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 shadow"><h3 class="font-bold text-sm text-white">Inmuebles y Ornato</h3></div>
+            <div onclick="openCuartelSeccion('Aseo')" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 shadow"><h3 class="font-bold text-sm text-white">Elementos de Aseo</h3></div>
+        </div>
+    </div>
 
-    <!-- CONTENEDORES PDF ACTUALIZADOS CON FIRMAS POR TECLADO -->
+    <!-- MÓDULO LIBRO DE NOVEDADES CON DESCARGA A PDF -->
+    <div id="novedadesView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-3 border border-slate-800">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 class="font-bold uppercase text-amber-400 tracking-wider">Libro de Novedades</h2>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="text" id="filtroNovedadTexto" oninput="renderNovedades()" placeholder="Buscar texto..." class="px-3.5 py-2 border border-slate-700 rounded-xl outline-none w-full sm:w-36 bg-slate-950 text-white">
+                <select id="filtroNovedadOficial" onchange="renderNovedades()" class="px-3.5 py-2 border border-slate-700 rounded-xl outline-none bg-slate-950 text-white font-semibold">
+                    <option value="">-- Todos los Oficiales --</option>
+                    <option value="Capitán">Capitán</option>
+                    <option value="Teniente 1°">Teniente 1°</option>
+                    <option value="Teniente 2°">Teniente 2°</option>
+                    <option value="Teniente 3°">Teniente 3°</option>
+                </select>
+                <button onclick="descargarNovedadesPdf()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl font-semibold flex items-center gap-1 shadow"><i class="ph ph-file-pdf"></i> PDF</button>
+            </div>
+        </div>
+        <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+            <table class="w-full text-left">
+                <thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase text-slate-400">
+                    <th class="px-5 py-3.5">Fecha/Hora</th>
+                    <th class="px-5 py-3.5">Oficial Informante</th>
+                    <th class="px-5 py-3.5 w-1/2">Detalle de Novedad</th>
+                </thead>
+                <tbody id="novedadesTableBody" class="divide-y divide-slate-800"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RESUMEN MENSUAL -->
+    <div id="resumenMensualView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 class="font-bold uppercase text-blue-400 tracking-wider">Matriz Mensual de Cumplimiento y Horas</h2>
+            <div></div>
+        </div>
+        <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="px-5 py-3.5">Bombero</th>
+                        <th class="px-5 py-3.5">Cargo</th>
+                        <th class="px-5 py-3.5 text-center">Horas Acumuladas</th>
+                        <th class="px-5 py-3.5 text-center">Asistencias Trimestrales</th>
+                        <th class="px-5 py-3.5 text-center">Estado Mensual</th>
+                    </tr>
+                </thead>
+                <tbody id="resumenMensualTableBody" class="divide-y divide-slate-800"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="certificadosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-violet-400 tracking-wider">Cursos y Certificados</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">N° Cursos</th><th class="px-5 py-3.5 text-right">Acción</th></thead><tbody id="certificadosTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+
+    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-white">Lista Semanal de Asistencia</h2><button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl font-semibold shadow">Agregar Miembro</button></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5 text-center">Horas Guardia</th><th class="px-5 py-3.5 text-center">Estado</th><th class="px-5 py-3.5 text-right">Acciones</th></tr></thead><tbody id="rosterTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+    
+    <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Fichas de Historial</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">3 Meses</th><th class="px-5 py-3.5 text-center">Anual</th><th class="px-5 py-3.5 text-right">Modificar</th></thead><tbody id="fichasTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+    
+    <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5 text-center">Tiempo Transcurrido</th><th class="px-5 py-3.5 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+    
+    <!-- BODEGA EPP CON BOTÓN DE FILTRAR VENCIDOS -->
+    <div id="bodegaEppView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-2 border border-slate-800">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 class="text-sm font-bold uppercase text-teal-400 tracking-wider">Bodega de EPP (NFPA 1971)</h2>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleFiltrarVencidos()" id="btnFiltroVencidos" class="bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-2 rounded-xl font-semibold transition-colors shadow">Filtrar Vencidos</button>
+                <button onclick="openAgregarBodegaEppModal()" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-xl font-semibold flex items-center gap-1.5 shadow"><i class="ph ph-plus-circle text-sm"></i> Nuevo Ingreso</button>
+            </div>
+        </div>
+        <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+            <table class="w-full text-left border-collapse">
+                <thead><tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Artículo EPP</th><th class="px-5 py-3.5">Talla</th><th class="px-5 py-3.5">F. Fabricación</th><th class="px-5 py-3.5 text-center">Estado NFPA</th><th class="px-5 py-3.5 text-center">Stock</th><th class="px-5 py-3.5 text-right">Acción</th></tr></thead>
+                <tbody id="bodegaEppTableBody" class="divide-y divide-slate-800"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="eppVoluntariosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-orange-400 tracking-wider">Control EPP por Bombero</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Nombre Completo</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">Prendas Asignadas</th><th class="px-5 py-3.5 text-right">Gestionar EPP</th></tr></thead><tbody id="eppVoluntariosTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+
+    <div id="carroInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800">
+            <button onclick="backToCarros()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 id="carroTitle" class="font-bold uppercase text-cyan-400 tracking-wider">Inventario</h2>
+            <div class="flex gap-2">
+                <button onclick="descargarInventarioPdf('carro')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl font-semibold transition-colors flex items-center gap-1 text-xs shadow"><i class="ph ph-file-pdf"></i> Descargar PDF</button>
+                <button onclick="openItemModal()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors shadow text-xs">Agregar Material</button>
+            </div>
+        </div>
+        <div class="glass-card border border-slate-800 rounded-2xl shadow-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase text-slate-400"><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5">Modelo</th><th class="px-5 py-3.5">Categoría</th><th class="px-5 py-3.5 text-center">Cantidad</th><th class="px-5 py-3.5 text-center">Estado</th><th class="px-5 py-3.5 text-right">Acción</th></thead><tbody id="inventoryTableBody" class="divide-y divide-slate-800"></tbody></table></div>
+    </div>
+    
+    <div id="cuartelInventoryView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800">
+            <button onclick="backToCuartelMenu()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button>
+            <h2 id="cuartelTitle" class="font-bold uppercase text-emerald-400 tracking-wider">Inventario Cuartel</h2>
+            <div class="flex gap-2">
+                <button onclick="descargarInventarioPdf('cuartel')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl font-semibold transition-colors flex items-center gap-1 text-xs shadow"><i class="ph ph-file-pdf"></i> Descargar PDF</button>
+                <button onclick="openCuartelItemModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl font-semibold transition-colors shadow text-xs">Agregar Artículo</button>
+            </div>
+        </div>
+        <div class="glass-card border border-slate-800 rounded-2xl shadow-xl overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase text-slate-400"><th class="px-5 py-3.5">Artículo</th><th class="px-5 py-3.5">Ubicación</th><th class="px-5 py-3.5 text-center">Stock</th><th class="px-5 py-3.5 text-center">Estado</th><th class="px-5 py-3.5 text-right">Acción</th></thead><tbody id="cuartelInventoryTableBody" class="divide-y divide-slate-800"></tbody></table></div>
+    </div>
+
+    <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="hidden bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-xl font-bold shadow">Agendar Evento</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-2 glass-card p-5 rounded-2xl border border-slate-800 shadow-xl"><div class="flex justify-between mb-4 items-center"><button onclick="changeMonth(-1)" class="font-bold px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors">Ant</button><h3 id="currentMonthYear" class="font-bold text-sm text-white"></h3><button onclick="changeMonth(1)" class="font-bold px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="glass-card p-5 rounded-2xl border border-slate-800 shadow-xl"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b border-slate-800 pb-2 text-white">Seleccione día</h3><div id="dayEventsList" class="space-y-3"></div></div></div></div>
+    
+    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left glass-card border border-slate-800 rounded-2xl shadow-xl overflow-hidden"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Fecha y Hora</th><th class="px-5 py-3.5">Oficial Responsable</th><th class="px-5 py-3.5">Bombero Liberado</th><th class="px-5 py-3.5">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y divide-slate-800"></tbody></table></div>
+
+
+    <!-- CONTENEDORES OCULTOS PARA PDF -->
     <div id="pdfExportContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans">
         <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -636,7 +790,7 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PDF SOLICITUD / PERMISO CON FIRMA DE BOMBERO Y CAPITÁN -->
+    <!-- CONTENEDOR PDF SOLICITUD / PERMISO -->
     <div id="pdfSolicitudContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
         <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
             <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
@@ -653,24 +807,98 @@
                     <strong class="block mb-1">Detalle / Motivo:</strong>
                     <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200"></p>
                 </div>
-                <div><strong>Estado:</strong> <span id="pdfSolEstado" class="font-bold text-emerald-700">Aprobada</span></div>
             </div>
-            <div class="pt-16 flex justify-between text-center">
+            <div class="pt-20 flex justify-between text-center">
                 <div class="border-t border-slate-400 w-48 pt-2">
-                    <div id="pdfSolFirmaBomberoTxt" class="h-10 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1"></div>
-                    <p class="font-bold" id="pdfSolNombreBomberoLabel">Firma Bombero</p>
+                    <p class="font-bold" id="pdfSolFirmaBombero">Firma Bombero</p>
                     <p class="text-[10px] text-slate-500">Solicitante</p>
                 </div>
                 <div class="border-t border-slate-400 w-48 pt-2">
-                    <div id="pdfSolFirmaCapitanTxt" class="h-10 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1">Pendiente</div>
-                    <p class="font-bold">Capitán de Compañía</p>
-                    <p class="text-[10px] text-slate-500">V°B° Aceptación</p>
+                    <p class="font-bold">Capitán / Ayudante</p>
+                    <p class="text-[10px] text-slate-500">V°B° Oficialidad</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT JS -->
+    <!-- CONTENEDOR PDF LIBRO DE NOVEDADES -->
+    <div id="pdfNovedadesContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
+        <div class="text-center border-b-2 border-amber-800 pb-4 mb-4">
+            <h2 class="text-lg font-bold uppercase tracking-wide text-amber-900">Segunda Compañía Presidente Balmaceda</h2>
+            <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
+            <h3 class="text-md font-bold mt-3 text-slate-800">REPORTE OFICIAL - LIBRO DE NOVEDADES</h3>
+            <p class="text-[10px] text-slate-500" id="pdfNovFechaEmision"></p>
+        </div>
+        <div class="space-y-4">
+            <table class="w-full text-left border-collapse border">
+                <thead><tr class="bg-slate-100 font-bold"><th class="border p-2">Fecha / Hora</th><th class="border p-2">Oficial</th><th class="border p-2">Novedad</th></tr></thead>
+                <tbody id="pdfNovTablaBody"></tbody>
+            </table>
+            <div class="pt-16 flex justify-end text-center">
+                <div class="border-t border-slate-400 w-52 pt-2">
+                    <p class="font-bold">Capitán / Oficial de Guardia</p>
+                    <p class="text-[10px] text-slate-500">Segunda Compañía de Bomberos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfFichaContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
+        <div class="text-center border-b-2 border-blue-900 pb-4 mb-4">
+            <h2 class="text-lg font-bold uppercase tracking-wide text-blue-900">Segunda Compañía Presidente Balmaceda</h2>
+            <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
+            <h3 class="text-md font-bold mt-3 text-slate-800">INFORME DE ASISTENCIA Y Ficha individual</h3>
+            <p class="text-[10px] text-slate-500" id="pdfFichaFechaEmision"></p>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-slate-50 p-3 rounded border">
+                <div><strong>Voluntario:</strong> <span id="pdfFichaNombre"></span></div>
+                <div><strong>Cargo:</strong> <span id="pdfFichaCargo"></span></div>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div><strong>Asistencias (3 Meses):</strong> <span id="pdfFicha3m"></span></div>
+                    <div><strong>Asistencias (Anual):</strong> <span id="pdfFicha1y"></span></div>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold border-b pb-1 mb-2 text-slate-800">Historial de Emergencias y Citaciones</h4>
+                <table class="w-full text-left border-collapse border">
+                    <thead><tr class="bg-slate-100 font-bold"><th class="border p-2">Fecha</th><th class="border p-2">Emergencia / Citación / Motivo</th></tr></thead>
+                    <tbody id="pdfFichaTablaMotivos"></tbody>
+                </table>
+            </div>
+            <div class="pt-16 flex justify-end text-center">
+                <div class="border-t border-slate-400 w-52 pt-2">
+                    <p class="font-bold">Ayudante / Comandancia</p>
+                    <p class="text-[10px] text-slate-500">Segunda Compañía de Bomberos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfInventarioContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
+        <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
+            <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
+            <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
+            <h3 class="text-md font-bold mt-3 text-slate-800" id="pdfInvTitulo">INVENTARIO OFICIAL</h3>
+            <p class="text-[10px] text-slate-500" id="pdfInvFecha"></p>
+        </div>
+        <div class="space-y-4">
+            <table class="w-full text-left border-collapse border">
+                <thead><tr class="bg-slate-100 font-bold"><th class="border p-2">Nombre / Equipo</th><th class="border p-2">Modelo / Ubicación</th><th class="border p-2 text-center">Cantidad / Stock</th><th class="border p-2 text-center">Estado</th></tr></thead>
+                <tbody id="pdfInvTablaBody"></tbody>
+            </table>
+            <div class="pt-20 flex justify-end text-center">
+                <div class="border-t border-slate-400 w-56 pt-2">
+                    <div id="pdfInvFirmaTeniente" class="h-10 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1">Tte. Responsable</div>
+                    <p class="font-bold" id="pdfInvLabelTeniente">Teniente a Cargo</p>
+                    <p class="text-[10px] text-slate-500">Segunda Compañía de Bomberos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCRIPT JAVASCRIPT PRINCIPAL -->
     <script>
         const firebaseConfig = { apiKey: "AIzaSyB8Hs4NIPoQd--0mInGb4Bd7fAB8toYaYI", authDomain: "sistema-segunda-cia.firebaseapp.com", databaseURL: "https://sistema-segunda-cia-default-rtdb.firebaseio.com", projectId: "sistema-segunda-cia", storageBucket: "sistema-segunda-cia.firebasestorage.app", messagingSenderId: "205136481942", appId: "1:205136481942:web:c48c3e6257c88a92297cb7" };
         firebase.initializeApp(firebaseConfig);
@@ -686,8 +914,10 @@
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
         let calendarEvents = [], remorsionesLog = [];
         let nombreCapitánGuardado = "";
-        let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "";
+        let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "", selectedVoluntarioForLiberar = null;
+        let selectedFichaIdForPdf = null;
         let chartInstances = {};
+        let soloVencidosBodega = false;
 
         function formatCargoStr(c) {
             if(c==='Tenienteprimero') return 'Teniente 1°'; if(c==='Tenientesegundo') return 'Teniente 2°';
@@ -696,42 +926,65 @@
             if(c==='Bombero') return 'Bombero'; if(c==='Aspirante') return 'Aspirante'; return c;
         }
 
-        function toggleMenuTresPuntos(e) { e.stopPropagation(); document.getElementById('dropdownTresPuntos').classList.toggle('hidden'); }
-        function cerrarMenuTresPuntos() { const d = document.getElementById('dropdownTresPuntos'); if(d) d.classList.add('hidden'); }
+        // CONTROL DEL MENÚ DE TRES PUNTOS
+        function toggleMenuTresPuntos(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('dropdownTresPuntos');
+            dropdown.classList.toggle('hidden');
+        }
+        function cerrarMenuTresPuntos() {
+            const dropdown = document.getElementById('dropdownTresPuntos');
+            if(dropdown) dropdown.classList.add('hidden');
+        }
         window.addEventListener('click', () => { cerrarMenuTresPuntos(); });
 
+        // FIREBASE LISTENERS
         db.ref('usersAccounts').on('value', snap => { usersAccounts = snap.val() || {}; });
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
-        db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); });
-        db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); });
-        db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; });
-        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; });
+        db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
+        db.ref('roster').on('value', snap => { 
+            roster = snap.val() || []; 
+            renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); actualizarGraficoAsistencia(); 
+            const session = JSON.parse(localStorage.getItem('active_user_session'));
+            if(session && session.cargo === 'Bombero') renderPortalBomberoActivo(session);
+        });
+        db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
+        db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
         db.ref('solicitudesPermisos').on('value', snap => { solicitudesPermisos = snap.val() || []; renderBadgeSolicitudes(); });
-        db.ref('novedades').on('value', snap => { novedades = snap.val() || []; });
+        db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
         db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
-        db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; });
-        db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); });
-        db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); });
-        db.ref('calendario').on('value', snap => { calendarEvents = snap.val() || []; });
-        db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; });
+        db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); verificarAlertasAutomaticas(); });
+        db.ref('inventarios').on('value', snap => { if(snap.val()) inventories = snap.val(); renderInventory(); });
+        db.ref('cuartel').on('value', snap => { if(snap.val()) cuartelInventarios = snap.val(); renderCuartelInventory(); });
+        db.ref('calendario').on('value', snap => { calendarEvents = snap.val() || []; renderCalendar(); renderDayEvents(); });
+        db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
         window.addEventListener('DOMContentLoaded', () => {
             const activeUserStr = localStorage.getItem('active_user_session');
             if (activeUserStr) activateSession(JSON.parse(activeUserStr));
+            verificarBloqueoSalida();
+            verificarAlertasAutomaticas();
+            setTimeout(actualizarGraficoAsistencia, 300);
         });
 
         setInterval(() => {
             const clock = document.getElementById('currentTime');
             if (clock) clock.textContent = new Date().toLocaleTimeString('es-CL');
+            verificarBloqueoSalida();
+            checkAndGrantAB(); 
+            if (!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours();
+            if (!document.getElementById('bloqueadosModal').classList.contains('hidden')) renderBloqueadosTable();
             actualizarBadgeBloqueados();
         }, 1000);
 
         function actualizarBadgeBloqueados() {
             const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000;
-            let count = 0; for(let k in blockedList) { if(now - blockedList[k].timestamp < limitMs) count++; }
-            const badge = document.getElementById('badgeBloqueadosNav'); if(badge) badge.textContent = count;
+            let count = 0;
+            for(let k in blockedList) { if(now - blockedList[k].timestamp < limitMs) count++; }
+            const badge = document.getElementById('badgeBloqueadosNav');
+            if(badge) badge.textContent = count;
         }
 
         function renderBadgeSolicitudes() {
@@ -740,13 +993,84 @@
             if(badge) badge.textContent = pendientes.length;
         }
 
+        function verificarAlertasAutomaticas() {
+            const banner = document.getElementById('alertaOperativaBanner');
+            const textoAlerta = document.getElementById('textoAlertaOperativa');
+            if(!banner || !textoAlerta) return;
+
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if (!user || !oficialesOperativosAltos.includes(user.cargo)) { banner.classList.add('hidden'); return; }
+
+            const anioActual = new Date().getFullYear();
+            let eppVencidosCount = 0;
+            bodegaEpp.forEach(item => {
+                let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
+                let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
+                if(anioActual >= (fabAnio + vidaUtil)) eppVencidosCount++;
+            });
+
+            if(eppVencidosCount > 0) {
+                textoAlerta.textContent = `¡Alerta Automática NFPA! Hay ${eppVencidosCount} artículo(s) de EPP en bodega que han superado su vida útil reglamentaria.`;
+                banner.classList.remove('hidden');
+            } else { banner.classList.add('hidden'); }
+        }
+
+        function actualizarGraficoAsistencia() {
+            ['graficoAsistenciaGeneral', 'graficoAsistenciaAyudante', 'graficoAsistenciaTte2', 'graficoAsistenciaTte3'].forEach(canvasId => {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                
+                let nombres = roster.map(m => m.name.split(' ')[0]);
+                let asistencias = roster.map(m => m.count3m || 0);
+
+                if (nombres.length === 0) {
+                    nombres = ['Sin registros en lista'];
+                    asistencias = [0];
+                }
+
+                if (chartInstances[canvasId]) {
+                    try { chartInstances[canvasId].destroy(); } catch(e){}
+                }
+
+                chartInstances[canvasId] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: nombres,
+                        datasets: [{
+                            label: 'Asistencias Trimestrales',
+                            data: asistencias,
+                            backgroundColor: 'rgba(6, 182, 212, 0.75)',
+                            borderColor: 'rgb(6, 182, 212)',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#cbd5e1' } }
+                        },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            y: { beginAtZero: true, ticks: { precision: 0, color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+            });
+        }
+
         function formatearRutInput(input) {
             let valor = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
             if (valor.length > 1) {
-                let cuerpo = valor.slice(0, -1); let dv = valor.slice(-1);
+                let cuerpo = valor.slice(0, -1);
+                let dv = valor.slice(-1);
                 cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 input.value = `${cuerpo}-${dv}`;
-            } else { input.value = valor; }
+            } else {
+                input.value = valor;
+            }
         }
 
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
@@ -757,17 +1081,24 @@
             const container = document.getElementById('loginNombreContainer');
             const input = document.getElementById('loginNombreInput');
             if (cargo === 'Aspirante' || cargo === 'Bombero') {
-                container.classList.remove('hidden'); input.setAttribute('required', 'true');
-            } else { container.classList.add('hidden'); input.removeAttribute('required'); input.value = ''; }
+                container.classList.remove('hidden');
+                input.setAttribute('required', 'true');
+            } else {
+                container.classList.add('hidden');
+                input.removeAttribute('required');
+                input.value = '';
+            }
         }
 
         function toggleRegistroMode(isRegister) {
             if(isRegister) {
                 document.getElementById('modalTitleLogin').innerHTML = `<i class="ph ph-user-plus text-base"></i> Registro de Nuevo Miembro`;
-                document.getElementById('loginForm').classList.add('hidden'); document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
             } else {
                 document.getElementById('modalTitleLogin').innerHTML = `<i class="ph ph-lock-key text-base"></i> Iniciar Sesión`;
-                document.getElementById('registerForm').classList.add('hidden'); document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
             }
         }
 
@@ -777,8 +1108,10 @@
             const nombre = document.getElementById('regNombre').value.trim();
             const rut = document.getElementById('regRut').value.trim();
             const password = document.getElementById('regPassword').value.trim();
+
             const userId = rut.replace(/[^0-9kK]/g, '').toLowerCase();
             if(usersAccounts[userId]) { alert("Ya existe una cuenta registrada con este RUT."); return; }
+
             usersAccounts[userId] = { id: userId, tipo: tipo, nombre: nombre, rut: rut, password: password };
             db.ref('usersAccounts').set(usersAccounts);
             alert("¡Registro exitoso! Ya puedes iniciar sesión con tu perfil personal.");
@@ -789,11 +1122,14 @@
             e.preventDefault(); 
             const cargoSelect = document.getElementById('loginCargo').value; 
             const pass = document.getElementById('loginPassword').value; 
+            
             if (credentials[cargoSelect] && credentials[cargoSelect] === pass) { 
                 const sessionData = { cargo: cargoSelect, nombre: formatCargoStr(cargoSelect), tipo: cargoSelect };
                 localStorage.setItem('active_user_session', JSON.stringify(sessionData));
-                closeLoginModal(); activateSession(sessionData); return;
+                closeLoginModal(); activateSession(sessionData); 
+                return;
             } 
+
             if (cargoSelect === 'Aspirante' || cargoSelect === 'Bombero') {
                 const queryIngresado = document.getElementById('loginNombreInput').value.trim().toLowerCase();
                 let found = Object.values(usersAccounts).find(u => {
@@ -802,18 +1138,23 @@
                     let matchRut = u.rut.toLowerCase().replace(/[^0-9kK]/g, '') === queryIngresado.replace(/[^0-9kK]/g, '');
                     return matchNombre || matchRut;
                 });
+
                 if (found) {
                     const sessionData = { cargo: found.tipo, nombre: found.nombre, rut: found.rut, tipo: found.tipo };
                     localStorage.setItem('active_user_session', JSON.stringify(sessionData));
                     closeLoginModal(); activateSession(sessionData);
-                } else { alert("Nombre, RUT o contraseña incorrectos para este perfil individual."); }
-            } else { alert("Cargo o contraseña incorrectos."); }
+                } else {
+                    alert("Nombre, RUT o contraseña incorrectos para este perfil individual.");
+                }
+            } else {
+                alert("Cargo o contraseña incorrectos.");
+            }
         }
 
         function logout() { localStorage.removeItem('active_user_session'); window.location.reload(); }
 
         function hideAllViews() {
-            ['accessView', 'guardiasView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            ['accessView', 'guardiasView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
         }
 
         function activateSession(user) {
@@ -821,35 +1162,86 @@
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews();
+            
             const cargo = user.cargo;
 
             if (['Capitan', 'Tenienteprimero', 'Tenientesegundo', 'Tenientetercero', 'Ayudante'].includes(cargo)) {
                 document.getElementById('menuBloqueadosContainer').classList.remove('hidden');
                 document.getElementById('menuCalendarContainer').classList.remove('hidden');
                 document.getElementById('guardiaBanner').classList.remove('hidden');
+                document.getElementById('btnVerNovedadesBanner').classList.remove('hidden');
+                document.getElementById('btnVerTareas').classList.remove('hidden');
                 document.getElementById('menuPdfContainer').classList.remove('hidden');
+                document.getElementById('btnAddEvent').classList.remove('hidden');
                 if (cargo === 'Capitan' || cargo === 'Ayudante') {
                     document.getElementById('btnGestionSolicitudes').classList.remove('hidden');
                 }
-                renderBadgeTareas(); renderBadgeSolicitudes();
+
+                if(cargo === 'Capitan') {
+                    document.getElementById('menuRemorsionContainer').classList.remove('hidden');
+                    document.getElementById('btnModificarGuardia').classList.remove('hidden');
+                    document.getElementById('btnVerTareas').classList.add('hidden');
+                }
+                if(oficialesOperativos.includes(cargo)) {
+                    document.getElementById('btnEntregarGuardia').classList.remove('hidden');
+                    document.getElementById('btnCrearNovedad').classList.remove('hidden');
+                }
+                renderBadgeTareas();
+                renderBadgeSolicitudes();
+            } else if (cargo === 'Aspirante' || cargo === 'Bombero') {
+                document.getElementById('menuCalendarContainer').classList.remove('hidden');
+                document.getElementById('btnAddEvent').classList.add('hidden');
             }
 
             if (cargo === 'Capitan' || cargo === 'Tenienteprimero') {
                 document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+                document.getElementById('cardAsignarTarea').classList.toggle('hidden', cargo !== 'Capitan');
+                document.getElementById('cardNovedades').classList.toggle('hidden', cargo !== 'Capitan');
+                document.getElementById('btnGestionarAspirantes').classList.toggle('hidden', cargo !== 'Capitan');
+                document.getElementById('cardCertificados').classList.toggle('hidden', cargo !== 'Tenienteprimero');
             } else if (cargo === 'Ayudante') document.getElementById('ayudanteView').classList.remove('hidden');
+            else if (cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            else if (cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
             else if (cargo === 'Aspirante') {
                 document.getElementById('saludoAspirante').textContent = `Bienvenido, Aspirante ${user.nombre}`;
                 document.getElementById('aspiranteView').classList.remove('hidden');
             } else if (cargo === 'Bombero') {
+                renderPortalBomberoActivo(user);
                 document.getElementById('voluntarioRasoView').classList.remove('hidden');
             } else document.getElementById('accessView').classList.remove('hidden');
+
+            verificarAlertasAutomaticas();
+            setTimeout(actualizarGraficoAsistencia, 250);
         }
 
-        // SOLICITUD DE PERMISO Y FIRMA POR TECLADO DEL BOMBERO
+        function renderPortalBomberoActivo(user) {
+            document.getElementById('saludoVoluntario').textContent = `Bienvenido, Bombero ${user.nombre}`;
+            let miembro = roster.find(m => m.name.toLowerCase().trim() === user.nombre.toLowerCase().trim());
+            
+            let horas = miembro ? (miembro.garitaHours || 0) : 0;
+            let asist3m = miembro ? (miembro.count3m || 0) : 0;
+
+            document.getElementById('lblBomberoHoras').textContent = `${horas} hrs`;
+            document.getElementById('lblBomberoAsist3m').textContent = asist3m;
+            
+            let metaText = horas >= 16 ? "¡Meta mensual cumplida!" : `Faltan ${Math.max(0, 16 - horas)} hrs para la meta`;
+            document.getElementById('lblBomberoMetaHoras').textContent = metaText;
+
+            const tbody = document.getElementById('bomberoHistorialTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if(!miembro || !miembro.historialMotivos || miembro.historialMotivos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" class="px-4 py-4 text-center text-slate-500">Sin registros recientes de emergencias o citaciones.</td></tr>`;
+            } else {
+                miembro.historialMotivos.slice(0, 5).forEach(mot => {
+                    tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-4 py-2.5 font-mono text-slate-400 whitespace-nowrap">${mot.fecha}</td><td class="px-4 py-2.5 font-medium text-slate-200">${mot.detalle}</td></tr>`;
+                });
+            }
+        }
+
         function openModalSolicitudPermiso() {
             document.getElementById('solicitudDetalle').value = '';
-            const user = JSON.parse(localStorage.getItem('active_user_session'));
-            document.getElementById('solicitudFirmaTeclado').value = user ? user.nombre : '';
             document.getElementById('modalSolicitudPermiso').classList.remove('hidden');
         }
         function closeModalSolicitudPermiso() { document.getElementById('modalSolicitudPermiso').classList.add('hidden'); }
@@ -858,7 +1250,6 @@
             e.preventDefault();
             const tipo = document.getElementById('solicitudTipo').value;
             const detalle = document.getElementById('solicitudDetalle').value.trim();
-            const firmaBombero = document.getElementById('solicitudFirmaTeclado').value.trim();
             const user = JSON.parse(localStorage.getItem('active_user_session'));
 
             const nuevaSolicitud = {
@@ -866,16 +1257,16 @@
                 nombreBombero: user.nombre,
                 tipo: tipo,
                 detalle: detalle,
-                firmaBombero: firmaBombero,
                 fecha: new Date().toLocaleString('es-CL'),
-                status: 'Pendiente',
-                firmaCapitan: ''
+                status: 'Pendiente'
             };
 
             solicitudesPermisos.unshift(nuevaSolicitud);
             db.ref('solicitudesPermisos').set(solicitudesPermisos);
+
+            crearRegistroNovedad("Ayudante", `Nueva Solicitud de [${tipo}] recibida del Bombero ${user.nombre}: "${detalle}"`);
             closeModalSolicitudPermiso();
-            alert("¡Solicitud enviada correctamente con su firma por teclado!");
+            alert("¡Solicitud enviada correctamente al Capitán y al Ayudante!");
         }
 
         function openGestionSolicitudesView() {
@@ -888,17 +1279,16 @@
             } else {
                 solicitudesPermisos.forEach(sol => {
                     let estadoBadge = sol.status === 'Pendiente' ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded font-bold">Pendiente</span>` : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">Aprobada</span>`;
-                    let botonesAccion = sol.status === 'Pendiente' ? 
-                        `<button onclick="abrirFirmaCapitanaAprobacion(${sol.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow">Aceptar / Firmar</button>` :
-                        `<button onclick="descargarSolicitudPdf(${sol.id})" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow"><i class="ph ph-file-pdf"></i> PDF</button>`;
-
                     tbody.innerHTML += `
                         <tr class="hover:bg-slate-900">
                             <td class="px-3.5 py-2.5 font-mono text-slate-400 whitespace-nowrap">${sol.fecha}</td>
                             <td class="px-3.5 py-2.5 font-bold text-white">${sol.nombreBombero}</td>
-                            <td class="px-3.5 py-2.5"><strong class="text-cyan-300">${sol.tipo}</strong>: ${sol.detalle}<br><span class="text-[10px] text-slate-400 font-serif italic">Firma Bombero: ${sol.firmaBombero}</span> ${sol.firmaCapitan? '<br><span class="text-[10px] text-emerald-400 font-serif italic">Firma Capitán: '+sol.firmaCapitan+'</span>':''}</td>
+                            <td class="px-3.5 py-2.5"><strong class="text-cyan-300">${sol.tipo}</strong>: ${sol.detalle}</td>
                             <td class="px-3.5 py-2.5 text-center">${estadoBadge}</td>
-                            <td class="px-3.5 py-2.5 text-right space-x-1">${botonesAccion}</td>
+                            <td class="px-3.5 py-2.5 text-right space-x-1">
+                                <button onclick="descargarSolicitudPdf(${sol.id})" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow"><i class="ph ph-file-pdf"></i> PDF</button>
+                                <button onclick="aprobarSolicitud(${sol.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow">Aprobar</button>
+                            </td>
                         </tr>
                     `;
                 });
@@ -906,33 +1296,18 @@
             document.getElementById('gestionSolicitudesModal').classList.remove('hidden');
         }
 
-        function closeGestionSolicitudesView() { document.getElementById('gestionSolicitudesModal').classList.add('hidden'); }
-
-        // FIRMA DE ACEPTACIÓN DEL CAPITÁN AL APROBAR
-        function abrirFirmaCapitanaAprobacion(id) {
-            document.getElementById('solicitudIdToApprove').value = id;
-            document.getElementById('inputFirmaCapitanaAprobacion').value = nombreCapitánGuardado || '';
-            document.getElementById('modalFirmaCapitanAprobacion').classList.remove('hidden');
+        function closeGestionSolicitudesView() {
+            document.getElementById('gestionSolicitudesModal').classList.add('hidden');
         }
-        function cerrarModalFirmaCapitanAprobacion() { document.getElementById('modalFirmaCapitanAprobacion').classList.add('hidden'); }
 
-        function ejecutarAprobacionConFirma(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('solicitudIdToApprove').value);
-            const firmaCapitan = document.getElementById('inputFirmaCapitanaAprobacion').value.trim();
-            if(!firmaCapitan) { alert("Debe ingresar la firma del Capitán."); return; }
-
+        function aprobarSolicitud(id) {
             let sol = solicitudesPermisos.find(s => s.id === id);
             if(sol) {
                 sol.status = 'Aprobada';
-                sol.firmaCapitan = firmaCapitan;
-                nombreCapitánGuardado = firmaCapitan;
-                db.ref('nombreCapitanFirma').set(firmaCapitan);
                 db.ref('solicitudesPermisos').set(solicitudesPermisos);
-                cerrarModalFirmaCapitanAprobacion();
                 openGestionSolicitudesView();
                 renderBadgeSolicitudes();
-                alert("¡Solicitud aceptada y firmada exitosamente por el Capitán!");
+                alert("¡Solicitud marcada como aprobada!");
             }
         }
 
@@ -946,11 +1321,7 @@
             document.getElementById('pdfSolTipoTramite').textContent = sol.tipo;
             document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
             document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
-            document.getElementById('pdfSolNombreBomberoLabel').textContent = sol.nombreBombero;
-            
-            // Firmas por teclado
-            document.getElementById('pdfSolFirmaBomberoTxt').innerHTML = `<span class="signature-font">${sol.firmaBombero}</span>`;
-            document.getElementById('pdfSolFirmaCapitanTxt').innerHTML = sol.firmaCapitan ? `<span class="signature-font">${sol.firmaCapitan}</span>` : `<span class="text-slate-400 italic">Pendiente</span>`;
+            document.getElementById('pdfSolFirmaBombero').textContent = sol.nombreBombero;
 
             const element = document.getElementById('pdfSolicitudContainer');
             element.classList.remove('hidden');
@@ -965,10 +1336,94 @@
             html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
 
-        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); }
-        function openGuardiasView() { hideAllViews(); document.getElementById('guardiasView').classList.remove('hidden'); }
-        function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
+
+        function openGuardiasView() {
+            hideAllViews();
+            document.getElementById('guardiasView').classList.remove('hidden');
+            renderGuardiasView();
+        }
+
+        function inscribirseGuardia(tipo) {
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if (!user) { alert("Debe iniciar sesión para registrarse en la guardia."); openLoginModal(); return; }
+            
+            if(!guardiasData.diurna) guardiasData.diurna = [];
+            if(!guardiasData.nocturna) guardiasData.nocturna = [];
+
+            let yaInscritoDiurna = guardiasData.diurna.some(g => g.nombre === user.nombre);
+            let yaInscritoNocturna = guardiasData.nocturna.some(g => g.nombre === user.nombre);
+
+            if (tipo === 'diurna') {
+                if(yaInscritoDiurna) { alert("Ya estás inscrito en la Guardia Diurna."); return; }
+                if(yaInscritoNocturna) guardiasData.nocturna = guardiasData.nocturna.filter(g => g.nombre !== user.nombre);
+                guardiasData.diurna.push({ id: Date.now(), nombre: user.nombre, cargo: formatCargoStr(user.tipo || user.cargo) });
+            } else {
+                if(yaInscritoNocturna) { alert("Ya estás inscrito en la Guardia Nocturna."); return; }
+                if(yaInscritoDiurna) guardiasData.diurna = guardiasData.diurna.filter(g => g.nombre !== user.nombre);
+                guardiasData.nocturna.push({ id: Date.now(), nombre: user.nombre, cargo: formatCargoStr(user.tipo || user.cargo) });
+            }
+
+            db.ref('guardias').set(guardiasData);
+            alert(`¡Te has unido exitosamente a la Guardia ${tipo.toUpperCase()}!`);
+            renderGuardiasView();
+        }
+
+        function retirarDeGuardia(tipo, id) {
+            if(tipo === 'diurna') {
+                guardiasData.diurna = guardiasData.diurna.filter(g => g.id !== id);
+            } else {
+                guardiasData.nocturna = guardiasData.nocturna.filter(g => g.id !== id);
+            }
+            db.ref('guardias').set(guardiasData);
+            renderGuardiasView();
+        }
+
+        function renderGuardiasView() {
+            const diurnaTb = document.getElementById('diurnaTableBody');
+            const nocturnaTb = document.getElementById('nocturnaTableBody');
+            if(!diurnaTb || !nocturnaTb) return;
+
+            const diurnaList = guardiasData.diurna || [];
+            const nocturnaList = guardiasData.nocturna || [];
+
+            document.getElementById('countDiurnaBadge').textContent = `${diurnaList.length} en guardia`;
+            document.getElementById('countNocturnaBadge').textContent = `${nocturnaList.length} en guardia`;
+
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            let inscritoEnDiurna = user && diurnaList.some(g => g.nombre === user.nombre);
+            let inscritoEnNocturna = user && nocturnaList.some(g => g.nombre === user.nombre);
+
+            const textDiurna = document.getElementById('estadoInscritoDiurnaText');
+            const textNocturna = document.getElementById('estadoInscritoNocturnaText');
+
+            if(textDiurna) {
+                if(inscritoEnDiurna) textDiurna.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1"><i class="ph ph-check-circle"></i> Estás inscrito en este turno</span>`;
+                else textDiurna.textContent = "Turno de operaciones y cobertura diurna";
+            }
+            if(textNocturna) {
+                if(inscritoEnNocturna) textNocturna.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1"><i class="ph ph-check-circle"></i> Estás inscrito en este turno</span>`;
+                else textNocturna.textContent = "Turno de retén y pernoctación";
+            }
+
+            diurnaTb.innerHTML = '';
+            if(diurnaList.length === 0) {
+                diurnaTb.innerHTML = `<tr><td colspan="2" class="px-3.5 py-4 text-center text-slate-500">Sin personal inscrito.</td></tr>`;
+            } else {
+                diurnaList.forEach(g => {
+                    diurnaTb.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-3.5 py-2.5 font-bold text-white">${g.nombre} <span class="text-[10px] text-slate-400 font-normal">(${g.cargo})</span></td><td class="px-3.5 py-2.5 text-right"><button onclick="retirarDeGuardia('diurna', ${g.id})" class="text-rose-400 hover:underline font-bold text-[10px]">Retirar</button></td></tr>`;
+                });
+            }
+
+            nocturnaTb.innerHTML = '';
+            if(nocturnaList.length === 0) {
+                nocturnaTb.innerHTML = `<tr><td colspan="2" class="px-3.5 py-4 text-center text-slate-500">Sin personal inscrito.</td></tr>`;
+            } else {
+                nocturnaList.forEach(g => {
+                    nocturnaTb.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-3.5 py-2.5 font-bold text-white">${g.nombre} <span class="text-[10px] text-slate-400 font-normal">(${g.cargo})</span></td><td class="px-3.5 py-2.5 text-right"><button onclick="retirarDeGuardia('nocturna', ${g.id})" class="text-rose-400 hover:underline font-bold text-[10px]">Retirar</button></td></tr>`;
+                });
+            }
+        }
 
         function abrirModalFirmasPdf() {
             document.getElementById('labelInputGuardia').textContent = `Nombre Oficial de Guardia (${formatCargoStr(estadoGuardia.activo)}):`;
@@ -976,6 +1431,7 @@
             document.getElementById('inputNombreCapitan').value = nombreCapitánGuardado || '';
             document.getElementById('modalFirmasPdf').classList.remove('hidden');
         }
+
         function cerrarModalFirmasPdf() { document.getElementById('modalFirmasPdf').classList.add('hidden'); }
 
         function ejecutarGeneracionPdfTexto() {
@@ -983,10 +1439,743 @@
             const nombreCapitan = document.getElementById('inputNombreCapitan').value.trim();
             if(!nombreGuardia) { alert("Por favor ingrese el nombre del Oficial de Guardia."); return; }
             if(!nombreCapitan) { alert("Por favor ingrese el nombre del Capitán de Compañía."); return; }
+
             db.ref('nombreCapitanFirma').set(nombreCapitan);
             nombreCapitánGuardado = nombreCapitan;
             cerrarModalFirmasPdf();
             generarPartePdfConTexto(nombreGuardia, nombreCapitan);
+        }
+
+        function openProfileModal() {
+            const user = JSON.parse(localStorage.getItem('active_user_session')); if (!user) return;
+            document.getElementById('profileCargoBadge').textContent = formatCargoStr(user.tipo); 
+            document.getElementById('profileDisplayName').textContent = user.nombre; 
+            document.getElementById('profileNameVal').textContent = user.nombre; 
+            document.getElementById('profileRutVal').textContent = user.rut || "N/A"; 
+
+            let guardiasDiurnas = guardiasData.diurna || [];
+            let guardiasNocturnas = guardiasData.nocturna || [];
+            let statusGuardiaStr = "No inscrito";
+            if(guardiasDiurnas.some(g => g.nombre === user.nombre)) statusGuardiaStr = "Guardia Diurna";
+            else if(guardiasNocturnas.some(g => g.nombre === user.nombre)) statusGuardiaStr = "Guardia Nocturna";
+            document.getElementById('profileGuardiaStatusVal').textContent = statusGuardiaStr;
+
+            let miembroRoster = roster.find(m => m.name.toLowerCase().trim() === user.nombre.toLowerCase().trim());
+            let horas = miembroRoster ? (miembroRoster.garitaHours || 0) : 0;
+            document.getElementById('profileHoursVal').textContent = `${horas} hrs`;
+
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        
+        function openGestionAspirantesModal() {
+            const tbody = document.getElementById('aspirantesTableBody'); tbody.innerHTML = '';
+            const aspirantes = Object.values(usersAccounts).filter(u => u.tipo === 'Aspirante');
+            if(aspirantes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-3.5 py-4 text-center text-slate-500">No hay aspirantes registrados actualmente.</td></tr>`;
+            } else {
+                aspirantes.forEach(asp => {
+                    tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-3.5 py-2.5 font-bold text-white">${asp.nombre}</td><td class="px-3.5 py-2.5 text-slate-400 font-mono">${asp.rut}</td><td class="px-3.5 py-2.5 text-right"><button onclick="promoverAspirante('${asp.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold text-[10px] shadow">Promover a Bombero</button></td></tr>`;
+                });
+            }
+            document.getElementById('gestionAspirantesModal').classList.remove('hidden');
+        }
+        function closeGestionAspirantesModal() { document.getElementById('gestionAspirantesModal').classList.add('hidden'); }
+
+        function promoverAspirante(id) {
+            if(confirm("¿Estás seguro de promover a este aspirante a Bombero? Su perfil y accesos cambiarán de inmediato.")) {
+                if(usersAccounts[id]) {
+                    usersAccounts[id].tipo = 'Bombero';
+                    db.ref('usersAccounts').set(usersAccounts);
+                    alert("¡Ascenso completado con éxito!");
+                    openGestionAspirantesModal();
+                }
+            }
+        }
+
+        function openModalCrearTarea() { document.getElementById('txtTareaDesc').value = ''; document.getElementById('modalCrearTarea').classList.remove('hidden'); }
+        function closeModalCrearTarea() { document.getElementById('modalCrearTarea').classList.add('hidden'); }
+        function saveTarea(e) {
+            e.preventDefault();
+            const target = document.getElementById('selectDestinoTarea').value;
+            const text = document.getElementById('txtTareaDesc').value.trim();
+            tareas.push({ id: Date.now(), from: 'Capitán', to: target, text: text, date: new Date().toLocaleString('es-CL'), status: 'pendiente' });
+            db.ref('tareas').set(tareas); closeModalCrearTarea(); alert("Tarea asignada correctamente.");
+        }
+        function renderBadgeTareas() {
+            const user = JSON.parse(localStorage.getItem('active_user_session')); if(!user) return;
+            const misPendientes = tareas.filter(t => t.to === user.cargo && t.status === 'pendiente');
+            const badge = document.getElementById('badgeTareas');
+            if(badge) badge.textContent = misPendientes.length;
+        }
+        function openModalVerTareas() {
+            const container = document.getElementById('tareasContainer'); container.innerHTML = '';
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const misTareas = tareas.filter(t => t.to === user.cargo).sort((a,b) => b.id - a.id);
+            if(misTareas.length === 0) { container.innerHTML = `<p class="text-slate-500 text-center py-4">Sin tareas pendientes.</p>`; }
+            else {
+                misTareas.forEach(t => {
+                    let bg = t.status === 'pendiente' ? 'bg-slate-950 border-l-4 border-l-purple-500 border border-slate-800' : 'bg-slate-950/50 opacity-60 border-l-4 border-l-emerald-500 border border-slate-800';
+                    let btn = t.status === 'pendiente' ? `<button onclick="completarTarea(${t.id})" class="mt-2.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold text-[10px] transition-colors shadow">Marcar Completada</button>` : `<span class="text-[10px] text-emerald-400 font-bold mt-2.5 flex items-center gap-1"><i class="ph ph-check-circle text-sm"></i> Tarea Completada</span>`;
+                    container.innerHTML += `<div class="p-3.5 rounded-xl ${bg} shadow-md"><div class="flex justify-between text-[10px] text-slate-400 mb-1 font-bold"><span>De: ${t.from}</span><span>${t.date}</span></div><p class="font-medium text-slate-200 text-xs">${t.text}</p>${btn}</div>`;
+                });
+            }
+            document.getElementById('modalVerTareas').classList.remove('hidden');
+        }
+        function closeModalVerTareas() { document.getElementById('modalVerTareas').classList.add('hidden'); }
+        function completarTarea(id) {
+            let t = tareas.find(x => x.id === id); if(t) { t.status = 'completada'; db.ref('tareas').set(tareas); openModalVerTareas(); }
+        }
+
+        function openModalCrearNovedad() { document.getElementById('txtNovedadDesc').value=''; document.getElementById('modalCrearNovedad').classList.remove('hidden'); }
+        function closeModalCrearNovedad() { document.getElementById('modalCrearNovedad').classList.add('hidden'); }
+        function saveNovedad(e) {
+            e.preventDefault(); const text = document.getElementById('txtNovedadDesc').value.trim(); const user = JSON.parse(localStorage.getItem('active_user_session'));
+            crearRegistroNovedad(user.cargo === 'Capitan' ? 'Capitan' : "SISTEMA", text); closeModalCrearNovedad(); alert("Novedad enviada al Capitán.");
+        }
+        function crearRegistroNovedad(autor, texto) {
+            novedades.unshift({ id: Date.now(), by: formatCargoStr(autor), text: texto, date: new Date().toLocaleString('es-CL') });
+            db.ref('novedades').set(novedades);
+        }
+        function openVerNovedadesView() { 
+            hideAllViews(); 
+            document.getElementById('novedadesView').classList.remove('hidden'); 
+            document.getElementById('filtroNovedadTexto').value = '';
+            document.getElementById('filtroNovedadOficial').value = '';
+            renderNovedades(); 
+        }
+        function renderNovedades() {
+            const tbody = document.getElementById('novedadesTableBody'); if(!tbody) return; tbody.innerHTML='';
+            const textoFiltro = (document.getElementById('filtroNovedadTexto').value || "").toLowerCase();
+            const oficialFiltro = document.getElementById('filtroNovedadOficial').value;
+
+            let filtradas = novedades.filter(n => {
+                let matchTexto = n.text.toLowerCase().includes(textoFiltro) || n.by.toLowerCase().includes(textoFiltro);
+                let matchOficial = !oficialFiltro || n.by.includes(oficialFiltro);
+                return matchTexto && matchOficial;
+            });
+
+            if(filtradas.length === 0) { tbody.innerHTML=`<tr><td colspan="3" class="px-5 py-8 text-center text-slate-500">No se encontraron novedades.</td></tr>`; return; }
+            filtradas.forEach(n => { tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 text-slate-400 whitespace-nowrap">${n.date}</td><td class="px-5 py-3.5 font-bold text-white">${n.by}</td><td class="px-5 py-3.5 text-slate-300">${n.text}</td></tr>`; });
+        }
+
+        function descargarNovedadesPdf() {
+            document.getElementById('pdfNovFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+            const tbody = document.getElementById('pdfNovTablaBody');
+            tbody.innerHTML = '';
+            if(novedades.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="border p-2 text-center text-slate-400">Sin novedades registradas.</td></tr>`;
+            } else {
+                novedades.forEach(n => {
+                    tbody.innerHTML += `<tr><td class="border p-2 font-mono whitespace-nowrap">${n.date}</td><td class="border p-2 font-bold">${n.by}</td><td class="border p-2">${n.text}</td></tr>`;
+                });
+            }
+
+            const element = document.getElementById('pdfNovedadesContainer');
+            element.classList.remove('hidden');
+            const opt = {
+                margin: 10,
+                filename: `Libro_Novedades_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
+        }
+
+        function openResumenMensualView() {
+            hideAllViews();
+            document.getElementById('resumenMensualView').classList.remove('hidden');
+            renderResumenMensual();
+        }
+        function renderResumenMensual() {
+            const tbody = document.getElementById('resumenMensualTableBody'); if(!tbody) return; tbody.innerHTML = '';
+            if(roster.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin bomberos registrados en la lista.</td></tr>`; return; }
+            roster.forEach(m => {
+                let horas = m.garitaHours || 0;
+                let estadoBadge = horas >= 16 ? `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-lg font-bold">Cumplido</span>` : `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-lg font-bold">En Progreso</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-bold text-white">${m.name}</td><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 text-center font-mono font-bold text-cyan-400">${horas} hrs</td><td class="px-5 py-3.5 text-center font-bold text-blue-400">${m.count3m || 0}</td><td class="px-5 py-3.5 text-center">${estadoBadge}</td></tr>`;
+            });
+        }
+
+        function openModalEntregarGuardia() {
+            const select = document.getElementById('selectNuevoGuardia'); select.innerHTML = '';
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            oficialesOperativos.forEach(of => { if(of !== user.cargo) select.innerHTML += `<option value="${of}">${formatCargoStr(of)}</option>`; });
+            document.getElementById('modalEntregarGuardia').classList.remove('hidden');
+        }
+        function closeModalEntregarGuardia() { document.getElementById('modalEntregarGuardia').classList.add('hidden'); }
+        function saveEntregarGuardia(e) {
+            e.preventDefault();
+            const nuevoGuardia = document.getElementById('selectNuevoGuardia').value;
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            estadoGuardia.activo = nuevoGuardia;
+            db.ref('estadoGuardia').set(estadoGuardia);
+            crearRegistroNovedad(user.cargo === 'Capitan' ? 'Capitan' : "SISTEMA", `Relevo de Guardia: ${formatCargoStr(user.cargo)} ha entregado la guardia al ${formatCargoStr(nuevoGuardia)}.`);
+            closeModalEntregarGuardia(); alert(`Guardia asignada al ${formatCargoStr(nuevoGuardia)}.`);
+        }
+
+        function openCertificadosView() { hideAllViews(); document.getElementById('certificadosView').classList.remove('hidden'); renderCertificadosView(); }
+        function renderCertificadosView() {
+            const tbody = document.getElementById('certificadosTableBody'); if(!tbody) return; tbody.innerHTML='';
+            if(roster.length===0) { tbody.innerHTML=`<tr><td colspan="4" class="px-5 py-8 text-center text-slate-500">Lista vacía.</td></tr>`; return; }
+            roster.forEach(m => {
+                let count = m.certificados ? m.certificados.length : 0;
+                let badge = count > 0 ? `<span class="bg-violet-500/20 text-violet-300 border border-violet-500/30 px-2.5 py-1 rounded-lg font-bold">${count} cursos</span>` : `<span class="text-slate-500">-</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-bold text-white">${m.name}</td><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 text-center">${badge}</td><td class="px-5 py-3.5 text-right"><button onclick="openFichaCertificados(${m.id})" class="text-violet-400 font-bold hover:underline bg-violet-950/40 border border-violet-800/40 px-3 py-1.5 rounded-lg">Gestionar</button></td></tr>`;
+            });
+        }
+        function openFichaCertificados(memberId) {
+            const m = roster.find(x => x.id === memberId); if(!m) return;
+            document.getElementById('certFichaMemberId').value = m.id; document.getElementById('certFichaName').textContent = m.name;
+            const tbody = document.getElementById('certFichaTableBody'); tbody.innerHTML = '';
+            if(!m.certificados || m.certificados.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="px-3.5 py-4 text-center text-slate-500">Sin certificados registrados.</td></tr>`; }
+            else { m.certificados.forEach(c => { tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-3.5 py-2.5 font-medium text-white">${c.nombre}</td><td class="px-3.5 py-2.5 text-center text-slate-400 font-mono">${c.fecha}</td><td class="px-3.5 py-2.5 text-right"><button onclick="deleteCertificado(${m.id}, ${c.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg text-[10px]">Remover</button></td></tr>`; }); }
+            document.getElementById('fichaCertificadosModal').classList.remove('hidden');
+        }
+        function closeFichaCertificadosModal() { document.getElementById('fichaCertificadosModal').classList.add('hidden'); }
+        function guardarNuevoCertificado(e) {
+            e.preventDefault();
+            const memberId = parseInt(document.getElementById('certFichaMemberId').value);
+            const nombre = document.getElementById('inputNombreCertificado').value.trim();
+            const fecha = document.getElementById('inputFechaCertificado').value;
+            let m = roster.find(x => x.id === memberId); if(!m) return;
+            if(!m.certificados) m.certificados = [];
+            m.certificados.push({ id: Date.now(), nombre: nombre, fecha: fecha });
+            db.ref('roster').set(roster); document.getElementById('inputNombreCertificado').value=''; document.getElementById('inputFechaCertificado').value=''; openFichaCertificados(memberId);
+        }
+        function deleteCertificado(memberId, certId) {
+            if(!confirm("¿Remover este certificado del historial del bombero?")) return;
+            let m = roster.find(x => x.id === memberId); if(!m) return;
+            m.certificados = m.certificados.filter(c => c.id !== certId);
+            db.ref('roster').set(roster); openFichaCertificados(memberId);
+        }
+
+        function openBodegaEppView() { hideAllViews(); document.getElementById('bodegaEppView').classList.remove('hidden'); renderBodegaEpp(); }
+        function toggleFiltrarVencidos() {
+            soloVencidosBodega = !soloVencidosBodega;
+            const btn = document.getElementById('btnFiltroVencidos');
+            if(soloVencidosBodega) {
+                btn.className = "bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-2 rounded-xl font-semibold transition-colors shadow";
+                btn.textContent = "Ver Todos";
+            } else {
+                btn.className = "bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-2 rounded-xl font-semibold transition-colors shadow";
+                btn.textContent = "Filtrar Vencidos";
+            }
+            renderBodegaEpp();
+        }
+
+        function renderBodegaEpp() {
+            const tbody = document.getElementById('bodegaEppTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (bodegaEpp.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-500">Bodega de EPP vacía.</td></tr>`; return; }
+            
+            const anioActual = new Date().getFullYear();
+            let listaAMostrar = bodegaEpp.filter(item => {
+                let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
+                let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
+                let vencido = anioActual >= (fabAnio + vidaUtil);
+                if(soloVencidosBodega && !vencido) return false;
+                return true;
+            });
+
+            if (listaAMostrar.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-500">No hay artículos EPP que cumplan con el filtro.</td></tr>`; return; }
+
+            listaAMostrar.forEach(item => {
+                let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
+                let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
+                let anioExpiracion = fabAnio + vidaUtil;
+                let vencido = anioActual >= anioExpiracion;
+
+                let estadoNfpa = vencido ? 
+                    `<span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-1 rounded-lg font-bold animate-pulse">VENCIDO (>${vidaUtil}a)</span>` : 
+                    `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-lg font-bold">Óptimo (Exp. ${anioExpiracion})</span>`;
+
+                let badge = item.stock > 0 ? `<span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2.5 py-1 rounded-lg font-bold">${item.stock} unid.</span>` : `<span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-1 rounded-lg font-bold">Agotado</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${item.name}</td><td class="px-5 py-3.5 text-slate-300">${item.size || '--'}</td><td class="px-5 py-3.5 font-mono text-slate-400">${item.fechaFabricacion || 'No reg.'}</td><td class="px-5 py-3.5 text-center">${estadoNfpa}</td><td class="px-5 py-3.5 text-center">${badge}</td><td class="px-5 py-3.5 text-right"><button onclick="deleteBodegaEpp(${item.id})" class="text-rose-400 font-semibold hover:underline">Eliminar</button></td></tr>`;
+            });
+        }
+        function openAgregarBodegaEppModal() { document.getElementById('bodegaEppId').value = ''; document.getElementById('bodegaEppNameSelect').value = ''; document.getElementById('bodegaEppNameOtro').value = ''; document.getElementById('otroEppContainer').classList.add('hidden'); document.getElementById('bodegaEppSize').value = ''; document.getElementById('bodegaEppStock').value = '1'; document.getElementById('bodegaEppFabricacion').value = new Date().toISOString().split('T')[0]; document.getElementById('agregarBodegaEppModal').classList.remove('hidden'); }
+        function closeAgregarBodegaEppModal() { document.getElementById('agregarBodegaEppModal').classList.add('hidden'); }
+        function toggleOtroEppInput() { const s = document.getElementById('bodegaEppNameSelect'); const o = document.getElementById('otroEppContainer'); if(s.value === 'OTRO') o.classList.remove('hidden'); else o.classList.add('hidden'); }
+        function saveBodegaEpp(e) {
+            e.preventDefault();
+            let name = document.getElementById('bodegaEppNameSelect').value;
+            if (name === 'OTRO') name = document.getElementById('bodegaEppNameOtro').value.trim();
+            const size = document.getElementById('bodegaEppSize').value.trim();
+            const stock = parseInt(document.getElementById('bodegaEppStock').value);
+            const fechaFabricacion = document.getElementById('bodegaEppFabricacion').value;
+            let existente = bodegaEpp.find(i => i.name === name && i.size === size && i.fechaFabricacion === fechaFabricacion);
+            if(existente) existente.stock += stock; else bodegaEpp.push({ id: Date.now(), name, size, stock, fechaFabricacion });
+            db.ref('bodegaEpp').set(bodegaEpp); closeAgregarBodegaEppModal(); verificarAlertasAutomaticas();
+        }
+        function deleteBodegaEpp(id) { if (confirm("¿Eliminar este artículo de la bodega permanentemente?")) { bodegaEpp = bodegaEpp.filter(i => i.id !== id); db.ref('bodegaEpp').set(bodegaEpp); verificarAlertasAutomaticas(); } }
+
+        function openEppVoluntariosView() { hideAllViews(); document.getElementById('eppVoluntariosView').classList.remove('hidden'); renderEppVoluntarios(); }
+        function renderEppVoluntarios() {
+            const tbody = document.getElementById('eppVoluntariosTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (roster.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-500">Sin bomberos.</td></tr>`; return; }
+            roster.forEach(m => {
+                let eppCount = m.epp ? m.epp.length : 0;
+                let badge = eppCount > 0 ? `<span class="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-2.5 py-1 rounded-lg font-bold">${eppCount} prendas</span>` : `<span class="text-slate-500 italic">Sin EPP</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white"><button onclick="openFichaEppModal(${m.id})" class="text-orange-400 hover:underline font-bold">${m.name}</button></td><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 text-center">${badge}</td><td class="px-5 py-3.5 text-right"><button onclick="openFichaEppModal(${m.id})" class="text-orange-400 font-semibold bg-orange-950/40 border border-orange-800/40 px-3 py-1.5 rounded-lg">Gestionar</button></td></tr>`;
+            });
+        }
+        function openFichaEppModal(memberId) {
+            const m = roster.find(x => x.id === memberId); if (!m) return;
+            document.getElementById('eppFichaMemberId').value = m.id; document.getElementById('eppFichaName').textContent = m.name; document.getElementById('eppFichaRole').textContent = m.role;
+            const select = document.getElementById('selectEppToAssign');
+            select.innerHTML = '<option value="">-- Seleccionar EPP de Bodega --</option>';
+            bodegaEpp.forEach(item => { if(item.stock > 0) select.innerHTML += `<option value="${item.id}">${item.name} ${item.size ? '(Talla: '+item.size+')' : ''} - [Stock: ${item.stock}]</option>`; });
+            const tbody = document.getElementById('eppFichaTableBody'); tbody.innerHTML = '';
+            if(!m.epp || m.epp.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-3.5 py-4 text-center text-slate-500">Este bombero no tiene EPP asignado.</td></tr>`; } 
+            else { 
+                const anioActual = new Date().getFullYear();
+                m.epp.forEach(item => {
+                    let fabAnio = item.fechaFabricacion ? new Date(item.fechaFabricacion).getFullYear() : anioActual;
+                    let vidaUtil = (item.name.toLowerCase().includes('casco') || item.name.toLowerCase().includes('uniforme')) ? 10 : 5;
+                    let vencido = anioActual >= (fabAnio + vidaUtil);
+                    let estadoHtml = vencido ? `<span class="text-rose-400 font-bold">VENCIDO (NFPA)</span>` : `<span class="text-emerald-400 font-bold">Óptimo</span>`;
+
+                    tbody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-900"><td class="px-3.5 py-2.5 font-medium text-white">${item.name}</td><td class="px-3.5 py-2.5 text-slate-300">${item.size || '--'}</td><td class="px-3.5 py-2.5 text-center">${estadoHtml}</td><td class="px-3.5 py-2.5 text-right"><button onclick="devolverEpp(${m.id}, ${item.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg text-[10px]">Devolver</button></td></tr>`; 
+                }); 
+            }
+            document.getElementById('fichaEppVoluntarioModal').classList.remove('hidden');
+        }
+        function closeFichaEppVoluntarioModal() { document.getElementById('fichaEppVoluntarioModal').classList.add('hidden'); }
+        function entregarEpp(e) {
+            e.preventDefault();
+            const memberId = parseInt(document.getElementById('eppFichaMemberId').value); const bodegaId = parseInt(document.getElementById('selectEppToAssign').value);
+            if(!bodegaId) return;
+            const itemBodega = bodegaEpp.find(i => i.id === bodegaId);
+            if(!itemBodega || itemBodega.stock <= 0) { alert("Sin stock suficiente en bodega."); return; }
+            const member = roster.find(m => m.id === memberId); if(!member.epp) member.epp = [];
+            itemBodega.stock -= 1;
+            member.epp.push({ id: Date.now(), bodegaId: itemBodega.id, name: itemBodega.name, size: itemBodega.size, fechaFabricacion: itemBodega.fechaFabricacion, date: new Date().toLocaleDateString('es-CL') });
+            db.ref('bodegaEpp').set(bodegaEpp); db.ref('roster').set(roster); openFichaEppModal(memberId);
+        }
+        function devolverEpp(memberId, eppId) {
+            if(!confirm("¿Confirmar devolución de la prenda a la bodega?")) return;
+            const member = roster.find(m => m.id === memberId); const itemIndex = member.epp.findIndex(e => e.id === eppId); if(itemIndex === -1) return;
+            const eppItem = member.epp[itemIndex];
+            let itemBodega = bodegaEpp.find(i => i.id === eppItem.bodegaId);
+            if(itemBodega) itemBodega.stock += 1; else bodegaEpp.push({id: eppItem.bodegaId, name: eppItem.name, size: eppItem.size, fechaFabricacion: eppItem.fechaFabricacion, stock: 1});
+            member.epp.splice(itemIndex, 1);
+            db.ref('bodegaEpp').set(bodegaEpp); db.ref('roster').set(roster); openFichaEppModal(memberId);
+        }
+
+        function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
+        function renderRoster() {
+            const tbody = document.getElementById('rosterTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (roster.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin miembros.</td></tr>`; return; }
+            roster.forEach(m => { tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 font-bold text-white">${m.name}</td><td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td><td class="px-5 py-3.5 text-center text-emerald-400 font-bold">${m.status || 'A'}</td><td class="px-5 py-3.5 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg">Eliminar</button></td></tr>`; });
+        }
+        function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
+        function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
+        function saveMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value.trim(); const role = document.getElementById('memberRole').value.trim(); const category = document.getElementById('memberCategory').value; const motivo = document.getElementById('memberReason').value.trim(); const fechaHoy = new Date().toLocaleDateString('es-CL');
+            let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
+            if (miembro) {
+                if(!miembro.historialMotivos) miembro.historialMotivos = []; miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: motivo });
+                miembro.count3m = (miembro.count3m || 0) + 1; miembro.count1y = (miembro.count1y || 0) + 1;
+            } else { roster.push({ id: Date.now() + 1, category, role, name, status: 'A', count3m: 1, count1y: 1, garitaHours: 0, historialMotivos: [{ fecha: fechaHoy, detalle: motivo }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } }); }
+            db.ref('roster').set(roster); closeMemberModal(); 
+        }
+        function deleteMember(id) { if(confirm("¿Eliminar a este bombero de la lista por completo?")) { roster = roster.filter(m => m.id !== id); db.ref('roster').set(roster); } }
+
+        function openFichasView() { hideAllViews(); document.getElementById('fichasView').classList.remove('hidden'); renderFichas(); }
+        function renderFichas() {
+            const tbody = document.getElementById('fichasTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            roster.forEach(m => { tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5"><button onclick="openFichaDetail(${m.id})" class="text-cyan-400 hover:underline font-bold">${m.name}</button></td><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.count3m || 0}</td><td class="px-5 py-3.5 text-center text-emerald-400 font-bold">${m.count1y || 0}</td><td class="px-5 py-3.5 text-right"><button onclick="openFichaEditModal(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-3 py-1 rounded-lg">Editar</button></td></tr>`; });
+        }
+        function openFichaDetail(id) {
+            const m = roster.find(x => x.id === id); if (!m) return;
+            selectedFichaIdForPdf = m.id;
+            document.getElementById('detailMemberName').textContent = m.name; document.getElementById('detailMemberRole').textContent = m.role; document.getElementById('detailMember3m').textContent = m.count3m || 0; document.getElementById('detailMember1y').textContent = m.count1y || 0;
+            
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const esOficialAlto = user && oficialesOperativosAltos.includes(user.cargo);
+            const medSection = document.getElementById('medicoTacticaSection');
+            if (esOficialAlto) {
+                medSection.classList.remove('hidden');
+                document.getElementById('medicoEditId').value = m.id;
+                document.getElementById('medicoSangre').textContent = m.medico?.sangre || 'No registrado';
+                document.getElementById('medicoContacto').textContent = m.medico?.contacto || 'No registrado';
+                document.getElementById('medicoAlergias').textContent = m.medico?.alergias || 'Ninguna';
+                document.getElementById('medicoCert').textContent = m.medico?.cert || 'Ninguna';
+            } else { medSection.classList.add('hidden'); }
+
+            const eppContainer = document.getElementById('detailEppListContainer');
+            eppContainer.innerHTML = '';
+            if(!m.epp || m.epp.length === 0) {
+                eppContainer.innerHTML = `<p class="text-slate-500 italic">Sin EPP asignado actualmente.</p>`;
+            } else {
+                m.epp.forEach(item => {
+                    eppContainer.innerHTML += `<div class="flex justify-between border-b border-orange-950/60 py-1"><span class="text-slate-200">${item.name} ${item.size? '('+item.size+')':''}</span><span class="font-mono text-slate-400">Adq: ${item.date || 'N/A'}</span></div>`;
+                });
+            }
+
+            const motBody = document.getElementById('detailMotivosTableBody'); motBody.innerHTML = '';
+            let motivos = m.historialMotivos || [];
+            if (motivos.length === 0) motBody.innerHTML = `<tr><td colspan="2" class="px-3.5 py-4 text-center text-slate-500">Sin registros de emergencias o citaciones.</td></tr>`;
+            else motivos.forEach(mot => { motBody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-900"><td class="px-3.5 py-2.5 text-slate-400 font-mono whitespace-nowrap">${mot.fecha}</td><td class="px-3.5 py-2.5 font-medium text-slate-200">${mot.detalle}</td></tr>`; });
+            document.getElementById('fichaDetailModal').classList.remove('hidden');
+        }
+        function closeFichaDetailModal() { document.getElementById('fichaDetailModal').classList.add('hidden'); }
+
+        function descargarFichaVoluntarioPdf() {
+            const m = roster.find(x => x.id === selectedFichaIdForPdf); if(!m) return;
+            document.getElementById('pdfFichaFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+            document.getElementById('pdfFichaNombre').textContent = m.name;
+            document.getElementById('pdfFichaCargo').textContent = m.role;
+            document.getElementById('pdfFicha3m').textContent = m.count3m || 0;
+            document.getElementById('pdfFicha1y').textContent = m.count1y || 0;
+
+            const tbody = document.getElementById('pdfFichaTablaMotivos');
+            tbody.innerHTML = '';
+            let motivos = m.historialMotivos || [];
+            if(motivos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" class="border p-2 text-center text-slate-400">Sin asistencias registradas.</td></tr>`;
+            } else {
+                motivos.forEach(mot => {
+                    tbody.innerHTML += `<tr><td class="border p-2 font-mono whitespace-nowrap">${mot.fecha}</td><td class="border p-2">${mot.detalle}</td></tr>`;
+                });
+            }
+
+            const element = document.getElementById('pdfFichaContainer');
+            element.classList.remove('hidden');
+            const opt = {
+                margin: 10,
+                filename: `Ficha_Asistencia_${m.name.replace(/\s+/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
+        }
+        
+        function openEditMedicoTacticaModal() {
+            const memberId = document.getElementById('medicoEditId').value;
+            const m = roster.find(x => x.id == memberId);
+            if(!m) return;
+            document.getElementById('inputSangre').value = m.medico?.sangre || '';
+            document.getElementById('inputContacto').value = m.medico?.contacto || '';
+            document.getElementById('inputAlergias').value = m.medico?.alergias || '';
+            document.getElementById('inputCert').value = m.medico?.cert || '';
+            document.getElementById('editMedicoTacticaModal').classList.remove('hidden');
+        }
+        function closeEditMedicoTacticaModal() { document.getElementById('editMedicoTacticaModal').classList.add('hidden'); }
+        function saveMedicoTactica(e) {
+            e.preventDefault();
+            const memberId = document.getElementById('medicoEditId').value;
+            let m = roster.find(x => x.id == memberId);
+            if(m) {
+                if(!m.medico) m.medico = {};
+                m.medico.sangre = document.getElementById('inputSangre').value.trim();
+                m.medico.contacto = document.getElementById('inputContacto').value.trim();
+                m.medico.alergias = document.getElementById('inputAlergias').value.trim();
+                m.medico.cert = document.getElementById('inputCert').value.trim();
+                db.ref('roster').set(roster);
+                closeEditMedicoTacticaModal();
+                openFichaDetail(m.id);
+            }
+        }
+
+        function openFichaEditModal(id) {
+            const m = roster.find(x => x.id === id); document.getElementById('fichaEditId').value = m.id; document.getElementById('fichaEditName').value = m.name; document.getElementById('fichaEditRole').value = m.role; document.getElementById('fichaEdit3m').value = m.count3m; document.getElementById('fichaEdit1y').value = m.count1y;
+            document.getElementById('fichaEditModal').classList.remove('hidden');
+        }
+        function closeFichaEditModal() { document.getElementById('fichaEditModal').classList.add('hidden'); }
+        function saveFichaEdit(e) {
+            e.preventDefault(); const id = document.getElementById('fichaEditId').value; const member = roster.find(m => m.id == id);
+            if (member) { member.name = document.getElementById('fichaEditName').value; member.role = document.getElementById('fichaEditRole').value; member.count3m = parseInt(document.getElementById('fichaEdit3m').value); member.count1y = parseInt(document.getElementById('fichaEdit1y').value); db.ref('roster').set(roster); closeFichaEditModal(); }
+        }
+
+        const visitorForm = document.getElementById('visitorForm');
+        if(visitorForm) {
+            visitorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('fullName').value.trim();
+                const rut = document.getElementById('documentId').value.trim();
+                const key = rut.replace(/[^0-9kK]/g, '').toLowerCase();
+
+                if (blockedList[key]) {
+                    const diffMs = Date.now() - blockedList[key].timestamp;
+                    const limitMs = 2 * 60 * 60 * 1000;
+                    if (diffMs < limitMs) {
+                        alert(`El bombero ${name} está bloqueado por salida. Restan ${Math.floor((limitMs - diffMs)/60000)} minutos.`);
+                        return;
+                    } else {
+                        delete blockedList[key];
+                        db.ref('blockedList').set(blockedList);
+                    }
+                }
+                visitors.push({ id: Date.now(), fullName: name, documentId: rut, reason: "", entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
+                db.ref('visitantes').set(visitors); visitorForm.reset(); alert("Ingreso registrado correctamente.");
+            });
+        }
+
+        function renderVisitors() {
+            const tbody = document.getElementById('visitorsTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            if (visitors.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-10 text-center text-slate-500">Sin bomberos de guardia.</td></tr>`; return; }
+            
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            const esOficialAsignador = user && (user.cargo === 'Capitan' || user.cargo === 'Ayudante' || user.cargo === 'Tenienteprimero');
+            const sorted = [...visitors].sort((a, b) => b.id - a.id);
+            
+            sorted.forEach(v => {
+                let statusHtml = v.status === 'active' ? `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">En cuartel</span>` : `<span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px]">Salió</span>`;
+                let reasonHtml = v.reason ? `<span class="text-slate-200 font-medium">${v.reason}</span>` : `<span class="text-amber-400 italic">Pendiente</span>`;
+                if (!v.reason && esOficialAsignador && v.status === 'active') reasonHtml = `<button onclick="openAssignReasonModal(${v.id}, '${v.fullName}')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded-lg font-bold text-[10px] shadow">Asignar Motivo</button>`;
+                let actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Marcar Salida</button>` : `<span class="text-slate-500 italic text-[10px]">Listo</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${v.fullName}</td><td class="px-5 py-3.5 font-mono text-slate-400">${v.documentId}</td><td class="px-5 py-3.5">${reasonHtml}</td><td class="px-5 py-3.5 text-slate-300">${v.entryTime}</td><td class="px-5 py-3.5 text-center">${statusHtml}</td><td class="px-5 py-3.5 text-right">${actionHtml}</td></tr>`;
+            });
+        }
+
+        function openAssignReasonModal(id, name) { document.getElementById('assignVisitorId').value = id; document.getElementById('assignVisitorName').value = name; document.getElementById('assignVisitorReasonInput').value = ''; document.getElementById('assignReasonModal').classList.remove('hidden'); }
+        function closeAssignReasonModal() { document.getElementById('assignReasonModal').classList.add('hidden'); }
+        function saveAssignedReason(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('assignVisitorId').value); const reason = document.getElementById('assignVisitorReasonInput').value.trim();
+            let v = visitors.find(x => x.id === id);
+            if (v) {
+                v.reason = reason; db.ref('visitantes').set(visitors);
+                let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
+                if (miembro) { if(!miembro.historialMotivos) miembro.historialMotivos = []; miembro.historialMotivos.unshift({ fecha: new Date().toLocaleDateString('es-CL'), detalle: reason }); } 
+                else { roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: v.fullName, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: new Date().toLocaleDateString('es-CL'), detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } }); }
+                db.ref('roster').set(roster);
+            }
+            closeAssignReasonModal();
+        }
+
+        window.markDeparture = function(id) {
+            const index = visitors.findIndex(v => v.id === id);
+            if (index !== -1) {
+                const v = visitors[index];
+                v.status = 'departed'; v.exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }); 
+                db.ref('visitantes').set(visitors);
+                
+                const key = v.documentId.replace(/[^0-9kK]/g, '').toLowerCase();
+                blockedList[key] = { name: v.fullName, rut: v.documentId, timestamp: Date.now() };
+                db.ref('blockedList').set(blockedList);
+
+                roster.forEach(m => { let visits = visitors.filter(v2 => v2.fullName.toLowerCase().trim() === m.name.toLowerCase().trim()); let pastABs = 0; visits.forEach(v3 => { if (v3.status === 'departed' && v3.abGranted) pastABs++; }); m.garitaHours = pastABs * 4; });
+                db.ref('roster').set(roster); 
+                alert("Salida registrada. El bombero ha quedado bloqueado por 2 horas."); 
+            }
+        }
+
+        function verificarBloqueoSalida() {
+            const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000; let changed = false;
+            for (let k in blockedList) { if (now - blockedList[k].timestamp >= limitMs) { delete blockedList[k]; changed = true; } }
+            if (changed) db.ref('blockedList').set(blockedList);
+        }
+
+        function openBloqueadosModal() { document.getElementById('bloqueadosModal').classList.remove('hidden'); renderBloqueadosTable(); }
+        function closeBloqueadosModal() { document.getElementById('bloqueadosModal').classList.add('hidden'); }
+        function renderBloqueadosTable() {
+            const tbody = document.getElementById('bloqueadosTableBody'); if(!tbody) return; tbody.innerHTML = '';
+            const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000; const keys = Object.keys(blockedList);
+            if (keys.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="px-3 py-4 text-center text-slate-500">Sin bomberos bloqueados en este momento.</td></tr>`; return; }
+            keys.forEach(k => {
+                const item = blockedList[k]; const diff = now - item.timestamp; const remMs = limitMs - diff;
+                if (remMs > 0) {
+                    const mins = Math.floor(remMs / 60000); const secs = Math.floor((remMs % 60000) / 1000);
+                    tbody.innerHTML += `<tr class="hover:bg-slate-900 cursor-pointer" onclick="prepararLiberacion('${k}')"><td class="px-3.5 py-2.5 font-bold text-white">${item.name} <span class="text-[10px] text-slate-400 font-mono block">${item.rut}</span></td><td class="px-3.5 py-2.5 text-center font-mono font-semibold text-amber-400">${mins}m ${secs}s</td><td class="px-3.5 py-2.5 text-right"><span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-1 rounded-lg text-[10px] font-bold">Liberar</span></td></tr>`;
+                }
+            });
+        }
+        function prepararLiberacion(key) {
+            selectedVoluntarioForLiberar = key; const item = blockedList[key]; if(!item) return;
+            document.getElementById('voluntarioRestriccionNombre').value = item.name; document.getElementById('motivoRemorsion').value = '';
+            closeBloqueadosModal(); document.getElementById('removerRestriccionModal').classList.remove('hidden');
+        }
+        function closeRemoverRestriccionModal() { document.getElementById('removerRestriccionModal').classList.add('hidden'); }
+        function ejecutarRemorsionRestriccion(e) {
+            e.preventDefault();
+            if(!selectedVoluntarioForLiberar || !blockedList[selectedVoluntarioForLiberar]) return;
+            const item = blockedList[selectedVoluntarioForLiberar];
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {cargo: 'Oficial'};
+            const motivo = document.getElementById('motivoRemorsion').value.trim();
+            remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: formatCargoStr(user.cargo), voluntario: item.name, motivo: motivo });
+            db.ref('remorsiones').set(remorsionesLog);
+            delete blockedList[selectedVoluntarioForLiberar]; db.ref('blockedList').set(blockedList);
+            closeRemoverRestriccionModal(); alert(`Restricción liberada con éxito.`);
+        }
+
+        function openLiveHoursView() { hideAllViews(); document.getElementById('liveHoursView').classList.remove('hidden'); renderLiveHours(); }
+        function renderLiveHours() {
+            const tbody = document.getElementById('liveHoursTableBody'); if (!tbody) return;
+            const activas = visitors.filter(v => v.status === 'active'); 
+            if (activas.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-500">Sin cronómetros activos.</td></tr>`; return; }
+            let html = ''; const now = Date.now(); const LIMIT_MS = 4 * 60 * 60 * 1000; 
+            activas.forEach(v => {
+                const diffMs = now - v.startTimestamp; const hrs = Math.floor(diffMs / 3600000); const mins = Math.floor((diffMs % 3600000) / 60000); const secs = Math.floor((diffMs % 60000) / 1000);
+                const timeStr = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                let progress = Math.min(100, (diffMs / LIMIT_MS) * 100);
+                let badge = v.abGranted ? `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[10px] font-bold">AB LOGRADO</span>` : `<span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded text-[10px] font-bold">EN PROGRESO</span>`;
+                html += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${v.fullName}</td><td class="px-5 py-3.5 text-center font-mono font-bold text-cyan-400">${timeStr}</td><td class="px-5 py-3.5 text-center"><div class="flex flex-col items-center gap-1">${badge}<div class="w-full bg-slate-800 rounded-full h-1.5 mt-1 max-w-[100px]"><div class="bg-emerald-400 h-1.5 rounded-full" style="width: ${progress}%"></div></div></div></td></tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        function checkAndGrantAB() {
+            let updated = false; const now = Date.now(); const LIMIT_MS = 4 * 60 * 60 * 1000; 
+            visitors.forEach(v => {
+                if (v.status === 'active' && !v.abGranted && (now - v.startTimestamp >= LIMIT_MS)) {
+                    v.abGranted = true; updated = true;
+                    let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
+                    if (miembro && miembro.status !== 'AB') miembro.status = 'AB';
+                }
+            });
+            if (updated) { db.ref('visitantes').set(visitors); db.ref('roster').set(roster); }
+        }
+
+        function openCarro(code) { currentCarro = code; hideAllViews(); document.getElementById('carroInventoryView').classList.remove('hidden'); document.getElementById('carroTitle').textContent = `Inventario - ${code}`; renderInventory(); }
+        function backToCarros() { 
+            hideAllViews(); 
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if(user && user.cargo === 'Tenientesegundo') document.getElementById('tenienteSegundoView').classList.remove('hidden');
+            else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden'); 
+        }
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            let list = inventories[currentCarro] || [];
+            if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-500">Sin equipos.</td></tr>`; return; }
+            list.forEach(i => {
+                let badge = i.status === 'Operativo' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : i.status === 'Revisión' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${i.name}</td><td class="px-5 py-3.5 text-slate-300">${i.model}</td><td class="px-5 py-3.5 text-slate-300">${i.category} ${i.gaveta?`(${i.gaveta})`:''}</td><td class="px-5 py-3.5 text-center font-bold text-white">${i.quantity}</td><td class="px-5 py-3.5 text-center"><span class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3.5 text-right"><button onclick="deleteItem(${i.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Eliminar</button></td></tr>`;
+            });
+        }
+        function openItemModal() { document.getElementById('itemId').value = ''; document.getElementById('itemForm').reset(); document.getElementById('modalGavetaField').classList.toggle('hidden', currentCarro !== 'B2'); document.getElementById('itemModal').classList.remove('hidden'); }
+        function closeItemModal() { document.getElementById('itemModal').classList.add('hidden'); }
+        function saveInventoryItem(e) {
+            e.preventDefault(); if (!currentCarro) return;
+            const item = { id: Date.now(), name: document.getElementById('itemName').value.trim(), model: document.getElementById('itemModel').value.trim(), category: document.getElementById('itemCategory').value.trim(), quantity: parseInt(document.getElementById('itemQuantity').value)||1, status: document.getElementById('itemStatus').value, gaveta: currentCarro === 'B2' ? document.getElementById('itemGaveta').value : null };
+            if (!inventories[currentCarro]) inventories[currentCarro] = []; inventories[currentCarro].push(item);
+            db.ref('inventarios').set(inventories); closeItemModal(); 
+        }
+        function deleteItem(id) { if (confirm("¿Eliminar equipo del inventario?")) { inventories[currentCarro] = inventories[currentCarro].filter(i => i.id !== id); db.ref('inventarios').set(inventories); } }
+
+        function openCuartelSeccion(s) { currentCuartelSeccion = s; hideAllViews(); document.getElementById('cuartelInventoryView').classList.remove('hidden'); document.getElementById('cuartelTitle').textContent = `Inventario - ${s}`; renderCuartelInventory(); }
+        function backToCuartelMenu() { 
+            hideAllViews(); 
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+            if(user && user.cargo === 'Tenientetercero') document.getElementById('tenienteTerceroView').classList.remove('hidden');
+            else document.getElementById('capitanTenientePrimeroView').classList.remove('hidden');
+        }
+        function renderCuartelInventory() {
+            const tbody = document.getElementById('cuartelInventoryTableBody'); if (!tbody) return; tbody.innerHTML = '';
+            let list = cuartelInventarios[currentCuartelSeccion] || [];
+            if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin artículos.</td></tr>`; return; }
+            list.forEach(i => {
+                let badge = i.status === 'Operativo / Bueno' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : i.status === 'Por reponer' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${i.name}</td><td class="px-5 py-3.5 text-slate-300">${i.ubicacion}</td><td class="px-5 py-3.5 text-center font-bold text-white">${i.quantity}</td><td class="px-5 py-3.5 text-center"><span class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${badge}">${i.status}</span></td><td class="px-5 py-3.5 text-right"><button onclick="deleteCuartelItem(${i.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Eliminar</button></td></tr>`;
+            });
+        }
+        function openCuartelItemModal() { document.getElementById('cuartelItemForm').reset(); document.getElementById('cuartelItemModal').classList.remove('hidden'); }
+        function closeCuartelItemModal() { document.getElementById('cuartelItemModal').classList.add('hidden'); }
+        function saveCuartelItem(e) {
+            e.preventDefault(); if (!currentCuartelSeccion) return;
+            const item = { id: Date.now(), name: document.getElementById('cuartelItemName').value.trim(), ubicacion: document.getElementById('cuartelItemUbicacion').value.trim(), quantity: parseInt(document.getElementById('cuartelItemQuantity').value)||1, status: document.getElementById('cuartelItemStatus').value };
+            if (!cuartelInventarios[currentCuartelSeccion]) cuartelInventarios[currentCuartelSeccion] = []; cuartelInventarios[currentCuartelSeccion].push(item);
+            db.ref('cuartel').set(cuartelInventarios); closeCuartelItemModal(); 
+        }
+        function deleteCuartelItem(id) { if (confirm("¿Eliminar artículo?")) { cuartelInventarios[currentCuartelSeccion] = cuartelInventarios[currentCuartelSeccion].filter(i => i.id !== id); db.ref('cuartel').set(cuartelInventarios); } }
+
+        function descargarInventarioPdf(tipo) {
+            let titulo = ""; let items = []; let tenienteFirma = ""; let tenienteLabel = "";
+            if (tipo === 'carro') {
+                titulo = `INVENTARIO DE MATERIAL MENOR - CARRO ${currentCarro}`; items = inventories[currentCarro] || []; tenienteFirma = "Teniente 2°"; tenienteLabel = "Teniente 2° a Cargo de Material Menor";
+            } else {
+                titulo = `INVENTARIO DE CUARTEL - SECCIÓN ${currentCuartelSeccion.toUpperCase()}`; items = cuartelInventarios[currentCuartelSeccion] || []; tenienteFirma = "Teniente 3°"; tenienteLabel = "Teniente 3° a Cargo de Cuartel y Ornato";
+            }
+            document.getElementById('pdfInvTitulo').textContent = titulo;
+            document.getElementById('pdfInvFecha').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+            document.getElementById('pdfInvLabelTeniente').textContent = tenienteLabel;
+            document.getElementById('pdfInvFirmaTeniente').innerHTML = `<span class="signature-font">${tenienteFirma} Responsable</span>`;
+
+            const tbody = document.getElementById('pdfInvTablaBody'); tbody.innerHTML = '';
+            if(items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="border p-3 text-center text-slate-400">Sin elementos registrados en este inventario.</td></tr>`;
+            } else {
+                items.forEach(i => {
+                    let modeloUbicacion = i.model || i.ubicacion || 'N/A';
+                    let qty = i.quantity || 1;
+                    tbody.innerHTML += `<tr><td class="border p-2 font-bold">${i.name}</td><td class="border p-2">${modeloUbicacion}</td><td class="border p-2 text-center font-bold">${qty}</td><td class="border p-2 text-center">${i.status}</td></tr>`;
+                });
+            }
+
+            const element = document.getElementById('pdfInventarioContainer');
+            element.classList.remove('hidden');
+            const opt = { margin: 10, filename: `Inventario_${tipo}_${currentCarro || currentCuartelSeccion}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
+        }
+
+        function openCalendarView() { hideAllViews(); document.getElementById('calendarView').classList.remove('hidden'); renderCalendar(); }
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = '';
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            document.getElementById('currentMonthYear').textContent = `${monthNames[calDate.getMonth()]} ${calDate.getFullYear()}`;
+            const firstDay = new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay(); const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 0).getDate();
+            for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+            const today = new Date();
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {};
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${calDate.getFullYear()}-${String(calDate.getMonth()+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                
+                const eventosDia = calendarEvents.filter(e => {
+                    if (e.date !== dateStr) return false;
+                    if (user.tipo === 'Aspirante') return e.visibility === 'aspirante' || e.visibility === 'todos';
+                    if (user.tipo === 'Bombero') return e.visibility === 'voluntario' || e.visibility === 'todos';
+                    return true;
+                });
+
+                const hasEvent = eventosDia.length > 0;
+                let bgClass = "bg-slate-950 text-slate-300 border border-slate-800 hover:bg-slate-900";
+                if (dateStr === selectedDateStr) bgClass = "bg-fuchsia-950/60 text-fuchsia-200 border border-fuchsia-500 font-bold shadow-inner"; 
+                else if (calDate.getFullYear() === today.getFullYear() && calDate.getMonth() === today.getMonth() && i === today.getDate()) bgClass = "bg-fuchsia-600 text-white font-bold shadow-lg";
+                let dot = hasEvent ? `<div class="w-1.5 h-1.5 bg-fuchsia-400 rounded-full mx-auto mt-1 shadow-[0_0_6px_#e879f9]"></div>` : `<div class="w-1.5 h-1.5 mx-auto mt-1"></div>`;
+                grid.innerHTML += `<div onclick="selectDate('${dateStr}')" class="p-2.5 rounded-xl cursor-pointer ${bgClass} transition-all"><span class="block">${i}</span>${dot}</div>`;
+            }
+        }
+        function changeMonth(dir) { calDate.setMonth(calDate.getMonth() + dir); renderCalendar(); }
+        function selectDate(dateStr) { selectedDateStr = dateStr; renderCalendar(); renderDayEvents(); }
+        function renderDayEvents() {
+            const list = document.getElementById('dayEventsList'); const label = document.getElementById('selectedDateLabel');
+            if (!selectedDateStr) { label.textContent = "Seleccione un día"; list.innerHTML = `<p class="text-slate-500 italic text-[11px]">No hay actividades.</p>`; return; }
+            label.textContent = `Actividades del ${selectedDateStr}`;
+            
+            const user = JSON.parse(localStorage.getItem('active_user_session')) || {};
+            const dayEvents = calendarEvents.filter(e => {
+                if (e.date !== selectedDateStr) return false;
+                if (user.tipo === 'Aspirante') return e.visibility === 'aspirante' || e.visibility === 'todos';
+                if (user.tipo === 'Bombero') return e.visibility === 'voluntario' || e.visibility === 'todos';
+                return true;
+            });
+
+            if (dayEvents.length === 0) { list.innerHTML = `<p class="text-slate-500 italic text-[11px]">Sin eventos programados para tu grupo.</p>`; return; }
+            list.innerHTML = '';
+            dayEvents.forEach(ev => {
+                let badgeVis = ev.visibility === 'aspirante' ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] px-2.5 py-0.5 rounded-lg font-bold">Solo Aspirantes</span>` : ev.visibility === 'voluntario' ? `<span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] px-2.5 py-0.5 rounded-lg font-bold">Solo Bomberos</span>` : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] px-2.5 py-0.5 rounded-lg font-bold">General</span>`;
+                let deleteBtn = (user.cargo === 'Capitan' || user.cargo === 'Ayudante') ? `<button onclick="deleteEvent(${ev.id})" class="text-rose-400 font-bold text-[10px] mt-2.5 bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Eliminar Actividad</button>` : '';
+                list.innerHTML += `<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 border-l-4 border-l-fuchsia-500 shadow-md space-y-1"><div class="flex justify-between items-start"><h4 class="font-bold text-xs text-white">${ev.title}</h4>${badgeVis}</div><p class="text-[11px] mt-1 text-slate-300">${ev.description}</p>${deleteBtn}</div>`;
+            });
+        }
+        function openEventModal() { if (!selectedDateStr) { alert("Seleccione un día en el calendario primero."); return; } document.getElementById('eventDate').value = selectedDateStr; document.getElementById('eventTitle').value=''; document.getElementById('eventDescription').value=''; document.getElementById('eventVisibility').value='todos'; document.getElementById('eventModal').classList.remove('hidden'); }
+        function closeEventModal() { document.getElementById('eventModal').classList.add('hidden'); }
+        function saveEvent(e) { e.preventDefault(); calendarEvents.push({ id: Date.now(), date: document.getElementById('eventDate').value, title: document.getElementById('eventTitle').value, description: document.getElementById('eventDescription').value, visibility: document.getElementById('eventVisibility').value }); db.ref('calendario').set(calendarEvents); closeEventModal(); selectDate(document.getElementById('eventDate').value); }
+        function deleteEvent(id) { if (confirm("¿Eliminar actividad del calendario?")) { calendarEvents = calendarEvents.filter(e => e.id !== id); db.ref('calendario').set(calendarEvents); selectDate(selectedDateStr); } }
+
+        function openRemorsionView() { hideAllViews(); document.getElementById('remorsionView').classList.remove('hidden'); renderRemorsionesLog(); }
+        function renderRemorsionesLog() { const tbody = document.getElementById('remorsionTableBody'); if (!tbody) return; tbody.innerHTML = ''; if (remorsionesLog.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-5 text-center text-slate-500">Sin liberaciones.</td></tr>`; return; } remorsionesLog.forEach(log => { tbody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-900"><td class="p-3.5 text-slate-400 text-[10px] font-mono">${log.fecha}</td><td class="p-3.5 font-bold text-cyan-400">${log.oficial}</td><td class="p-3.5 font-semibold text-white">${log.voluntario}</td><td class="p-3.5 text-slate-300">${log.motivo}</td></tr>`; }); }
+        
+        function exportarExcel() {
+            if (visitors.length === 0) { alert("No hay datos para exportar."); return; }
+            let csv = "Nombre,RUT,Motivo,Entrada,Salida\n";
+            visitors.forEach(v => { csv += `"${v.fullName}","${v.documentId}","${v.reason||''}","${v.entryTime}","${v.exitTime || 'En cuartel'}"\n`; });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Registro_Bomberos_${new Date().toLocaleDateString('es-CL')}.csv`; link.click();
         }
 
         function generarPartePdfConTexto(nombreGuardia, nombreCapitan) {
