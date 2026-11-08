@@ -243,6 +243,11 @@
                     <label class="block font-semibold mb-1 text-slate-300">Detalle / Motivo de la Solicitud</label>
                     <textarea id="solicitudDetalle" required rows="4" placeholder="Explique brevemente el motivo..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea>
                 </div>
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-300">Firma Escrita (Nombre y Apellido del Bombero)</label>
+                    <input type="text" id="solicitudFirmaBombero" required placeholder="Ej. Bombero Juan Pérez" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none">
+                </div>
+                
                 <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar al Capitán y Ayudante</button>
             </form>
         </div>
@@ -1247,27 +1252,29 @@
         function closeModalSolicitudPermiso() { document.getElementById('modalSolicitudPermiso').classList.add('hidden'); }
         
         function saveSolicitudPermiso(e) {
-            e.preventDefault();
-            const tipo = document.getElementById('solicitudTipo').value;
-            const detalle = document.getElementById('solicitudDetalle').value.trim();
-            const user = JSON.parse(localStorage.getItem('active_user_session'));
+    e.preventDefault();
+    const tipo = document.getElementById('solicitudTipo').value;
+    const detalle = document.getElementById('solicitudDetalle').value.trim();
+    const firmaBombero = document.getElementById('solicitudFirmaBombero').value.trim();
+    const user = JSON.parse(localStorage.getItem('active_user_session'));
 
-            const nuevaSolicitud = {
-                id: Date.now(),
-                nombreBombero: user.nombre,
-                tipo: tipo,
-                detalle: detalle,
-                fecha: new Date().toLocaleString('es-CL'),
-                status: 'Pendiente'
-            };
+    const nuevaSolicitud = {
+        id: Date.now(),
+        nombreBombero: user.nombre,
+        tipo: tipo,
+        detalle: detalle,
+        firmaBombero: firmaBombero, // <-- Firma por teclado del bombero
+        fecha: new Date().toLocaleString('es-CL'),
+        status: 'Pendiente'
+    };
 
-            solicitudesPermisos.unshift(nuevaSolicitud);
-            db.ref('solicitudesPermisos').set(solicitudesPermisos);
+    solicitudesPermisos.unshift(nuevaSolicitud);
+    db.ref('solicitudesPermisos').set(solicitudesPermisos);
 
-            crearRegistroNovedad("Ayudante", `Nueva Solicitud de [${tipo}] recibida del Bombero ${user.nombre}: "${detalle}"`);
-            closeModalSolicitudPermiso();
-            alert("¡Solicitud enviada correctamente al Capitán y al Ayudante!");
-        }
+    crearRegistroNovedad("Ayudante", `Nueva Solicitud de [${tipo}] recibida del Bombero ${user.nombre}: "${detalle}"`);
+    closeModalSolicitudPermiso();
+    alert("¡Solicitud enviada correctamente al Capitán y al Ayudante!");
+}
 
         function openGestionSolicitudesView() {
             const tbody = document.getElementById('solicitudesTableBody');
@@ -1301,40 +1308,53 @@
         }
 
         function aprobarSolicitud(id) {
-            let sol = solicitudesPermisos.find(s => s.id === id);
-            if(sol) {
-                sol.status = 'Aprobada';
-                db.ref('solicitudesPermisos').set(solicitudesPermisos);
-                openGestionSolicitudesView();
-                renderBadgeSolicitudes();
-                alert("¡Solicitud marcada como aprobada!");
-            }
-        }
+    let sol = solicitudesPermisos.find(s => s.id === id);
+    if(sol) {
+        let firmaCapitan = prompt("Ingrese el nombre y apellido del Capitán para aprobar y firmar el documento:", "Capitán ");
+        if(!firmaCapitan) return; // Si cancela, no hace nada
+        
+        sol.status = 'Aprobada';
+        sol.firmaCapitan = firmaCapitan.trim(); // <-- Firma por teclado del capitán
+        db.ref('solicitudesPermisos').set(solicitudesPermisos);
+        openGestionSolicitudesView();
+        renderBadgeSolicitudes();
+        alert("¡Solicitud aprobada y firmada con éxito!");
+    }
+}
 
         function descargarSolicitudPdf(id) {
-            let sol = solicitudesPermisos.find(s => s.id === id);
-            if(!sol) return;
+    let sol = solicitudesPermisos.find(s => s.id === id);
+    if(!sol) return;
 
-            document.getElementById('pdfSolTituloDoc').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
-            document.getElementById('pdfSolFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
-            document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
-            document.getElementById('pdfSolTipoTramite').textContent = sol.tipo;
-            document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
-            document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
-            document.getElementById('pdfSolFirmaBombero').textContent = sol.nombreBombero;
+    document.getElementById('pdfSolTituloDoc').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
+    document.getElementById('pdfSolFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+    document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
+    document.getElementById('pdfSolTipoTramite').textContent = sol.tipo;
+    document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
+    document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
+    
+    // Firma por teclado del bombero con tipografía formal
+    document.getElementById('pdfSolFirmaBombero').innerHTML = `<span class="signature-font">${sol.firmaBombero || sol.nombreBombero}</span>`;
+    
+    // Firma por teclado del capitán (si ya fue aprobada)
+    const contenedorFirmaCap = document.getElementById('pdfSolFirmaCapitanContainer');
+    if(contenedorFirmaCap) {
+        contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan || 'Pendiente de V°B°'}</span>`;
+    }
 
-            const element = document.getElementById('pdfSolicitudContainer');
-            element.classList.remove('hidden');
+    const element = document.getElementById('pdfSolicitudContainer');
+    element.classList.remove('hidden');
 
-            const opt = {
-                margin: 10,
-                filename: `Solicitud_${sol.tipo.replace(/\s+/g, '_')}_${sol.nombreBombero.replace(/\s+/g, '_')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
-        }
+    const opt = {
+        margin: 10,
+        filename: `Solicitud_${sol.tipo.replace(/\s+/g, '_')}_${sol.nombreBombero.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
+}
+
 
         function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
 
