@@ -77,6 +77,7 @@
                 <button onclick="openModalCrearNovedad()" id="btnCrearNovedad" class="hidden bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold transition-colors shadow-sm"><i class="ph ph-warning mr-1"></i> Novedad</button>
                 <button onclick="openVerNovedadesView()" id="btnVerNovedadesBanner" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg font-bold transition-colors border border-slate-700 flex items-center gap-1"><i class="ph ph-book-open text-sm text-amber-400"></i> Ver Buzón</button>
                 <button onclick="openModalVerTareas()" id="btnVerTareas" class="hidden bg-purple-700 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-1"><i class="ph ph-envelope-simple text-sm"></i> Tareas <span id="badgeTareas" class="bg-white text-purple-900 px-1.5 rounded-full text-[10px] font-bold">0</span></button>
+                <button onclick="openGestionSolicitudesView()" id="btnGestionSolicitudes" class="hidden bg-cyan-700 hover:bg-cyan-600 text-white px-3 py-1.5 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-1"><i class="ph ph-files text-sm"></i> Solicitudes <span id="badgeSolicitudes" class="bg-white text-cyan-900 px-1.5 rounded-full text-[10px] font-bold">0</span></button>
             </div>
         </div>
     </div>
@@ -242,7 +243,7 @@
                     <label class="block font-semibold mb-1 text-slate-300">Detalle / Motivo de la Solicitud</label>
                     <textarea id="solicitudDetalle" required rows="4" placeholder="Explique brevemente el motivo..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar a Capitanía / Ayudantía</button>
+                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar al Capitán y Ayudante</button>
             </form>
         </div>
     </div>
@@ -252,6 +253,35 @@
     <div id="modalCrearNovedad" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph ph-warning text-base"></i> Enviar Novedad al Capitán</h3><button onclick="closeModalCrearNovedad()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveNovedad(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Detalle</label><textarea id="txtNovedadDesc" required rows="4" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea></div><button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar</button></form></div></div>
     <div id="modalCrearTarea" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-purple-400">Asignar Tarea</h3><button onclick="closeModalCrearTarea()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveTarea(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Destinatario</label><select id="selectDestinoTarea" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Tenienteprimero">Teniente Primero</option><option value="Tenientesegundo">Teniente Segundo</option><option value="Tenientetercero">Teniente Tercero</option><option value="Ayudante">Ayudante</option></select></div><div><label class="block font-semibold mb-1.5 text-slate-300">Instrucciones</label><textarea id="txtTareaDesc" required rows="3" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea></div><button type="submit" class="w-full bg-purple-700 hover:bg-purple-600 text-white py-2.5 rounded-xl font-bold shadow">Enviar</button></form></div></div>
     <div id="modalVerTareas" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0"><h3 class="font-bold text-purple-400">Buzón de Tareas</h3><button onclick="closeModalVerTareas()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3" id="tareasContainer"></div></div></div>
+
+    <!-- MODAL GESTIÓN DE SOLICITUDES (CAPITÁN Y AYUDANTE) -->
+    <div id="gestionSolicitudesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0">
+                <h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-files text-base"></i> Solicitudes y Permisos Recibidos</h3>
+                <button onclick="closeGestionSolicitudesView()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto custom-scrollbar flex-grow space-y-3">
+                <p class="text-slate-400 text-[11px]">Listado de trámites y permisos enviados por los bomberos activos. Puedes revisarlos, aprobarlos o descargarlos en PDF:</p>
+                <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800">
+                                <th class="px-3.5 py-2.5">Fecha</th>
+                                <th class="px-3.5 py-2.5">Bombero</th>
+                                <th class="px-3.5 py-2.5">Tipo / Motivo</th>
+                                <th class="px-3.5 py-2.5 text-center">Estado</th>
+                                <th class="px-3.5 py-2.5 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="solicitudesTableBody" class="divide-y divide-slate-800">
+                            <tr><td colspan="5" class="px-3.5 py-4 text-center text-slate-500">Sin solicitudes registradas.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODALES DE CONTROL -->
     <div id="bloqueadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0"><h3 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph ph-lock-keyhole text-base"></i> Bomberos Bloqueados (2 hrs)</h3><button onclick="closeBloqueadosModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar space-y-3"><p class="text-slate-400 text-[11px]">Haz clic sobre el bombero que deseas liberar manualmente antes de cumplir su tiempo de espera:</p><div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800"><th class="px-3 py-2.5">Bombero</th><th class="px-3 py-2.5 text-center">Restante</th><th class="px-3 py-2.5 text-right">Acción</th></tr></thead><tbody id="bloqueadosTableBody" class="divide-y divide-slate-800"><tr><td colspan="3" class="px-3 py-4 text-center text-slate-500">Sin bomberos bloqueados.</td></tr></tbody></table></div></div></div></div>
@@ -468,7 +498,7 @@
         </div>
     </div>
 
-    <!-- PORTAL BOMBERO ACTIVO (ACTUALIZADO CON HISTORIAL Y PERMISOS) -->
+    <!-- PORTAL BOMBERO ACTIVO -->
     <div id="voluntarioRasoView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
         <div class="glass-card border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -572,7 +602,15 @@
 
     <!-- PANELES DE OTROS OFICIALES -->
     <div id="ayudanteView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800"><span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Ayudante</span><h2 class="text-xl font-bold mt-2 text-white">Gestión de Asistencia</h2></div>
+        <div class="glass-card rounded-2xl shadow-xl p-5 border border-slate-800 flex justify-between items-center">
+            <div>
+                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Panel Ayudante</span>
+                <h2 class="text-xl font-bold mt-2 text-white">Gestión de Asistencia y Solicitudes</h2>
+            </div>
+            <button onclick="openGestionSolicitudesView()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl font-bold shadow flex items-center gap-2">
+                <i class="ph ph-files"></i> Ver Solicitudes de Permiso
+            </button>
+        </div>
         <div class="glass-card rounded-2xl shadow-xl p-5 mb-6 max-w-xl mx-auto border border-slate-800">
             <h3 class="font-bold text-white mb-3 text-center flex items-center justify-center gap-2"><i class="ph ph-chart-bar text-sm text-cyan-400"></i> Gráfico de Asistencia General de Compañía</h3>
             <div style="position: relative; width: 100%; height: 170px;"><canvas id="graficoAsistenciaAyudante"></canvas></div>
@@ -718,7 +756,7 @@
 
     <div id="calendarView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Calendario Operativo</h2><button id="btnAddEvent" onclick="openEventModal()" class="hidden bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-xl font-bold shadow">Agendar Evento</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-2 glass-card p-5 rounded-2xl border border-slate-800 shadow-xl"><div class="flex justify-between mb-4 items-center"><button onclick="changeMonth(-1)" class="font-bold px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors">Ant</button><h3 id="currentMonthYear" class="font-bold text-sm text-white"></h3><button onclick="changeMonth(1)" class="font-bold px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors">Sig</button></div><div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-sm"></div></div><div class="glass-card p-5 rounded-2xl border border-slate-800 shadow-xl"><h3 id="selectedDateLabel" class="font-bold mb-4 border-b border-slate-800 pb-2 text-white">Seleccione día</h3><div id="dayEventsList" class="space-y-3"></div></div></div></div>
     
-    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left glass-card border border-slate-800 rounded-2xl shadow-xl overflow-hidden"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Fecha y Hora</th><th class="px-5 py-3.5">Oficial Responsable</th><th class="px-5 py-3.5">Bombero Liberado</th><th class="px-5 py-3.5">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y divide-slate-800"></tbody></table></div>
+    <div id="remorsionView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold text-white tracking-wider uppercase">Auditoría de Liberaciones</h2><div></div></div><table class="w-full text-left glass-card border border-slate-800 rounded-2xl shadow-xl overflow-hidden"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Fecha y Hora</th><th class="px-5 py-3.5">Oficial Responsable</th><th class="px-5 py-3.5">Bombero Liberado</th><th class="px-5 py-3.5">Motivo Registrado</th></thead><tbody id="remorsionTableBody" class="divide-y divide-slate-800"></tbody></table></div>
 
 
     <!-- CONTENEDORES OCULTOS PARA PDF -->
@@ -747,6 +785,37 @@
                 <div class="border-t border-slate-400 w-48 pt-2">
                     <div id="pdfTextoFirmaCapitan" class="h-12 flex items-center justify-center font-serif italic text-base text-slate-900 mb-1"></div>
                     <p class="font-bold">Capitán de Compañía</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PDF SOLICITUD / PERMISO -->
+    <div id="pdfSolicitudContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
+        <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
+            <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
+            <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
+            <h3 class="text-md font-bold mt-3 text-slate-800 uppercase" id="pdfSolTituloDoc">SOLICITUD OFICIAL DE PERMISO</h3>
+            <p class="text-[10px] text-slate-500" id="pdfSolFechaEmision"></p>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                <div><strong>Bombero Solicitante:</strong> <span id="pdfSolNombreBombero"></span></div>
+                <div><strong>Tipo de Trámite:</strong> <span id="pdfSolTipoTramite"></span></div>
+                <div><strong>Fecha de Envío:</strong> <span id="pdfSolFechaEnvio"></span></div>
+                <div class="pt-2 border-t border-slate-200">
+                    <strong class="block mb-1">Detalle / Motivo:</strong>
+                    <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200"></p>
+                </div>
+            </div>
+            <div class="pt-20 flex justify-between text-center">
+                <div class="border-t border-slate-400 w-48 pt-2">
+                    <p class="font-bold" id="pdfSolFirmaBombero">Firma Bombero</p>
+                    <p class="text-[10px] text-slate-500">Solicitante</p>
+                </div>
+                <div class="border-t border-slate-400 w-48 pt-2">
+                    <p class="font-bold">Capitán / Ayudante</p>
+                    <p class="text-[10px] text-slate-500">V°B° Oficialidad</p>
                 </div>
             </div>
         </div>
@@ -840,7 +909,7 @@
         const oficialesOperativosAltos = ["Capitan", "Tenienteprimero", "Tenientesegundo", "Tenientetercero"];
         
         let usersAccounts = {}; 
-        let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], estadoGuardia = { activo: "Tenienteprimero" };
+        let profiles = {}, roster = [], visitors = [], blockedList = {}, tareas = [], novedades = [], solicitudesPermisos = [], estadoGuardia = { activo: "Tenienteprimero" };
         let guardiasData = { diurna: [], nocturna: [] };
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
         let calendarEvents = [], remorsionesLog = [];
@@ -853,6 +922,7 @@
         function formatCargoStr(c) {
             if(c==='Tenienteprimero') return 'Teniente 1°'; if(c==='Tenientesegundo') return 'Teniente 2°';
             if(c==='Tenientetercero') return 'Teniente 3°'; if(c==='Capitan') return 'Capitán'; 
+            if(c==='Ayudante') return 'Ayudante';
             if(c==='Bombero') return 'Bombero'; if(c==='Aspirante') return 'Aspirante'; return c;
         }
 
@@ -881,6 +951,7 @@
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
+        db.ref('solicitudesPermisos').on('value', snap => { solicitudesPermisos = snap.val() || []; renderBadgeSolicitudes(); });
         db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
         db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
         db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); verificarAlertasAutomaticas(); });
@@ -914,6 +985,12 @@
             for(let k in blockedList) { if(now - blockedList[k].timestamp < limitMs) count++; }
             const badge = document.getElementById('badgeBloqueadosNav');
             if(badge) badge.textContent = count;
+        }
+
+        function renderBadgeSolicitudes() {
+            const pendientes = solicitudesPermisos.filter(s => s.status === 'Pendiente');
+            const badge = document.getElementById('badgeSolicitudes');
+            if(badge) badge.textContent = pendientes.length;
         }
 
         function verificarAlertasAutomaticas() {
@@ -1096,6 +1173,9 @@
                 document.getElementById('btnVerTareas').classList.remove('hidden');
                 document.getElementById('menuPdfContainer').classList.remove('hidden');
                 document.getElementById('btnAddEvent').classList.remove('hidden');
+                if (cargo === 'Capitan' || cargo === 'Ayudante') {
+                    document.getElementById('btnGestionSolicitudes').classList.remove('hidden');
+                }
 
                 if(cargo === 'Capitan') {
                     document.getElementById('menuRemorsionContainer').classList.remove('hidden');
@@ -1107,6 +1187,7 @@
                     document.getElementById('btnCrearNovedad').classList.remove('hidden');
                 }
                 renderBadgeTareas();
+                renderBadgeSolicitudes();
             } else if (cargo === 'Aspirante' || cargo === 'Bombero') {
                 document.getElementById('menuCalendarContainer').classList.remove('hidden');
                 document.getElementById('btnAddEvent').classList.add('hidden');
@@ -1164,15 +1245,95 @@
             document.getElementById('modalSolicitudPermiso').classList.remove('hidden');
         }
         function closeModalSolicitudPermiso() { document.getElementById('modalSolicitudPermiso').classList.add('hidden'); }
+        
         function saveSolicitudPermiso(e) {
             e.preventDefault();
             const tipo = document.getElementById('solicitudTipo').value;
             const detalle = document.getElementById('solicitudDetalle').value.trim();
             const user = JSON.parse(localStorage.getItem('active_user_session'));
 
-            crearRegistroNovedad("Ayudante", `Solicitud de [${tipo}] enviada por el Bombero ${user.nombre}: "${detalle}"`);
+            const nuevaSolicitud = {
+                id: Date.now(),
+                nombreBombero: user.nombre,
+                tipo: tipo,
+                detalle: detalle,
+                fecha: new Date().toLocaleString('es-CL'),
+                status: 'Pendiente'
+            };
+
+            solicitudesPermisos.unshift(nuevaSolicitud);
+            db.ref('solicitudesPermisos').set(solicitudesPermisos);
+
+            crearRegistroNovedad("Ayudante", `Nueva Solicitud de [${tipo}] recibida del Bombero ${user.nombre}: "${detalle}"`);
             closeModalSolicitudPermiso();
-            alert("¡Solicitud enviada correctamente a la oficialidad!");
+            alert("¡Solicitud enviada correctamente al Capitán y al Ayudante!");
+        }
+
+        function openGestionSolicitudesView() {
+            const tbody = document.getElementById('solicitudesTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if(solicitudesPermisos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-3.5 py-4 text-center text-slate-500">Sin solicitudes registradas.</td></tr>`;
+            } else {
+                solicitudesPermisos.forEach(sol => {
+                    let estadoBadge = sol.status === 'Pendiente' ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded font-bold">Pendiente</span>` : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">Aprobada</span>`;
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-900">
+                            <td class="px-3.5 py-2.5 font-mono text-slate-400 whitespace-nowrap">${sol.fecha}</td>
+                            <td class="px-3.5 py-2.5 font-bold text-white">${sol.nombreBombero}</td>
+                            <td class="px-3.5 py-2.5"><strong class="text-cyan-300">${sol.tipo}</strong>: ${sol.detalle}</td>
+                            <td class="px-3.5 py-2.5 text-center">${estadoBadge}</td>
+                            <td class="px-3.5 py-2.5 text-right space-x-1">
+                                <button onclick="descargarSolicitudPdf(${sol.id})" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow"><i class="ph ph-file-pdf"></i> PDF</button>
+                                <button onclick="aprobarSolicitud(${sol.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded font-bold text-[10px] shadow">Aprobar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('gestionSolicitudesModal').classList.remove('hidden');
+        }
+
+        function closeGestionSolicitudesView() {
+            document.getElementById('gestionSolicitudesModal').classList.add('hidden');
+        }
+
+        function aprobarSolicitud(id) {
+            let sol = solicitudesPermisos.find(s => s.id === id);
+            if(sol) {
+                sol.status = 'Aprobada';
+                db.ref('solicitudesPermisos').set(solicitudesPermisos);
+                openGestionSolicitudesView();
+                renderBadgeSolicitudes();
+                alert("¡Solicitud marcada como aprobada!");
+            }
+        }
+
+        function descargarSolicitudPdf(id) {
+            let sol = solicitudesPermisos.find(s => s.id === id);
+            if(!sol) return;
+
+            document.getElementById('pdfSolTituloDoc').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
+            document.getElementById('pdfSolFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+            document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
+            document.getElementById('pdfSolTipoTramite').textContent = sol.tipo;
+            document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
+            document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
+            document.getElementById('pdfSolFirmaBombero').textContent = sol.nombreBombero;
+
+            const element = document.getElementById('pdfSolicitudContainer');
+            element.classList.remove('hidden');
+
+            const opt = {
+                margin: 10,
+                filename: `Solicitud_${sol.tipo.replace(/\s+/g, '_')}_${sol.nombreBombero.replace(/\s+/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
 
         function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
