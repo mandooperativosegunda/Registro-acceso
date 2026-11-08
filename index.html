@@ -43,13 +43,12 @@
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 py-1.5 rounded-lg font-medium text-xs transition-colors"><i class="ph ph-user-gear text-sm text-cyan-400"></i><span class="hidden sm:inline">Perfil</span></button>
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700/80 hover:bg-emerald-600 text-emerald-100 px-3 py-1.5 rounded-lg font-medium text-xs transition-colors border border-emerald-600/50"><i class="ph ph-download-simple text-sm"></i><span class="hidden sm:inline">CSV</span></button>
                 
-                <!-- BOTÓN MENÚ DE TRES PUNTOS (DESPLEGABLE PROFESIONAL) -->
+                <!-- BOTÓN MENÚ DE TRES PUNTOS -->
                 <div class="relative">
                     <button onclick="toggleMenuTresPuntos(event)" class="flex items-center justify-center bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-lg border border-slate-700 text-slate-300 hover:text-white transition-colors" title="Menú de Opciones">
                         <i class="ph ph-dots-three-vertical text-lg"></i>
                     </button>
                     
-                    <!-- DROPDOWN CONTENT -->
                     <div id="dropdownTresPuntos" class="hidden absolute right-0 mt-2 w-56 bg-slate-900 rounded-xl shadow-2xl border border-slate-700 py-2 text-xs text-slate-200 z-50 divide-y divide-slate-800">
                         <div class="px-4 py-2 bg-slate-950 font-bold text-slate-400 uppercase tracking-wider text-[10px]">Menú Operativo</div>
                         <div class="py-1">
@@ -221,6 +220,32 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL SOLICITUD DE PERMISO / JUSTIFICACIÓN (BOMBERO) -->
+    <div id="modalSolicitudPermiso" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden">
+            <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800">
+                <h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-envelope-open text-base"></i> Enviar Solicitud o Justificación</h3>
+                <button onclick="closeModalSolicitudPermiso()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <form onsubmit="saveSolicitudPermiso(event)" class="p-5 space-y-3.5">
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-300">Tipo de Trámite</label>
+                    <select id="solicitudTipo" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none">
+                        <option value="Permiso temporal">Permiso temporal de inasistencia</option>
+                        <option value="Justificación de citación">Justificación de inasistencia a citación</option>
+                        <option value="Licencia médica">Aviso de Licencia Médica</option>
+                        <option value="Otro motivo">Otro trámite / Solicitud</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-300">Detalle / Motivo de la Solicitud</label>
+                    <textarea id="solicitudDetalle" required rows="4" placeholder="Explique brevemente el motivo..." class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Enviar a Capitanía / Ayudantía</button>
+            </form>
+        </div>
+    </div>
     
     <!-- MODALES OPERATIVOS -->
     <div id="modalEntregarGuardia" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-arrows-left-right text-base"></i> Entregar Guardia</h3><button onclick="closeModalEntregarGuardia()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveEntregarGuardia(event)" class="p-5 space-y-4"><div><label class="block font-semibold mb-1.5 text-slate-300">Seleccionar Relevo</label><select id="selectNuevoGuardia" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"></select></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Confirmar</button></form></div></div>
@@ -298,7 +323,6 @@
                     </div>
                 </div>
 
-                <!-- HISTORIAL EPP ASIGNADO EN LA FICHA -->
                 <div class="bg-orange-950/30 border border-orange-900/40 rounded-xl p-3.5 space-y-2">
                     <h5 class="font-bold text-orange-300 flex items-center gap-1.5"><i class="ph ph-hard-hat text-sm text-orange-400"></i> EPP Asignado Actualmente</h5>
                     <div id="detailEppListContainer" class="space-y-1 text-slate-300 text-[11px]">
@@ -444,16 +468,57 @@
         </div>
     </div>
 
+    <!-- PORTAL BOMBERO ACTIVO (ACTUALIZADO CON HISTORIAL Y PERMISOS) -->
     <div id="voluntarioRasoView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs">
-        <div class="glass-card border border-slate-800 rounded-2xl p-6 shadow-xl">
-            <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Portal de Bombero Activo</span>
-            <h2 id="saludoVoluntario" class="text-2xl font-bold mt-2 text-white">Panel Personal</h2>
-            <p class="text-slate-400 mt-1">Consulta tus actividades y calendario general de la compañía.</p>
+        <div class="glass-card border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Portal de Bombero Activo</span>
+                <h2 id="saludoVoluntario" class="text-2xl font-bold mt-2 text-white">Panel Personal</h2>
+                <p class="text-slate-400 mt-1">Consulta tus horas acumuladas, estado de guardias y envía trámites formales.</p>
+            </div>
+            <button onclick="openModalSolicitudPermiso()" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 py-3 rounded-xl font-bold shadow-lg shadow-cyan-900/30 transition-all flex items-center gap-2 shrink-0"><i class="ph ph-paper-plane-tilt text-sm"></i> Solicitar Permiso / Trámite</button>
         </div>
+
+        <!-- TARJETAS RESUMEN PERSONAL -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Horas de Guardia Acumuladas</span>
+                <div class="text-2xl font-bold font-mono text-cyan-400" id="lblBomberoHoras">0 hrs</div>
+                <p class="text-[11px] text-slate-400" id="lblBomberoMetaHoras">Meta mensual: En progreso</p>
+            </div>
+            <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Asistencias Trimestrales (3m)</span>
+                <div class="text-2xl font-bold font-mono text-emerald-400" id="lblBomberoAsist3m">0</div>
+                <p class="text-[11px] text-slate-400">Registradas en el sistema</p>
+            </div>
+            <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Estado Operativo Actual</span>
+                <div class="text-base font-bold text-amber-300 mt-1" id="lblBomberoEstadoOp">Activo en Fila</div>
+                <p class="text-[11px] text-slate-400">Segunda Compañía Collipulli</p>
+            </div>
+        </div>
+
+        <!-- ACCESOS RÁPIDOS DEL BOMBERO -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openCalendarView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg group"><i class="ph ph-calendar-blank text-4xl text-cyan-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Calendario Compañía</h3></div>
             <div onclick="openGuardiasView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 transition-all shadow-lg group"><i class="ph ph-shield-check text-4xl text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Guardias Diurnas / Nocturnas</h3></div>
             <div onclick="openResumenMensualView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-emerald-500/50 transition-all shadow-lg group"><i class="ph ph-clock text-4xl text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Mis Horas de Guardia</h3></div>
+        </div>
+
+        <!-- HISTORIAL PERSONAL DE ASISTENCIAS / EMERGENCIAS -->
+        <div class="glass-card rounded-2xl border border-slate-800 p-5 space-y-3">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2"><i class="ph ph-list-dashes text-cyan-400 text-base"></i> Mi Historial Reciente de Emergencias y Citaciones</h3>
+            <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800">
+                        <th class="px-4 py-2.5">Fecha</th>
+                        <th class="px-4 py-2.5">Emergencia / Motivo / Citación</th>
+                    </thead>
+                    <tbody id="bomberoHistorialTableBody" class="divide-y divide-slate-800">
+                        <tr><td colspan="2" class="px-4 py-4 text-center text-slate-500">Cargando historial...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -780,7 +845,7 @@
         let bodegaEpp = [], inventories = { "RH2": [], "B2": [], "BX2": [], "Bodega": [] }, cuartelInventarios = { "Inmuebles": [], "Aseo": [] };
         let calendarEvents = [], remorsionesLog = [];
         let nombreCapitánGuardado = "";
-        let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "", selectedVoluntarioParaLiberar = null;
+        let currentCarro = null, currentCuartelSeccion = null, calDate = new Date(), selectedDateStr = "", selectedVoluntarioForLiberar = null;
         let selectedFichaIdForPdf = null;
         let chartInstances = {};
         let soloVencidosBodega = false;
@@ -807,7 +872,12 @@
         db.ref('usersAccounts').on('value', snap => { usersAccounts = snap.val() || {}; });
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
-        db.ref('roster').on('value', snap => { roster = snap.val() || []; renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); actualizarGraficoAsistencia(); });
+        db.ref('roster').on('value', snap => { 
+            roster = snap.val() || []; 
+            renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); actualizarGraficoAsistencia(); 
+            const session = JSON.parse(localStorage.getItem('active_user_session'));
+            if(session && session.cargo === 'Bombero') renderPortalBomberoActivo(session);
+        });
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
@@ -1055,12 +1125,54 @@
                 document.getElementById('saludoAspirante').textContent = `Bienvenido, Aspirante ${user.nombre}`;
                 document.getElementById('aspiranteView').classList.remove('hidden');
             } else if (cargo === 'Bombero') {
-                document.getElementById('saludoVoluntario').textContent = `Bienvenido, Bombero ${user.nombre}`;
+                renderPortalBomberoActivo(user);
                 document.getElementById('voluntarioRasoView').classList.remove('hidden');
             } else document.getElementById('accessView').classList.remove('hidden');
 
             verificarAlertasAutomaticas();
             setTimeout(actualizarGraficoAsistencia, 250);
+        }
+
+        function renderPortalBomberoActivo(user) {
+            document.getElementById('saludoVoluntario').textContent = `Bienvenido, Bombero ${user.nombre}`;
+            let miembro = roster.find(m => m.name.toLowerCase().trim() === user.nombre.toLowerCase().trim());
+            
+            let horas = miembro ? (miembro.garitaHours || 0) : 0;
+            let asist3m = miembro ? (miembro.count3m || 0) : 0;
+
+            document.getElementById('lblBomberoHoras').textContent = `${horas} hrs`;
+            document.getElementById('lblBomberoAsist3m').textContent = asist3m;
+            
+            let metaText = horas >= 16 ? "¡Meta mensual cumplida!" : `Faltan ${Math.max(0, 16 - horas)} hrs para la meta`;
+            document.getElementById('lblBomberoMetaHoras').textContent = metaText;
+
+            const tbody = document.getElementById('bomberoHistorialTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if(!miembro || !miembro.historialMotivos || miembro.historialMotivos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" class="px-4 py-4 text-center text-slate-500">Sin registros recientes de emergencias o citaciones.</td></tr>`;
+            } else {
+                miembro.historialMotivos.slice(0, 5).forEach(mot => {
+                    tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-4 py-2.5 font-mono text-slate-400 whitespace-nowrap">${mot.fecha}</td><td class="px-4 py-2.5 font-medium text-slate-200">${mot.detalle}</td></tr>`;
+                });
+            }
+        }
+
+        function openModalSolicitudPermiso() {
+            document.getElementById('solicitudDetalle').value = '';
+            document.getElementById('modalSolicitudPermiso').classList.remove('hidden');
+        }
+        function closeModalSolicitudPermiso() { document.getElementById('modalSolicitudPermiso').classList.add('hidden'); }
+        function saveSolicitudPermiso(e) {
+            e.preventDefault();
+            const tipo = document.getElementById('solicitudTipo').value;
+            const detalle = document.getElementById('solicitudDetalle').value.trim();
+            const user = JSON.parse(localStorage.getItem('active_user_session'));
+
+            crearRegistroNovedad("Ayudante", `Solicitud de [${tipo}] enviada por el Bombero ${user.nombre}: "${detalle}"`);
+            closeModalSolicitudPermiso();
+            alert("¡Solicitud enviada correctamente a la oficialidad!");
         }
 
         function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
@@ -1713,20 +1825,20 @@
             });
         }
         function prepararLiberacion(key) {
-            selectedVoluntarioParaLiberar = key; const item = blockedList[key]; if(!item) return;
+            selectedVoluntarioForLiberar = key; const item = blockedList[key]; if(!item) return;
             document.getElementById('voluntarioRestriccionNombre').value = item.name; document.getElementById('motivoRemorsion').value = '';
             closeBloqueadosModal(); document.getElementById('removerRestriccionModal').classList.remove('hidden');
         }
         function closeRemoverRestriccionModal() { document.getElementById('removerRestriccionModal').classList.add('hidden'); }
         function ejecutarRemorsionRestriccion(e) {
             e.preventDefault();
-            if(!selectedVoluntarioParaLiberar || !blockedList[selectedVoluntarioParaLiberar]) return;
-            const item = blockedList[selectedVoluntarioParaLiberar];
+            if(!selectedVoluntarioForLiberar || !blockedList[selectedVoluntarioForLiberar]) return;
+            const item = blockedList[selectedVoluntarioForLiberar];
             const user = JSON.parse(localStorage.getItem('active_user_session')) || {cargo: 'Oficial'};
             const motivo = document.getElementById('motivoRemorsion').value.trim();
             remorsionesLog.push({ id: Date.now(), fecha: new Date().toLocaleString('es-CL'), oficial: formatCargoStr(user.cargo), voluntario: item.name, motivo: motivo });
             db.ref('remorsiones').set(remorsionesLog);
-            delete blockedList[selectedVoluntarioParaLiberar]; db.ref('blockedList').set(blockedList);
+            delete blockedList[selectedVoluntarioForLiberar]; db.ref('blockedList').set(blockedList);
             closeRemoverRestriccionModal(); alert(`Restricción liberada con éxito.`);
         }
 
