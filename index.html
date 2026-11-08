@@ -380,6 +380,10 @@
                     <div><span class="block font-medium text-slate-400 text-[10px] uppercase">ASIST. 3 MESES</span><span id="detailMember3m" class="font-bold text-cyan-400 text-base"></span></div>
                     <div><span class="block font-medium text-slate-400 text-[10px] uppercase">ASIST. ANUAL</span><span id="detailMember1y" class="font-bold text-emerald-400 text-base"></span></div>
                 </div>
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-center">
+                   <span class="block font-medium text-slate-400 text-[10px] uppercase">Total AB Acumuladas</span>
+                   <span id="detailMemberAbCount" class="font-bold text-amber-400 text-base">0</span>
+                </div>
                 
                 <div id="medicoTacticaSection" class="hidden bg-rose-950/30 border border-rose-900/40 rounded-xl p-3.5 space-y-2.5">
                     <div class="flex justify-between items-center"><h5 class="font-bold text-rose-300 flex items-center gap-1.5"><i class="ph ph-first-aid text-sm text-rose-400"></i> Ficha Médica y de Emergencia Táctica</h5><button onclick="openEditMedicoTacticaModal()" class="text-[10px] bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1 rounded-lg font-bold shadow">Editar Ficha</button></div>
@@ -1987,6 +1991,7 @@ function descenderMiembro(id) {
             const m = roster.find(x => x.id === id); if (!m) return;
             selectedFichaIdForPdf = m.id;
             document.getElementById('detailMemberName').textContent = m.name; document.getElementById('detailMemberRole').textContent = m.role; document.getElementById('detailMember3m').textContent = m.count3m || 0; document.getElementById('detailMember1y').textContent = m.count1y || 0;
+            document.getElementById('detailMemberAbCount').textContent = m.totalAb || 0;
             
             const user = JSON.parse(localStorage.getItem('active_user_session'));
             const esOficialAlto = user && oficialesOperativosAltos.includes(user.cargo);
