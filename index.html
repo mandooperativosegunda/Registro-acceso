@@ -1874,35 +1874,27 @@ function ascenderMiembro(id) {
     let m = roster.find(x => x.id === id);
     if (!m) return;
     
-    let nuevaCat = prompt(`Ascender a ${m.name}.\nSeleccione la nueva categoría:\n1. Oficiales Operativos\n2. Oficiales Administrativos\n3. Bombero`, "Oficiales Operativos");
+    let nuevaCat = prompt(`Ascender o actualizar cargo de ${m.name}.\nSeleccione la categoría:\n1. Oficiales Operativos\n2. Oficiales Administrativos\n3. Bombero\n4. Aspirante`, m.category);
     if (!nuevaCat) return;
     
-    if (nuevaCat.toLowerCase().includes("op")) {
+    let catLower = nuevaCat.toLowerCase();
+    if (catLower.includes("op") || catLower.includes("1")) {
         m.category = "Oficiales Operativos";
-        m.role = prompt("Ingrese el nuevo cargo operativo (Ej. Teniente Primero, Capitán):", "Teniente") || m.role;
-    } else if (nuevaCat.toLowerCase().includes("adm")) {
+        m.role = prompt("Ingrese el cargo operativo (Ej. Capitán, Teniente Primero, Ayudante):", m.role) || m.role;
+    } else if (catLower.includes("adm") || catLower.includes("2")) {
         m.category = "Oficiales Administrativos";
-        m.role = prompt("Ingrese el nuevo cargo administrativo (Ej. Tesorero, Secretario):", "Secretario") || m.role;
+        m.role = prompt("Ingrese el cargo administrativo (Ej. Directora, Tesorero, Secretaria):", m.role) || m.role;
+    } else if (catLower.includes("asp") || catLower.includes("4")) {
+        m.category = "Aspirante";
+        m.role = "Aspirante";
     } else {
         m.category = "Bombero";
+        m.role = prompt("Ingrese el cargo o especialidad:", "Bombero") || "Bombero";
     }
 
     db.ref('roster').set(roster);
     renderRoster();
-    alert("¡Miembro ascendido y reacomodado con éxito!");
-}
-
-function descenderMiembro(id) {
-    let m = roster.find(x => x.id === id);
-    if (!m) return;
-    
-    if (confirm(`¿Desea cambiar a ${m.name} a categoría Aspirante o Bombero?`)) {
-        m.category = "Aspirante";
-        m.role = "Aspirante";
-        db.ref('roster').set(roster);
-        renderRoster();
-        alert("¡Categoría actualizada correctamente!");
-    }
+    alert("¡Cargo y categoría actualizados con éxito!");
 }
 
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
