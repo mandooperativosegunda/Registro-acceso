@@ -292,8 +292,41 @@
     <div id="bloqueadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800 shrink-0"><h3 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph ph-lock-keyhole text-base"></i> Bomberos Bloqueados (2 hrs)</h3><button onclick="closeBloqueadosModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><div class="p-5 overflow-y-auto custom-scrollbar space-y-3"><p class="text-slate-400 text-[11px]">Haz clic sobre el bombero que deseas liberar manualmente antes de cumplir su tiempo de espera:</p><div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-900 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-800"><th class="px-3 py-2.5">Bombero</th><th class="px-3 py-2.5 text-center">Restante</th><th class="px-3 py-2.5 text-right">Acción</th></tr></thead><tbody id="bloqueadosTableBody" class="divide-y divide-slate-800"><tr><td colspan="3" class="px-3 py-4 text-center text-slate-500">Sin bomberos bloqueados.</td></tr></tbody></table></div></div></div></div>
     <div id="removerRestriccionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-rose-400"><i class="ph ph-lock-open text-base"></i> Liberar Bombero</h3><button onclick="closeRemoverRestriccionModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="ejecutarRemorsionRestriccion(event)" class="p-5 space-y-3"><div><label class="block font-semibold mb-1.5 text-slate-300">Bombero</label><input type="text" id="voluntarioRestriccionNombre" disabled class="w-full px-3.5 py-2.5 border border-slate-800 rounded-xl bg-slate-950 text-slate-400 font-bold"></div><div><label class="block font-semibold mb-1.5 text-slate-300">Motivo Operativo</label><textarea id="motivoRemorsion" required rows="3" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"></textarea></div><button type="submit" class="w-full bg-rose-700 hover:bg-rose-600 text-white py-2.5 rounded-xl font-semibold transition-colors shadow">Confirmar Liberación</button></form></div></div>
     <div id="assignReasonModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-clipboard-text"></i> Asignar Motivo y Emergencia</h3><button onclick="closeAssignReasonModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form onsubmit="saveAssignedReason(event)" class="p-5 space-y-3"><input type="hidden" id="assignVisitorId"><div><label class="block font-semibold mb-1.5 text-slate-300">Bombero</label><input type="text" id="assignVisitorName" disabled class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 text-slate-400 rounded-xl font-bold"></div><div><label class="block font-semibold mb-1.5 text-slate-300">Motivo / Emergencia / Citación</label><input type="text" id="assignVisitorReasonInput" required placeholder="Ej. Incendio Estructural / Fuego en Chimenea" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></form></div></div>
-    <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 class="font-bold text-cyan-400">Agregar a la Lista</h3><button onclick="closeMemberModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="memberForm" onsubmit="saveMember(event)" class="p-5 space-y-3"><input type="hidden" id="memberId"><div><label class="block font-semibold mb-1 text-slate-300">Categoría</label><select id="memberCategory" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Bombero">Bombero</option><option value="Aspirante">Aspirante</option><option value="Honorario">Honorario</option></select></div><div><label class="block font-semibold mb-1 text-slate-300">Cargo</label><input type="text" id="memberRole" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Nombre</label><input type="text" id="memberName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Motivo / Emergencia Asociada</label><input type="text" id="memberReason" required placeholder="Ej. Academia General / Tercera Alarma" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></form></div></div>
-    
+    <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+    <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden">
+        <div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800">
+            <h3 class="font-bold text-cyan-400">Agregar a la Lista</h3>
+            <button onclick="closeMemberModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+        </div>
+        <form id="memberForm" onsubmit="saveMember(event)" class="p-5 space-y-3">
+            <input type="hidden" id="memberId">
+            <div>
+                <label class="block font-semibold mb-1 text-slate-300">Categoría</label>
+                <select id="memberCategory" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none">
+                    <option value="Oficiales Operativos">Oficiales Operativos</option>
+                    <option value="Oficiales Administrativos">Oficiales Administrativos</option>
+                    <option value="Bombero">Bombero</option>
+                    <option value="Aspirante">Aspirante</option>
+                    <option value="Honorario">Honorario</option>
+                </select>
+            </div>
+            <div>
+                <label class="block font-semibold mb-1 text-slate-300">Cargo</label>
+                <input type="text" id="memberRole" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none" placeholder="Ej. Capitán, Bombero...">
+            </div>
+            <div>
+                <label class="block font-semibold mb-1 text-slate-300">Nombre</label>
+                <input type="text" id="memberName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none">
+            </div>
+            <div>
+                <label class="block font-semibold mb-1 text-slate-300">Motivo / Emergencia Asociada</label>
+                <input type="text" id="memberReason" required placeholder="Ej. Academia General / Tercera Alarma" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none">
+            </div>
+            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-3 rounded-xl font-bold transition-colors shadow-lg">Guardar</button>
+        </form>
+    </div>
+</div>
+
     <!-- MODAL GESTIÓN CERTIFICADOS -->
     <div id="fichaCertificadosModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 text-xs border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
@@ -1786,10 +1819,92 @@ function descargarSolicitudPdf(id) {
 
         function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
         function renderRoster() {
-            const tbody = document.getElementById('rosterTableBody'); if (!tbody) return; tbody.innerHTML = '';
-            if (roster.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin miembros.</td></tr>`; return; }
-            roster.forEach(m => { tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 text-slate-300">${m.role}</td><td class="px-5 py-3.5 font-bold text-white">${m.name}</td><td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td><td class="px-5 py-3.5 text-center text-emerald-400 font-bold">${m.status || 'A'}</td><td class="px-5 py-3.5 text-right"><button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg">Eliminar</button></td></tr>`; });
-        }
+    const tbody = document.getElementById('rosterTableBody'); 
+    if (!tbody) return; 
+    tbody.innerHTML = '';
+    
+    if (roster.length === 0) { 
+        tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin miembros.</td></tr>`; 
+        return; 
+    }
+
+    // Orden jerárquico de categorías
+    const ordenCategorias = {
+        "Oficiales Operativos": 1,
+        "Oficiales Administrativos": 2,
+        "Bombero": 3,
+        "Aspirante": 4,
+        "Honorario": 5
+    };
+
+    // Ordenar roster automáticamente
+    roster.sort((a, b) => {
+        let catA = ordenCategorias[a.category] || 99;
+        let catB = ordenCategorias[b.category] || 99;
+        if (catA !== catB) return catA - catB;
+        return (a.role || "").localeCompare(b.role || "");
+    });
+
+    roster.forEach(m => {
+        let esOficial = m.category === "Oficiales Operativos" || m.category === "Oficiales Administrativos";
+        
+        // Botones de Ascender / Descender solo para Bomberos / Aspirantes (no oficiales)
+        let botonesReacomodar = esOficial ? 
+            `<span class="text-[10px] text-slate-500 italic">Oficial (Fijo)</span>` : 
+            `<button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender">▲ Ascender</button>
+             <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender">▼</button>`;
+
+        tbody.innerHTML += `
+            <tr class="hover:bg-slate-900">
+                <td class="px-5 py-3.5 text-slate-300">
+                    <span class="block font-bold text-white">${m.role}</span>
+                    <span class="text-[10px] text-cyan-400">${m.category}</span>
+                </td>
+                <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
+                <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
+                <td class="px-5 py-3.5 text-center text-emerald-400 font-bold">${m.status || 'A'}</td>
+                <td class="px-5 py-3.5 text-right flex items-center justify-end gap-1">
+                    ${botonesReacomodar}
+                    <button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg ml-2">Eliminar</button>
+                </td>
+            </tr>`;
+    });
+}
+function ascenderMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+    
+    let nuevaCat = prompt(`Ascender a ${m.name}.\nSeleccione la nueva categoría:\n1. Oficiales Operativos\n2. Oficiales Administrativos\n3. Bombero`, "Oficiales Operativos");
+    if (!nuevaCat) return;
+    
+    if (nuevaCat.toLowerCase().includes("op")) {
+        m.category = "Oficiales Operativos";
+        m.role = prompt("Ingrese el nuevo cargo operativo (Ej. Teniente Primero, Capitán):", "Teniente") || m.role;
+    } else if (nuevaCat.toLowerCase().includes("adm")) {
+        m.category = "Oficiales Administrativos";
+        m.role = prompt("Ingrese el nuevo cargo administrativo (Ej. Tesorero, Secretario):", "Secretario") || m.role;
+    } else {
+        m.category = "Bombero";
+    }
+
+    db.ref('roster').set(roster);
+    renderRoster();
+    alert("¡Miembro ascendido y reacomodado con éxito!");
+}
+
+function descenderMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+    
+    if (confirm(`¿Desea cambiar a ${m.name} a categoría Aspirante o Bombero?`)) {
+        m.category = "Aspirante";
+        m.role = "Aspirante";
+        db.ref('roster').set(roster);
+        renderRoster();
+        alert("¡Categoría actualizada correctamente!");
+    }
+}
+
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
         function saveMember(e) {
