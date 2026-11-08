@@ -1881,7 +1881,11 @@ function descargarSolicitudPdf(id) {
                 </td>
                 <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
                 <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
-                <td class="px-5 py-3.5 text-center text-emerald-400 font-bold">${m.status || 'A'}</td>
+                <td class="px-5 py-3.5 text-center">
+                    <button onclick="cambiarEstadoMiembro(${m.id})" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-2.5 py-1 rounded-lg font-bold border border-slate-700 transition-colors" title="Cambiar Estado">
+                        ${m.status || 'A'}
+                    </button>
+                 </td>
                 <td class="px-5 py-3.5 text-right flex items-center justify-end gap-1">
                     ${botonesReacomodar}
                     <button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg ml-2">Eliminar</button>
@@ -1939,6 +1943,26 @@ function descenderMiembro(id) {
     renderRoster();
     alert("¡Categoría actualizada correctamente!");
 }
+        function cambiarEstadoMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+
+    // Ciclo de estados o selector rápido
+    const estadosPermitidos = ["A", "AB", "F", "P"];
+    let estadoActualIndex = estadosPermitidos.indexOf(m.status || "A");
+    let nuevoEstado = estadosPermitidos[(estadoActualIndex + 1) % estadosPermitidos.length];
+
+    // Si cambia a AB, sumamos al acumulado histórico en su ficha
+    if (nuevoEstado === "AB") {
+        m.totalAb = (m.totalAb || 0) + 1;
+    }
+
+    m.status = nuevoEstado;
+
+    // Sincronizar con Firebase y redibujar
+    db.ref('roster').set(roster);
+    renderRoster();
+        }
 
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
