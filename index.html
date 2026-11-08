@@ -1828,37 +1828,56 @@ function descargarSolicitudPdf(id) {
         return; 
     }
 
-    // Orden jerárquico de categorías
+    // Jerarquía exacta solicitada
     const ordenCategorias = {
-        "Oficiales Operativos": 1,
-        "Oficiales Administrativos": 2,
+        "Oficiales Administrativos": 1,
+        "Oficiales Operativos": 2,
         "Bombero": 3,
         "Aspirante": 4,
         "Honorario": 5
     };
 
-    // Ordenar roster automáticamente
+    const ordenCargosOperativos = ["capitán", "teniente primero", "teniente segundo", "teniente tercero", "ayudante"];
+
     roster.sort((a, b) => {
         let catA = ordenCategorias[a.category] || 99;
         let catB = ordenCategorias[b.category] || 99;
         if (catA !== catB) return catA - catB;
+        
+        if (a.category === "Oficiales Operativos" && b.category === "Oficiales Operativos") {
+            let idxA = ordenCargosOperativos.findIndex(c => (a.role || "").toLowerCase().includes(c));
+            let idxB = ordenCargosOperativos.findIndex(c => (b.role || "").toLowerCase().includes(c));
+            if (idxA === -1) idxA = 99;
+            if (idxB === -1) idxB = 99;
+            if (idxA !== idxB) return idxA - idxB;
+        }
         return (a.role || "").localeCompare(b.role || "");
     });
 
+    let categoriaActual = "";
+
     roster.forEach(m => {
-        let esOficial = m.category === "Oficiales Operativos" || m.category === "Oficiales Administrativos";
-        
-        // Botones de Ascender / Descender solo para Bomberos / Aspirantes (no oficiales)
-        let botonesReacomodar = esOficial ? 
-            `<span class="text-[10px] text-slate-500 italic">Oficial (Fijo)</span>` : 
-            `<button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender">▲ Ascender</button>
-             <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender">▼</button>`;
+        // Separador visual por categoría (como en la referencia)
+        if (m.category !== categoriaActual) {
+            categoriaActual = m.category;
+            tbody.innerHTML += `
+                <tr class="bg-slate-950 border-y border-slate-800">
+                    <td colspan="5" class="px-5 py-2 font-bold text-cyan-400 uppercase tracking-wider text-[11px]">
+                        ${categoriaActual}
+                    </td>
+                </tr>`;
+        }
+
+        // Botones de Ascender / Descender para TODOS los miembros (incluyendo oficiales)
+        let botonesReacomodar = `
+            <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender / Cambiar Cargo">▲ Ascender</button>
+            <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender / Cambiar Categoría">▼</button>`;
 
         tbody.innerHTML += `
-            <tr class="hover:bg-slate-900">
+            <tr class="hover:bg-slate-900 border-b border-slate-800/50">
                 <td class="px-5 py-3.5 text-slate-300">
                     <span class="block font-bold text-white">${m.role}</span>
-                    <span class="text-[10px] text-cyan-400">${m.category}</span>
+                    <span class="text-[10px] text-slate-400">${m.category}</span>
                 </td>
                 <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
                 <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
@@ -1870,20 +1889,21 @@ function descargarSolicitudPdf(id) {
             </tr>`;
     });
 }
+
 function ascenderMiembro(id) {
     let m = roster.find(x => x.id === id);
     if (!m) return;
     
-    let nuevaCat = prompt(`Ascender o actualizar cargo de ${m.name}.\nSeleccione la categoría:\n1. Oficiales Operativos\n2. Oficiales Administrativos\n3. Bombero\n4. Aspirante`, m.category);
+    let nuevaCat = prompt(`Gestionar cargo/categoría para ${m.name}.\nSeleccione nueva categoría:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Bombero\n4. Aspirante`, m.category);
     if (!nuevaCat) return;
     
     let catLower = nuevaCat.toLowerCase();
-    if (catLower.includes("op") || catLower.includes("1")) {
-        m.category = "Oficiales Operativos";
-        m.role = prompt("Ingrese el cargo operativo (Ej. Capitán, Teniente Primero, Ayudante):", m.role) || m.role;
-    } else if (catLower.includes("adm") || catLower.includes("2")) {
+    if (catLower.includes("adm") || catLower.includes("1")) {
         m.category = "Oficiales Administrativos";
         m.role = prompt("Ingrese el cargo administrativo (Ej. Directora, Tesorero, Secretaria):", m.role) || m.role;
+    } else if (catLower.includes("op") || catLower.includes("2")) {
+        m.category = "Oficiales Operativos";
+        m.role = prompt("Ingrese el cargo operativo (Ej. Capitán, Teniente Primero, Ayudante):", m.role) || m.role;
     } else if (catLower.includes("asp") || catLower.includes("4")) {
         m.category = "Aspirante";
         m.role = "Aspirante";
@@ -1894,7 +1914,30 @@ function ascenderMiembro(id) {
 
     db.ref('roster').set(roster);
     renderRoster();
-    alert("¡Cargo y categoría actualizados con éxito!");
+    alert("¡Estructura de mando actualizada con éxito!");
+}
+
+function descenderMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+    
+    let nuevaCat = prompt(`Cambiar de categoría a ${m.name}:\n1. Oficiales Operativos\n2. Bombero\n3. Aspirante`, "Bombero");
+    if (!nuevaCat) return;
+
+    if (nuevaCat.includes("1") || nuevaCat.toLowerCase().includes("op")) {
+        m.category = "Oficiales Operativos";
+        m.role = "Teniente";
+    } else if (nuevaCat.includes("3") || nuevaCat.toLowerCase().includes("asp")) {
+        m.category = "Aspirante";
+        m.role = "Aspirante";
+    } else {
+        m.category = "Bombero";
+        m.role = "Bombero";
+    }
+
+    db.ref('roster').set(roster);
+    renderRoster();
+    alert("¡Categoría actualizada correctamente!");
 }
 
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
