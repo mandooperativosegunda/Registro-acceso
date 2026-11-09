@@ -792,6 +792,12 @@
     </div>
 
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Fichas de Historial</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">3 Meses</th><th class="px-5 py-3.5 text-center">Anual</th><th class="px-5 py-3.5 text-right">Modificar</th></thead><tbody id="fichasTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
+         <div class="flex justify-between items-center mb-4 px-2">
+              <h3 class="text-white font-bold text-lg">FICHAS DE HISTORIAL</h3>
+              <button onclick="abrirEditorGlobalFichas()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md">
+                    ✏️ Edición Global
+                 </button>
+             </div>
     
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5 text-center">Tiempo Transcurrido</th><th class="px-5 py-3.5 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
     
@@ -981,7 +987,25 @@
             </div>
         </div>
     </div>
+<!-- MODAL DE EDICIÓN GLOBAL DE FICHAS -->
+<div id="modalEditorGlobal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-4xl rounded-xl p-6 text-white max-h-[90vh] flex flex-col">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+            <h3 class="text-xl font-bold">⚙️ Editor Global de Fichas y Asistencias</h3>
+            <button onclick="cerrarEditorGlobalFichas()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+        </div>
+        
+        <div class="overflow-y-auto flex-1 pr-2 space-y-4" id="contenedorFormulariosGlobales">
+            <!-- Aquí se cargarán dinámicamente los inputs para cada bombero -->
+        </div>
 
+        <div class="flex justify-end gap-3 mt-6 border-t border-slate-800 pt-4">
+            <button onclick="cerrarEditorGlobalFichas()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-semibold">Cancelar</button>
+            <button onclick="guardarEditorGlobalFichas()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-semibold">Guardar Todos los Cambios</button>
+        </div>
+    </div>
+</div>
+    
 
     <!-- SCRIPT JAVASCRIPT PRINCIPAL -->
     <script>
@@ -2549,6 +2573,114 @@ function confirmarGuardadoConMotivo(motivoFinal) {
         window.location.reload();
     }
 }
+        function abrirEditorGlobalFichas() {
+    if (typeof roster === 'undefined' || !roster || roster.length === 0) {
+        alert("No hay registros en la lista.");
+        return;
+    }
+
+    // Asegurarnos de que sea array
+    if (!Array.isArray(roster)) {
+        roster = Object.values(roster);
+    }
+
+    const contenedor = document.getElementById('contenedorFormulariosGlobales');
+    contenedor.innerHTML = '';
+
+    roster.forEach((m, idx) => {
+        let card = document.createElement('div');
+        card.className = 'bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3';
+        card.innerHTML = `
+            <div class="font-bold text-blue-400 text-base border-b border-slate-700 pb-1">
+                ${idx + 1}. ${m.name || 'Sin Nombre'} <span class="text-xs text-slate-400 font-normal">(${m.cargo || m.role || 'Bombero'})</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
+                <div>
+                    <label class="block text-slate-400 mb-1">3 Meses</label>
+                    <input type="number" id="global_3m_${idx}" value="${m.count3m || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Anual</label>
+                    <input type="number" id="global_anual_${idx}" value="${m.countly || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Total AB</label>
+                    <input type="number" id="global_ab_${idx}" value="${m.totalAb || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Total P</label>
+                    <input type="number" id="global_p_${idx}" value="${m.totalP || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Total A</label>
+                    <input type="number" id="global_a_${idx}" value="${m.totalA || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Total F</label>
+                    <input type="number" id="global_f_${idx}" value="${m.totalF || 0}" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-center">
+                </div>
+            </div>
+            <div>
+                <label class="block text-slate-400 text-xs mb-1">Historial / Emergencias (última nota o resumen)</label>
+                <input type="text" id="global_historial_${idx}" placeholder="Agregar nota rápida al historial" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-xs">
+            </div>
+        `;
+        contenedor.appendChild(card);
+    });
+
+    document.getElementById('modalEditorGlobal').classList.remove('hidden');
+}
+
+function cerrarEditorGlobalFichas() {
+    document.getElementById('modalEditorGlobal').classList.add('hidden');
+}
+
+function guardarEditorGlobalFichas() {
+    if (!roster || roster.length === 0) return;
+
+    roster.forEach((m, idx) => {
+        let val3m = document.getElementById(`global_3m_${idx}`);
+        let valAnual = document.getElementById(`global_anual_${idx}`);
+        let valAb = document.getElementById(`global_ab_${idx}`);
+        let valP = document.getElementById(`global_p_${idx}`);
+        let valA = document.getElementById(`global_a_${idx}`);
+        let valF = document.getElementById(`global_f_${idx}`);
+        let valHist = document.getElementById(`global_historial_${idx}`);
+
+        if (val3m) m.count3m = parseInt(val3m.value) || 0;
+        if (valAnual) m.countly = parseInt(valAnual.value) || 0;
+        if (valAb) m.totalAb = parseInt(valAb.value) || 0;
+        if (valP) m.totalP = parseInt(valP.value) || 0;
+        if (valA) m.totalA = parseInt(valA.value) || 0;
+        if (valF) m.totalF = parseInt(valF.value) || 0;
+
+        if (valHist && valHist.value.trim() !== '') {
+            if (!m.historialMotivos) m.historialMotivos = [];
+            let fechaHoy = new Date().toLocaleDateString('es-CL');
+            let horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+            m.historialMotivos.unshift({
+                fecha: `${fechaHoy} ${horaActual}`,
+                detalle: `Edición Global: ${valHist.value.trim()}`
+            });
+        }
+    });
+
+    // Guardar en Firebase y recargar página para refrescar todo
+    if (typeof db !== 'undefined') {
+        db.ref('roster').set(roster, (error) => {
+            if (error) {
+                alert("Error al actualizar en Firebase: " + error.message);
+            } else {
+                alert("¡Fichas globales actualizadas con éxito!");
+                window.location.reload();
+            }
+        });
+    } else {
+        alert("¡Guardado local exitoso!");
+        window.location.reload();
+    }
+}
+            
 
     </script>
 </body>
