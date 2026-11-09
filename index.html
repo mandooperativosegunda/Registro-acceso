@@ -1027,10 +1027,19 @@
         db.ref('usersAccounts').on('value', snap => { usersAccounts = snap.val() || {}; });
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
-        db.ref('roster').on('value', snap => { 
-            roster = snap.val() || []; 
-            renderRoster(); renderFichas(); renderEppVoluntarios(); renderCertificadosView(); renderResumenMensual(); actualizarGraficoAsistencia(); 
-            const session = JSON.parse(localStorage.getItem('active_user_session'));
+        db.ref('roster').on('value', snap => {
+    const data = snap.val();
+    roster = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+    
+    renderRoster();
+    renderFichas(); 
+    renderEppVoluntarios(); 
+    renderCertificadosView(); 
+    renderResumenMensual();
+    const sesion = JSON.parse(localStorage.getItem('active_user_session'));
+    if (session && session.cargo === "Bombero") renderPortalBomberoActivo(session);
+});
+
             if(session && session.cargo === 'Bombero') renderPortalBomberoActivo(session);
         });
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
@@ -1998,22 +2007,30 @@ function descenderMiembro(id) {
     alert("¡Categoría actualizada correctamente!");
 }
 function cambiarEstadoMiembro(id) {
-    let m = roster.find(x => x.id === id);
-    if (!m) return;
+    let index = roster.findIndex(x => x.id === id);
+    if (index === -1) return;
+    let m = roster[index];
 
+    // Ciclo de estados permitidos: A -> AB -> F -> P
     const estadosPermitidos = ["A", "AB", "F", "P"];
-    let estadoActualIndex = estadosPermitidos.indexOf(m.status);
-    if (estadoActualIndex === -1) {
-        estadoActualIndex = 0; // Si no tiene estado asignado, parte en A
-    }
+    let estadoActualIndex = estadosPermitidos.indexOf(m.status || "A");
+    if (estadoActualIndex === -1) estadoActualIndex = 0;
+    
     let nuevoEstado = estadosPermitidos[(estadoActualIndex + 1) % estadosPermitidos.length];
 
+    // 1. Actualizamos localmente de inmediato para que la UI responda al instante
     m.status = nuevoEstado;
-
-    db.ref('roster').set(roster);
     renderRoster();
-}
 
+    // 2. Actualizamos de forma directa y atómica en Firebase sin tocar el resto de la lista
+    if (typeof db !== 'undefined') {
+        db.ref(`roster/${index}/status`).set(nuevoEstado, (error) => {
+            if (error) {
+                console.error("Error al sincronizar estado en Firebase:", error);
+            }
+        });
+    }
+}
 
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
