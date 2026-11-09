@@ -2486,8 +2486,18 @@ function confirmarGuardadoAsistenciaSemanal() {
 }
 
 function confirmarGuardadoConMotivo(motivoFinal) {
-    if (!window.roster && typeof roster !== 'undefined') window.roster = roster;
-    if (!window.roster || window.roster.length === 0) {
+    // Si no existe el roster, detenemos
+    if (typeof roster === 'undefined' || !roster) {
+        alert("No hay registros en la lista para guardar.");
+        return;
+    }
+
+    // Nos aseguramos estrictamente de que roster sea un array válido
+    if (!Array.isArray(roster)) {
+        roster = Object.values(roster);
+    }
+
+    if (roster.length === 0) {
         alert("No hay registros en la lista para guardar.");
         return;
     }
@@ -2495,8 +2505,8 @@ function confirmarGuardadoConMotivo(motivoFinal) {
     let fechaHoy = new Date().toLocaleDateString('es-CL');
     let horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
-    window.roster.forEach(m => {
-        let estadoActual = m.status || 'A'; 
+    roster.forEach(m => {
+        let estadoActual = m.status || 'A';
 
         if (!m.historialMotivos) m.historialMotivos = [];
 
@@ -2504,13 +2514,12 @@ function confirmarGuardadoConMotivo(motivoFinal) {
             fecha: `${fechaHoy} ${horaActual}`,
             detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
         };
-
         m.historialMotivos.unshift(nuevoRegistroAsistencia);
 
         // Contadores según el estado
         if (estadoActual === 'AB' || estadoActual === 'A') {
             m.count3m = (m.count3m || 0) + 1;
-            m.count1y = (m.count1y || 0) + 1;
+            m.countly = (m.countly || 0) + 1;
         }
         if (estadoActual === 'AB') {
             m.totalAb = (m.totalAb || 0) + 1;
@@ -2524,21 +2533,23 @@ function confirmarGuardadoConMotivo(motivoFinal) {
     });
 
     if (typeof db !== 'undefined') {
-    db.ref('roster').set(window.roster, (error) => {
-        if (error) {
-            alert("Error al sincronizar con Firebase: " + error.message);
-        } else {
-            alert("Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
-            if (typeof renderRoster === 'function') renderRoster();
-            
-            // Recargamos la página al instante tras guardar con éxito
-            window.location.reload();
-        }
-    });
-} else {
-    alert("Guardado local exitoso!");
-    window.location.reload();
+        db.ref('roster').set(roster, (error) => {
+            if (error) {
+                alert("Error al sincronizar con Firebase: " + error.message);
+            } else {
+                alert("Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
+                if (typeof renderRoster === 'function') renderRoster();
+                
+                // Recargamos la página al instante tras guardar con éxito
+                window.location.reload();
+            }
+        });
+    } else {
+        alert("Guardado local exitoso!");
+        window.location.reload();
+    }
 }
+
     </script>
 </body>
 </html>
