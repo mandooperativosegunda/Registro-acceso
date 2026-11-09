@@ -61,11 +61,16 @@
                             <button id="menuCalendarContainer" onclick="openCalendarView(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-calendar-blank text-fuchsia-400 text-sm"></i> Calendario Compañía</button>
                             <button id="menuRemorsionContainer" onclick="openRemorsionView(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-lock-open text-rose-400 text-sm"></i> Auditoría de Liberaciones</button>
                             <button id="menuPdfContainer" onclick="abrirModalFirmasPdf(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-file-pdf text-cyan-400 text-sm"></i> Generar Parte PDF</button>
-                            <button onclick="abrirEditorGlobalFichas()" class="w-full text-left px-4 py-2 text-xs text-white hover:bg-slate-800 flex items-center gap-2">
-                                     ✏️ Edición Global de Fichas
+    
+                       <!-- Botones exclusivos con sus IDs y ocultos por defecto -->
+                            <button id="btnEdicionGlobal" onclick="abrirEditorGlobalFichas(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 text-xs text-white hover:bg-slate-800 flex items-center gap-2">
+                                    ✏️ Edición Global de Fichas
                             </button>
-                            <button onclick="ejecutarCierreDeAnio()" class="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-slate-800 flex items-center gap-2">
-                                     🔄 Cierre de Año
+                            <button id="btnCierreAnio" onclick="ejecutarCierreDeAnio(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-slate-800 flex items-center gap-2">
+                                    🔄 Cierre de Año
+                            </button>                
+                        </div>
+
                            </button>                
                         </div>
                     </div>
@@ -1398,6 +1403,9 @@
                 document.getElementById('btnAddEvent').classList.remove('hidden');
                 if (cargo === 'Capitan' || cargo === 'Ayudante') {
                     document.getElementById('btnGestionSolicitudes').classList.remove('hidden');
+                    document.getElementById('btnEdicionGlobal').classList.remove('hidden');
+                    document.getElementById('btnCierreAnio').classList.remove('hidden');
+        
                 }
 
                 if(cargo === 'Capitan') {
