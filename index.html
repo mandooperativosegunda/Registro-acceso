@@ -2008,33 +2008,21 @@ function descenderMiembro(id) {
     alert("¡Categoría actualizada correctamente!");
 }
 function cambiarEstadoMiembro(id) {
-    let index = roster.findIndex(x => x.id === id);
-    if (index === -1) return;
-    let m = roster[index];
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
 
     // Ciclo de estados permitidos: A -> AB -> F -> P
     const estadosPermitidos = ["A", "AB", "F", "P"];
     let estadoActualIndex = estadosPermitidos.indexOf(m.status || "A");
     if (estadoActualIndex === -1) estadoActualIndex = 0;
     
-    let nuevoEstado = estadosPermitidos[(estadoActualIndex + 1) % estadosPermitidos.length];
+    // Cambia al siguiente estado localmente
+    m.status = estadosPermitidos[(estadoActualIndex + 1) % estadosPermitidos.length];
 
-    // Actualizamos en Firebase y al terminar recargamos la página automáticamente
-    if (typeof db !== 'undefined') {
-        db.ref(`roster/${index}/status`).set(nuevoEstado, (error) => {
-            if (error) {
-                console.error("Error al actualizar estado en Firebase:", error);
-            } else {
-                // Recarga la página al instante para asegurar que se refleje y guarde perfecto
-                window.location.reload();
-            }
-        });
-    } else {
-        window.location.reload();
-    }
+    // Redibuja la tabla al instante para que veas el cambio de color y letra
+    renderRoster();
 }
-
-
+        
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
         function saveMember(e) {
@@ -2536,18 +2524,21 @@ function confirmarGuardadoConMotivo(motivoFinal) {
     });
 
     if (typeof db !== 'undefined') {
-        db.ref('roster').set(window.roster, (error) => {
-            if (!error) {
-                alert("¡Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
-                if (typeof renderRoster === 'function') renderRoster();
-            } else {
-                alert("Error al sincronizar con Firebase: " + error.message);
-            }
-        });
-    } else {
-        alert("¡Guardado local exitoso!");
-    }
-}      
+    db.ref('roster').set(window.roster, (error) => {
+        if (error) {
+            alert("Error al sincronizar con Firebase: " + error.message);
+        } else {
+            alert("Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
+            if (typeof renderRoster === 'function') renderRoster();
+            
+            // Recargamos la página al instante tras guardar con éxito
+            window.location.reload();
+        }
+    });
+} else {
+    alert("Guardado local exitoso!");
+    window.location.reload();
+}
     </script>
 </body>
 </html>
