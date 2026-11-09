@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Great+Vibes&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #cbd5e1; }
@@ -464,17 +465,30 @@
     <div id="itemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 id="itemModalTitle" class="text-sm font-bold text-cyan-400">Agregar Material Menor</h3><button onclick="closeItemModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="itemForm" onsubmit="saveInventoryItem(event)" class="p-5 space-y-3.5"><input type="hidden" id="itemId"><div><label class="block font-semibold mb-1 text-slate-300">Nombre Equipo</label><input type="text" id="itemName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Marca/Modelo</label><input type="text" id="itemModel" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Categoría</label><input type="text" id="itemCategory" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div id="modalGavetaField" class="hidden"><label class="block font-semibold mb-1 text-slate-300">Gaveta</label><select id="itemGaveta" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Gaveta 1">Gaveta 1</option><option value="Gaveta 2">Gaveta 2</option><option value="Gaveta 3">Gaveta 3</option><option value="Gaveta 4">Gaveta 4</option><option value="Gaveta trasera">Gaveta trasera</option><option value="Techo">Techo</option></select></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">Cantidad</label><input type="number" id="itemQuantity" min="1" required value="1" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Estado</label><select id="itemStatus" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Operativo">Operativo</option><option value="Revisión">Revisión</option><option value="Dañado">Dañado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold shadow">Registrar</button></div></form></div></div>
     <div id="cuartelItemModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"><div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-xs border border-slate-800 overflow-hidden"><div class="px-5 py-4 flex justify-between bg-slate-950 text-white border-b border-slate-800"><h3 id="cuartelModalTitle" class="text-sm font-bold text-emerald-400">Agregar Artículo</h3><button onclick="closeCuartelItemModal()" class="text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button></div><form id="cuartelItemForm" onsubmit="saveCuartelItem(event)" class="p-5 space-y-3.5"><input type="hidden" id="cuartelItemId"><div><label class="block font-semibold mb-1 text-slate-300">Nombre</label><input type="text" id="cuartelItemName" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Ubicación</label><input type="text" id="cuartelItemUbicacion" required class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div class="grid grid-cols-2 gap-2.5"><div><label class="block font-semibold mb-1 text-slate-300">Stock</label><input type="number" id="cuartelItemQuantity" min="1" required value="1" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"></div><div><label class="block font-semibold mb-1 text-slate-300">Estado</label><select id="cuartelItemStatus" class="w-full px-3.5 py-2.5 border border-slate-700 bg-slate-950 text-white rounded-xl outline-none"><option value="Operativo / Bueno">Bueno</option><option value="Por reponer">Por reponer</option><option value="Agotado">Agotado</option></select></div></div><div class="pt-2"><button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl font-bold shadow">Guardar</button></div></form></div></div>
 
-    <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
+        <!-- VISTA PRINCIPAL ACCESO (PÚBLICO) -->
     <main id="accessView" class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 mt-2">
         <section class="lg:col-span-4 h-fit space-y-4">
             <div class="glass-card rounded-2xl shadow-xl border text-xs overflow-hidden">
                 <div class="px-5 py-4 border-b border-slate-800 bg-slate-950/60 font-bold flex items-center gap-2 text-cyan-400"><i class="ph ph-user-plus text-base"></i> Registro de Ingreso</div>
-                <div class="p-5">
+                <div class="p-5 space-y-4">
                     <form id="visitorForm" class="space-y-4">
                         <div><label class="block font-semibold mb-1.5 text-slate-300">Nombre Completo</label><input type="text" id="fullName" required placeholder="Ej. Bastian Cuevas" class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none focus:border-cyan-500" autocomplete="off"></div>
                         <div><label class="block font-semibold mb-1.5 text-slate-300">RUT / DNI</label><input type="text" id="documentId" required placeholder="Ej. 20.646.685-5" oninput="formatearRutInput(this)" class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none focus:border-cyan-500" autocomplete="off"></div>
                         <button type="submit" id="submitVisitorBtn" class="w-full flex justify-center items-center gap-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-cyan-900/30"><i class="ph ph-check-circle text-base"></i> Registrar Guardia</button>
                     </form>
+
+                    <!-- BOTÓN PARA ABRIR EL ESCÁNER QR -->
+                    <div class="pt-2 border-t border-slate-800">
+                        <button type="button" onclick="abrirEscanerQr()" class="w-full flex justify-center items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 font-semibold py-2.5 rounded-xl transition-all shadow">
+                            <i class="ph ph-qr-code text-base"></i> Escanear Código QR
+                        </button>
+                    </div>
+
+                    <!-- CONTENEDOR DE LA CÁMARA QR (OCULTO HASTA QUE LO APRIETES) -->
+                    <div id="qrReaderContainer" class="hidden space-y-2 pt-2">
+                        <div id="reader" class="w-full rounded-xl overflow-hidden border border-slate-700 bg-slate-950"></div>
+                        <button type="button" onclick="cerrarEscanerQr()" class="w-full bg-rose-950/40 text-rose-300 border border-rose-800/50 py-2 rounded-xl font-semibold hover:bg-rose-900/40">Cerrar Cámara</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -491,6 +505,7 @@
             </div>
         </section>
     </main>
+
 
     <!-- VISTA DE GUARDIAS DIURNAS Y NOCTURNAS -->
     <div id="guardiasView" class="hidden max-w-5xl mx-auto p-4 md:p-6 space-y-6 text-xs">
@@ -2200,43 +2215,95 @@ function cambiarEstadoMiembro(id) {
             if (member) { member.name = document.getElementById('fichaEditName').value; member.role = document.getElementById('fichaEditRole').value; member.count3m = parseInt(document.getElementById('fichaEdit3m').value); member.count1y = parseInt(document.getElementById('fichaEdit1y').value); db.ref('roster').set(roster); closeFichaEditModal(); }
         }
 
-                const visitorForm = document.getElementById('visitorForm');
+        let qrPendienteRegistro = false;
+
+        const visitorForm = document.getElementById('visitorForm');
         if(visitorForm) {
             visitorForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                
                 const name = document.getElementById('fullName').value.trim();
                 const rut = document.getElementById('documentId').value.trim();
-                const reason = "Guardia"; // <-- Motivo fijo automático
-                const key = rut.replace(/[^0-9kK]/g, '').toLowerCase();
 
-                if (blockedList[key]) {
-                    const diffMs = Date.now() - blockedList[key].timestamp;
-                    const limitMs = 2 * 60 * 60 * 1000;
-                    if (diffMs < limitMs) {
-                        alert(`El bombero ${name} está bloqueado por salida. Restan ${Math.floor((limitMs - diffMs)/60000)} minutos.`);
-                        return;
-                    } else {
-                        delete blockedList[key];
-                        db.ref('blockedList').set(blockedList);
-                    }
+                if (!name || !rut) {
+                    alert("Por favor, ingrese el Nombre y el RUT antes de escanear.");
+                    return;
                 }
-                
-                visitors.push({ id: Date.now(), fullName: name, documentId: rut, reason: reason, entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
-                db.ref('visitantes').set(visitors); 
-                
-                let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
-                let fechaHoy = new Date().toLocaleDateString('es-CL');
-                if (miembro) {
-                    if(!miembro.historialMotivos) miembro.historialMotivos = [];
-                    miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: reason });
-                } else {
-                    roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: name, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: fechaHoy, detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } });
-                }
-                db.ref('roster').set(roster);
 
-                visitorForm.reset(); 
-                alert("¡Ingreso a Guardia registrado correctamente!");
+                alert("Datos ingresados. Por favor, escanee el código QR para confirmar y registrar la guardia.");
+                abrirEscanerQrParaValidar();
             });
+        }
+
+                function abrirEscanerQrParaValidar() {
+            document.getElementById('qrReaderContainer').classList.remove('hidden');
+            
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                (decodedText, decodedResult) => {
+                    // AQUÍ DEFINES EL TEXTO EXACTO QUE DEBE CONTENER TU CÓDIGO QR OFICIAL:
+                    const qrValidoOficial = "GUARDIA_OFICIAL_SEGUNDA_COLLIPULLI"; 
+
+                    if (decodedText.trim() === qrValidoOficial) {
+                        // ¡El QR es correcto! Cerramos la cámara y registramos
+                        cerrarEscanerQr();
+                        ejecutarRegistroGuardiaFinal();
+                    } else {
+                        // Si escanean cualquier otro QR, se rechaza
+                        alert("❌ Código QR no válido. Debe escanear el código QR oficial autorizado del cuartel.");
+                        cerrarEscanerQr();
+                    }
+                },
+                (errorMessage) => {
+                    // Ignorar errores de lectura continua
+                }
+            ).catch((err) => {
+                alert("No se pudo acceder a la cámara del dispositivo. Verifique los permisos.");
+                cerrarEscanerQr();
+            });
+        }
+
+        function ejecutarRegistroGuardiaFinal() {
+            const name = document.getElementById('fullName').value.trim();
+            const rut = document.getElementById('documentId').value.trim();
+            const reason = "Guardia";
+            const key = rut.replace(/[^0-9kK]/g, '').toLowerCase();
+
+            if (blockedList[key]) {
+                const diffMs = Date.now() - blockedList[key].timestamp;
+                const limitMs = 2 * 60 * 60 * 1000;
+                if (diffMs < limitMs) {
+                    alert(`El bombero ${name} está bloqueado por salida. Restan ${Math.floor((limitMs - diffMs)/60000)} minutos.`);
+                    return;
+                } else {
+                    delete blockedList[key];
+                    db.ref('blockedList').set(blockedList);
+                }
+            }
+            
+            visitors.push({ id: Date.now(), fullName: name, documentId: rut, reason: reason, entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
+            db.ref('visitantes').set(visitors); 
+            
+            let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
+            let fechaHoy = new Date().toLocaleDateString('es-CL');
+            if (miembro) {
+                if(!miembro.historialMotivos) miembro.historialMotivos = [];
+                miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: reason });
+            } else {
+                roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: name, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: fechaHoy, detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } });
+            }
+            db.ref('roster').set(roster);
+
+            visitorForm.reset(); 
+            alert("¡Ingreso a Guardia registrado correctamente tras escanear el QR!");
         }
 
         function renderVisitors() {
@@ -2786,6 +2853,71 @@ function guardarEditorGlobalFichas() {
         window.location.reload();
     }
 }
+                let html5QrCode = null;
+
+        function abrirEscanerQr() {
+            document.getElementById('qrReaderContainer').classList.remove('hidden');
+            
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" }, // Usa la cámara trasera del celular
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                (decodedText, decodedResult) => {
+                    // CÓDIGO LEÍDO CON ÉXITO
+                    procesarQrLeido(decodedText);
+                    cerrarEscanerQr();
+                },
+                (errorMessage) => {
+                    // Errores de escaneo continuo (se pueden ignorar)
+                }
+            ).catch((err) => {
+                alert("No se pudo acceder a la cámara del dispositivo. Verifique los permisos.");
+                cerrarEscanerQr();
+            });
+        }
+
+        function cerrarEscanerQr() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('qrReaderContainer').classList.add('hidden');
+                }).catch(err => {
+                    document.getElementById('qrReaderContainer').classList.add('hidden');
+                });
+            } else {
+                document.getElementById('qrReaderContainer').classList.add('hidden');
+            }
+        }
+
+        function procesarQrLeido(textoQr) {
+            let partes = textoQr.split('|');
+            let nombre = partes[0] ? partes[0].trim() : "";
+            let rut = partes[1] ? partes[1].trim() : textoQr.trim();
+
+            if (!nombre && rut) {
+                let encontrado = roster.find(m => m.name.toLowerCase().includes(rut.toLowerCase()) || (m.rut && m.rut.replace(/[^0-9kK]/g, '') === rut.replace(/[^0-9kK]/g, '')));
+                if (encontrado) {
+                    nombre = encontrado.name;
+                    rut = encontrado.rut || rut;
+                } else {
+                    nombre = rut;
+                }
+            }
+
+            document.getElementById('fullName').value = nombre;
+            document.getElementById('documentId').value = rut;
+
+            const form = document.getElementById('visitorForm');
+            if (form) {
+                form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }
+        }
+        
 
     </script>
 </body>
