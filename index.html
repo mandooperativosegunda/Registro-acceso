@@ -2976,6 +2976,33 @@ function guardarEditorGlobalFichas() {
                     alert("❌ Error: " + mensajeError);
                 });
         };
+                // Configuración de Inactividad (10 minutos = 600,000 milisegundos)
+        let timeoutInactividad;
+        const TIEMPO_LIMITE = 10 * 60 * 1000; 
+
+        function reiniciarTemporizadorInactividad() {
+            clearTimeout(timeoutInactividad);
+            
+            // Solo activamos el contador si hay una sesión iniciada
+            if (firebase.auth().currentUser) {
+                timeoutInactividad = setTimeout(() => {
+                    firebase.auth().signOut().then(() => {
+                        alert("⚠️ La sesión se ha cerrado automáticamente por 10 minutos de inactividad.");
+                        location.reload(); // Recarga la página para volver al login
+                    }).catch((error) => {
+                        console.error("Error al cerrar sesión automáticamente:", error);
+                    });
+                }, TIEMPO_LIMITE);
+            }
+        }
+
+        // Eventos que detectan actividad del usuario en la app (pantalla táctil, clics, teclado)
+        window.onload = reiniciarTemporizadorInactividad;
+        document.onmousemove = reiniciarTemporizadorInactividad;
+        document.onkeypress = reiniciarTemporizadorInactividad;
+        document.onclick = reiniciarTemporizadorInactividad;
+        document.ontouchstart = reiniciarTemporizadorInactividad; // Ideal para celulares y tablets
+        
         
 
     </script>
