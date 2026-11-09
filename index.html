@@ -140,32 +140,38 @@
             <h3 class="font-bold text-sm text-cyan-400">Registrar Movimiento Financiero</h3>
             <button onclick="cerrarModalTransaccion()" class="text-slate-400 hover:text-white text-base"><i class="ph ph-x"></i></button>
         </div>
-        <form id="formTransaccion" onsubmit="guardarTransaccion(event)" class="space-y-3">
-            <div>
-                <label class="block text-slate-300 mb-1 font-semibold">Tipo de Movimiento</label>
-                <select id="tipoMovimiento" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-                    <option value="ingreso">Ingreso (Cuota / Aporte)</option>
-                    <option value="egreso">Gasto / Egreso</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-slate-300 mb-1 font-semibold">Voluntario Asociado (Opcional)</label>
-                <select id="selectVoluntarioTesoreria" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-                    <option value="">-- General / Sin voluntario específico --</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-slate-300 mb-1 font-semibold">Descripción / Motivo</label>
-                <input type="text" id="descTransaccion" required placeholder="Ej: Cuota social mes de Noviembre" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-            </div>
-            <div>
-                <label class="block text-slate-300 mb-1 font-semibold">Monto (CLP)</label>
-                <input type="number" id="montoTransaccion" required placeholder="Ej: 5000" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-            </div>
-            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
-                <button type="button" onclick="cerrarModalTransaccion()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">Cancelar</button>
-                <button type="button" onclick="guardarTransaccion(event)" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold">Guardar Transacción</button>
-        </form>
+        <!-- Formulario de Transacción / Tesorería -->
+<form id="formTransaccion" onsubmit="guardarTransaccion(event)">
+    <div class="mb-3">
+        <label class="block text-slate-300 mb-1 font-semibold">Tipo de Movimiento</label>
+        <select id="tipoMovimiento" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+            <option value="ingreso">Ingreso (Cuota / Aporte)</option>
+            <option value="egreso">Gasto / Egreso</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label class="block text-slate-300 mb-1 font-semibold">Voluntario Asociado (Opcional)</label>
+        <select id="selectVoluntarioTesoreria" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+            <option value="">General / Sin voluntario específico</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="block text-slate-300 mb-1 font-semibold">Descripción / Motivo</label>
+        <input type="text" id="descTransaccion" required placeholder="Ej. Cuota social mes de Noviembre" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+    </div>
+
+    <div class="mb-3">
+        <label class="block text-slate-300 mb-1 font-semibold">Monto (CLP)</label>
+        <input type="number" id="montoTransaccion" required placeholder="Ej. 5000" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+    </div>
+
+    <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button type="button" onclick="cerrarModalTesoreria()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white">Cancelar</button>
+        <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white">Guardar</button>
+    </div>
+</form>
     </div>
 </div>
 
@@ -3101,255 +3107,134 @@ function guardarEditorGlobalFichas() {
         document.onkeypress = reiniciarTemporizadorInactividad;
         document.onclick = reiniciarTemporizadorInactividad;
         document.ontouchstart = reiniciarTemporizadorInactividad; // Ideal para celulares y tablets
-        
-                // Funciones del Modal de Tesorería
+
         function abrirModalTransaccion() {
-            document.getElementById('modalTransaccion').classList.remove('hidden');
-        }
+    const modal = document.getElementById('modalTransaccion');
+    if (modal) modal.classList.remove('hidden');
+    cargarVoluntariosEnTesoreria();
+}
 
-        function cerrarModalTransaccion() {
-            document.getElementById('modalTransaccion').classList.add('hidden');
-        }
+function cerrarModalTransaccion() {
+    const modal = document.getElementById('modalTransaccion');
+    if (modal) modal.classList.add('hidden');
+    const form = document.getElementById('formTransaccion');
+    if (form) form.reset();
+}
 
-        // Cargar nombres de la lista general de usuarios al selector del tesorero
-        function cargarVoluntariosEnTesoreria() {
-            const select = document.getElementById('selectVoluntarioTesoreria');
-            if (!select) return;
-            
-            select.innerHTML = '<option value="">-- Seleccionar Voluntario --</option>';
-            
-            firebase.database().ref('usuarios').once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    Object.values(data).forEach(voluntario => {
-                        const option = document.createElement('option');
-                        option.value = voluntario.nombre;
-                        option.textContent = `${voluntario.nombre} (${voluntario.perfil || 'Bombero'})`;
-                        select.appendChild(option);
-                    });
-                }
-            });
-        }
+function cargarVoluntariosEnTesoreria() {
+    const select = document.getElementById('selectVoluntarioTesoreria');
+    if (!select) return;
 
-        // Guardar Transacción en Firebase
-        function guardarTransaccion(e) {
-            e.preventDefault();
-            const tipo = document.getElementById('tipoMovimiento').value;
-            const voluntarioSeleccionado = document.getElementById('selectVoluntarioTesoreria').value;
-            let descripcion = document.getElementById('descMovimiento').value.trim();
-            const monto = parseFloat(document.getElementById('montoMovimiento').value);
-            const fecha = new Date().toLocaleDateString();
+    select.innerHTML = '<option value="">General / Sin voluntario específico</option>';
 
-            if (voluntarioSeleccionado) {
-                descripcion = `${descripcion} (${voluntarioSeleccionado})`;
-            }
+    if (typeof roster !== 'undefined' && Array.isArray(roster)) {
+        roster.forEach(n => {
+            const opt = document.createElement('option');
+            opt.value = n.name;
+            opt.textContent = n.name;
+            select.appendChild(opt);
+        });
+    }
+}
 
-            const nuevaTransaccion = { tipo, descripcion, monto, fecha };
+function guardarTransaccion(event) {
+    if (event) event.preventDefault();
 
-            firebase.database().ref('tesoreria').push(nuevaTransaccion)
-                .then(() => {
-                    alert("✅ Transacción registrada correctamente.");
-                    document.getElementById('formTransaccion').reset();
-                    cerrarModalTransaccion();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("❌ Error al guardar la transacción.");
-                });
-        }
+    const tipo = document.getElementById('tipoMovimiento').value;
+    const voluntario = document.getElementById('selectVoluntarioTesoreria').value;
+    const descripcion = document.getElementById('descTransaccion').value.trim();
+    const monto = parseFloat(document.getElementById('montoTransaccion').value);
 
-        // Cargar y Calcular Totales de Tesorería en Tiempo Real
-        function cargarDatosTesoreria() {
-            const dbRef = firebase.database().ref('tesoreria');
-            dbRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                const tabla = document.getElementById('tablaMovimientos');
-                if (!tabla) return;
-                
-                tabla.innerHTML = '';
+    if (!descripcion || isNaN(monto)) {
+        alert("Por favor ingrese la descripción y el monto.");
+        return;
+    }
 
-                let saldoTotal = 0;
-                let ingresosTotales = 0;
-                let egresosTotales = 0;
+    if (typeof db === 'undefined') {
+        alert("Error: Base de datos no inicializada.");
+        return;
+    }
 
-                if (data) {
-                    Object.values(data).forEach(t => {
-                        if (t.tipo === 'ingreso') {
-                            saldoTotal += t.monto;
-                            ingresosTotales += t.monto;
-                        } else {
-                            saldoTotal -= t.monto;
-                            egresosTotales += t.monto;
-                        }
+    const nuevaTransaccion = {
+        tipo: tipo,
+        voluntario: voluntario || 'General',
+        descripcion: descripcion,
+        monto: monto,
+        fecha: new Date().toLocaleDateString('es-CL')
+    };
 
-                        const fila = document.createElement('tr');
-                        fila.className = "border-b border-slate-800/40 hover:bg-slate-800/30";
-                        fila.innerHTML = `
-                            <td class="py-3 text-slate-400">${t.fecha}</td>
-                            <td class="py-3 font-medium text-white">${t.descripcion}</td>
-                            <td class="py-3 uppercase font-semibold ${t.tipo === 'ingreso' ? 'text-emerald-400' : 'text-rose-400'}">${t.tipo}</td>
-                            <td class="py-3 text-right font-bold ${t.tipo === 'ingreso' ? 'text-emerald-400' : 'text-rose-400'}">
-                                ${t.tipo === 'ingreso' ? '+' : '-'}$${t.monto.toLocaleString()} CLP
-                            </td>
-                        `;
-                        tabla.prepend(fila);
-                    });
-                }
+    db.ref('tesoreria').push(nuevaTransaccion)
+    .then(() => {
+        alert('Transacción registrada con éxito');
+        cerrarModalTesoreria();
+    })
+    .catch((error) => {
+        console.error("Error al guardar transacción: ", error);
+        alert('Hubo un error al registrar la transacción.');
+    });
+}
 
-                document.getElementById('saldoActual').innerText = `$${saldoTotal.toLocaleString()} CLP`;
-                document.getElementById('ingresosMes').innerText = `$${ingresosTotales.toLocaleString()} CLP`;
-                document.getElementById('egresosMes').innerText = `$${egresosTotales.toLocaleString()} CLP`;
-            });
-        }
+function cargarDatosTesoreria() {
+    if (typeof db === 'undefined') return;
 
-        // Validación de permisos por rol al iniciar sesión
-        function verificarPermisosRol(cargoUsuario) {
-            const moduloTesoreria = document.getElementById('tesoreriaModule');
-            
-            if (cargoUsuario === 'Tesorero' || cargoUsuario === 'Tesorera') {
-                if (moduloTesoreria) moduloTesoreria.classList.remove('hidden');
-                cargarVoluntariosEnTesoreria();
-                cargarDatosTesoreria();
-            } else {
-                if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
-            }
-        }        // --- MÓDULO DE TESORERÍA CORREGIDO (REALTIME DATABASE) ---
-        
-        function abrirModalTransaccion() {
-            const modal = document.getElementById('modalTransaccion');
-            if (modal) modal.classList.remove('hidden');
-            cargarVoluntariosEnTesoreria();
-        }
+    db.ref('tesoreria').on('value', (snapshot) => {
+        const data = snapshot.val();
+        let saldo = 0;
+        let ingresosMes = 0;
+        let egresosMes = 0;
 
-        function cerrarModalTransaccion() {
-            const modal = document.getElementById('modalTransaccion');
-            if (modal) modal.classList.add('hidden');
-            const form = document.getElementById('formTransaccion');
-            if (form) form.reset();
-        }
+        const tbody = document.getElementById('tablaMovimientos');
+        if (!tbody) return;
 
-        function cargarVoluntariosEnTesoreria() {
-            const select = document.getElementById('selectVoluntarioTesoreria');
-            if (!select) return;
-            
-            select.innerHTML = '<option value="">-- General / Sin voluntario específico --</option>';
-            
-            // Usamos la lista 'roster' global cargada en la aplicación
-            if (typeof roster !== 'undefined' && Array.isArray(roster)) {
-                roster.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.name;
-                    opt.textContent = m.name;
-                    select.appendChild(opt);
-                });
-            }
-        }
+        tbody.innerHTML = '';
 
-        function guardarTransaccion(event) {
-            if (event) event.preventDefault();
-            
-            const tipo = document.getElementById('tipoMovimiento').value;
-            const voluntario = document.getElementById('selectVoluntarioTesoreria').value;
-            const descripcion = document.getElementById('descTransaccion').value;
-            const monto = parseFloat(document.getElementById('montoTransaccion').value);
+        if (!data) {
+            tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
+        } else {
+            Object.values(data).forEach(t => {
+                const monto = Number(t.monto) || 0;
+                const esIngreso = t.tipo === 'ingreso';
 
-            if (!descripcion || isNaN(monto)) {
-                alert('Por favor ingrese la descripción y el monto.');
-                return;
-            }
-
-            if (typeof db === 'undefined') {
-                alert('Error: Base de datos no inicializada.');
-                return;
-            }
-
-            const nuevaTransaccion = {
-                tipo: tipo,
-                voluntario: voluntario || 'General',
-                descripcion: descripcion,
-                monto: monto,
-                fecha: new Date().toLocaleDateString('es-CL')
-            };
-
-            // Guardar en la rama 'tesoreria' de Realtime Database
-            db.ref('tesoreria').push(nuevaTransaccion)
-                .then(() => {
-                    alert('¡Transacción registrada con éxito!');
-                    cerrarModalTransaccion();
-                })
-                .catch((error) => {
-                    console.error("Error al guardar transacción: ", error);
-                    alert('Hubo un error al registrar la transacción.');
-                });
-        }
-
-        function cargarDatosTesoreria() {
-            if (typeof db === 'undefined') return;
-            
-            // Escuchar en tiempo real los movimientos de tesorería
-            db.ref('tesoreria').on('value', (snapshot) => {
-                const data = snapshot.val();
-                let saldo = 0;
-                let ingresosMes = 0;
-                let egresosMes = 0;
-                
-                const tbody = document.getElementById('tablaMovimientos');
-                if (!tbody) return;
-                
-                tbody.innerHTML = '';
-
-                if (!data) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
+                if (esIngreso) {
+                    saldo += monto;
+                    ingresosMes += monto;
                 } else {
-                    Object.values(data).forEach(t => {
-                        const monto = Number(t.monto) || 0;
-                        const esIngreso = t.tipo === 'ingreso';
-
-                        if (esIngreso) {
-                            saldo += monto;
-                            ingresosMes += monto;
-                        } else {
-                            saldo -= monto;
-                            egresosMes += monto;
-                        }
-
-                        const fila = document.createElement('tr');
-                        fila.className = 'border-b border-slate-800/60 hover:bg-slate-800/40';
-                        fila.innerHTML = `
-                            <td class="py-3 text-slate-400">${t.fecha || 'Reciente'}</td>
-                            <td class="py-3">
-                                <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
-                                <div class="text-[10px] text-slate-400">${t.voluntario && t.voluntario !== 'General' ? 'Voluntario: ' + t.voluntario : 'General'}</div>
-                            </td>
-                            <td class="py-3">
-                                <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/25 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/25 text-rose-400 border border-rose-500/30'}">
-                                    ${esIngreso ? 'Ingreso' : 'Egreso'}
-                                </span>
-                            </td>
-                            <td class="py-3 text-right font-bold ${esIngreso ? 'text-emerald-400' : 'text-rose-400'}">
-                                ${esIngreso ? '+' : '-'}$${monto.toLocaleString()} CLP
-                            </td>
-                        `;
-                        tbody.prepend(fila);
-                    });
+                    saldo -= monto;
+                    egresosMes += monto;
                 }
 
-                // Actualizar tarjetas de resumen
-                const elSaldo = document.getElementById('saldoActual');
-                const elIngresos = document.getElementById('ingresosMes');
-                const elEgresos = document.getElementById('egresosMes');
-
-                if (elSaldo) elSaldo.textContent = `$${saldo.toLocaleString()} CLP`;
-                if (elIngresos) elIngresos.textContent = `$${ingresosMes.toLocaleString()} CLP`;
-                if (elEgresos) elEgresos.textContent = `$${egresosMes.toLocaleString()} CLP`;
+                const fila = document.createElement('tr');
+                fila.className = 'border-b border-slate-850 hover:bg-slate-800/40';
+                fila.innerHTML = `
+                    <td class="py-3 text-slate-400">${t.fecha || 'Reciente'}</td>
+                    <td class="py-3">
+                        <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
+                        <div class="text-[10px] text-slate-400">${t.voluntario || 'General'}</div>
+                    </td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                            ${esIngreso ? 'Ingreso' : 'Egreso'}
+                        </span>
+                    </td>
+                    <td class="py-3 text-right font-bold ${esIngreso ? 'text-emerald-400' : 'text-rose-400'}">
+                        ${esIngreso ? '+' : '-'}$${monto.toLocaleString('es-CL')} CLP
+                    </td>
+                `;
+                tbody.prepend(fila);
             });
         }
 
-        // Validación de permisos por rol al iniciar sesión
-        function verificarPermisosRol(cargoUsuario) {
-            // Se mantiene integrado con activateSession
-        }
+        const elSaldo = document.getElementById('saldoActual');
+        const elIngresos = document.getElementById('ingresosMes');
+        const elEgresos = document.getElementById('egresosMes');
 
+        if (elSaldo) elSaldo.textContent = `$${saldo.toLocaleString('es-CL')} CLP`;
+        if (elIngresos) elIngresos.textContent = `$${ingresosMes.toLocaleString('es-CL')}`;
+        if (elEgresos) elEgresos.textContent = `$${egresosMes.toLocaleString('es-CL')}`;
+    });
+        }
+    
+                
     </script>
 </body>
 </html>
