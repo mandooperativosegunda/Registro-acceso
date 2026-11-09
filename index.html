@@ -1864,7 +1864,6 @@ function descargarSolicitudPdf(id) {
         return; 
     }
 
-    // Jerarquía exacta solicitada
     const ordenCategorias = {
         "Oficiales Administrativos": 1,
         "Oficiales Operativos": 2,
@@ -1893,7 +1892,6 @@ function descargarSolicitudPdf(id) {
     let categoriaActual = "";
 
     roster.forEach(m => {
-        // Separador visual por categoría (como en la referencia)
         if (m.category !== categoriaActual) {
             categoriaActual = m.category;
             tbody.innerHTML += `
@@ -1904,16 +1902,15 @@ function descargarSolicitudPdf(id) {
                 </tr>`;
         }
 
-let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30"; // A
-if (m.status === "AB") {
-    estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
-} else if (m.status === "P") {
-    estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
-} else if (m.status === "F") {
-    estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
-}
+        let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30"; // A
+        if (m.status === "AB") {
+            estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
+        } else if (m.status === "P") {
+            estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
+        } else if (m.status === "F") {
+            estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
+        }
 
-        // Botones de Ascender / Descender para TODOS los miembros (incluyendo oficiales)
         let botonesReacomodar = `
             <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender / Cambiar Cargo">▲ Ascender</button>
             <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender / Cambiar Categoría">▼</button>`;
@@ -1927,7 +1924,7 @@ if (m.status === "AB") {
                 <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
                 <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
                 <td class="px-5 py-3.5 text-center">
-                    <button onclick="cambiarEstadoMiembro(${m.id})" class="px-3 py-1 rounded-lg font-bold border transition-colors ${estadoClase}" title="Cambiar Estado">
+                    <button onclick="cambiarEstadoMiembro(${m.id})" class="px-3 py-1 rounded-lg font-bold border transition-colors ${estadoClass}" title="Cambiar Estado">
                         ${m.status || 'A'}
                     </button>
                  </td>
@@ -1938,6 +1935,7 @@ if (m.status === "AB") {
             </tr>`;
     });
 }
+
 
 function ascenderMiembro(id) {
     let m = roster.find(x => x.id === id);
