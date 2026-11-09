@@ -3214,13 +3214,16 @@ function guardarEditorGlobalFichas() {
                 if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
             }
         }
-        function abrirModalTransaccion() {
-    document.getElementById('modalTransaccion').classList.remove('hidden');
+        // --- MÓDULO DE TESORERÍA ---
+function abrirModalTransaccion() {
+    const modal = document.getElementById('modalTransaccion');
+    if (modal) modal.classList.remove('hidden');
     cargarVoluntariosEnTesoreria();
 }
 
 function cerrarModalTransaccion() {
-    document.getElementById('modalTransaccion').classList.add('hidden');
+    const modal = document.getElementById('modalTransaccion');
+    if (modal) modal.classList.add('hidden');
     const form = document.getElementById('formTransaccion');
     if (form) form.reset();
 }
@@ -3240,10 +3243,17 @@ function cargarVoluntariosEnTesoreria() {
 function guardarTransaccion(event) {
     if (event) event.preventDefault();
     
-    const tipo = document.getElementById('tipoMovimiento').value;
-    const voluntario = document.getElementById('selectVoluntarioTesoreria').value;
-    const descripcion = document.getElementById('descTransaccion').value;
-    const monto = parseFloat(document.getElementById('montoTransaccion').value);
+    const tipoEl = document.getElementById('tipoMovimiento');
+    const volEl = document.getElementById('selectVoluntarioTesoreria');
+    const descEl = document.getElementById('descTransaccion');
+    const montoEl = document.getElementById('montoTransaccion');
+
+    if (!tipoEl || !descEl || !montoEl) return;
+
+    const tipo = tipoEl.value;
+    const voluntario = volEl ? volEl.value : '';
+    const descripcion = descEl.value;
+    const monto = parseFloat(montoEl.value) || 0;
 
     if (typeof db === 'undefined') {
         alert('Error: Base de datos no inicializada.');
@@ -3268,19 +3278,16 @@ function guardarTransaccion(event) {
     });
 }
 
-        function cargarDatosTesoreria() {
+function cargarDatosTesoreria() {
     try {
         if (typeof db === 'undefined') return;
         
         db.collection('transacciones').orderBy('fecha', 'desc').get().then((querySnapshot) => {
-            let saldo = 0;
-            let ingresosMes = 0;
-            let egresosMes = 0;
-            
+            let saldo = 0, ingresosMes = 0, egresosMes = 0;
             const tbody = document.getElementById('tablaMovimientos');
+            
             if (tbody) {
                 tbody.innerHTML = '';
-
                 if (querySnapshot.empty) {
                     tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
                 } else {
@@ -3289,13 +3296,8 @@ function guardarTransaccion(event) {
                         const monto = Number(t.monto) || 0;
                         const esIngreso = t.tipo === 'ingreso';
 
-                        if (esIngreso) {
-                            saldo += monto;
-                            ingresosMes += monto;
-                        } else {
-                            saldo -= monto;
-                            egresosMes += monto;
-                        }
+                        if (esIngreso) { saldo += monto; ingresosMes += monto; }
+                        else { saldo -= monto; egresosMes += monto; }
 
                         let fechaStr = 'Reciente';
                         if (t.fecha && t.fecha.toDate) {
@@ -3324,7 +3326,6 @@ function guardarTransaccion(event) {
                 }
             }
 
-            // Actualizar tarjetas de resumen de forma segura
             const elSaldo = document.getElementById('saldoActual');
             const elIngresos = document.getElementById('ingresosMes');
             const elEgresos = document.getElementById('egresosMes');
@@ -3337,9 +3338,10 @@ function guardarTransaccion(event) {
             console.error("Error al cargar datos de tesorería:", error);
         });
     } catch (e) {
-        console.error("Excepción controlada en tesorería:", e);
+        console.error("Excepción controlada:", e);
     }
 }
+
 
     </script>
 </body>
