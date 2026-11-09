@@ -169,6 +169,12 @@
                     <label class="block font-semibold mb-1.5 text-slate-300">Contraseña</label>
                     <input type="password" id="loginPassword" required class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none">
                 </div>
+                <!-- BOTÓN DE RECUPERACIÓN DE CONTRASEÑA -->
+            <div class="flex justify-end pt-1">
+                <button type="button" onclick="mostrarModalRecuperacion()" class="text-xs text-cyan-400 hover:underline">
+                    ¿Olvidaste tu contraseña?
+                </button>
+            </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white py-2.5 rounded-xl font-bold shadow-lg shadow-rose-900/30 transition-all">Acceder</button>
                 <div class="text-center pt-3 border-t border-slate-800 mt-3">
                     <span class="text-slate-400">¿Eres nuevo Aspirante o Bombero?</span>
@@ -2948,6 +2954,28 @@ function guardarEditorGlobalFichas() {
                 form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
             }
         }
+        
+                window.mostrarModalRecuperacion = function() {
+            const emailRecuperacion = prompt("🔐 RECUPERAR CONTRASEÑA\n\nIngresa tu correo electrónico registrado para enviarte las instrucciones de restablecimiento:");
+            
+            if (!emailRecuperacion) return;
+
+            // Usamos la función nativa de Firebase Authentication para enviar el correo de reseteo
+            firebase.auth().sendPasswordResetEmail(emailRecuperacion.trim())
+                .then(() => {
+                    alert("✅ ¡Correo enviado con éxito!\n\nRevisa tu bandeja de entrada (o carpeta de spam) para restablecer tu contraseña.");
+                })
+                .catch((error) => {
+                    console.error(error);
+                    let mensajeError = "No se pudo enviar el correo.";
+                    if (error.code === 'auth/user-not-found') {
+                        mensajeError = "No existe ninguna cuenta registrada con este correo.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        mensajeError = "El formato del correo electrónico no es válido.";
+                    }
+                    alert("❌ Error: " + mensajeError);
+                });
+        };
         
 
     </script>
