@@ -42,7 +42,6 @@
                 <button id="loginBtnContainer" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 px-3.5 py-1.5 rounded-lg font-medium text-xs transition-all shadow-md text-white"><i class="ph ph-user-circle text-sm"></i><span class="hidden sm:inline">Entrar / Registro</span></button>
                 <button id="profileBtnContainer" onclick="openProfileModal()" class="hidden flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 py-1.5 rounded-lg font-medium text-xs transition-colors"><i class="ph ph-user-gear text-sm text-cyan-400"></i><span class="hidden sm:inline">Perfil</span></button>
                 <button id="exportCsvBtn" onclick="exportarExcel()" class="flex items-center gap-1.5 bg-emerald-700/80 hover:bg-emerald-600 text-emerald-100 px-3 py-1.5 rounded-lg font-medium text-xs transition-colors border border-emerald-600/50"><i class="ph ph-download-simple text-sm"></i><span class="hidden sm:inline">CSV</span></button>
-                
                 <!-- BOTÓN MENÚ DE TRES PUNTOS -->
                 <div class="relative">
                     <button onclick="toggleMenuTresPuntos(event)" class="flex items-center justify-center bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-lg border border-slate-700 text-slate-300 hover:text-white transition-colors" title="Menú de Opciones">
@@ -56,6 +55,12 @@
                             <button id="menuCalendarContainer" onclick="openCalendarView(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-calendar-blank text-fuchsia-400 text-sm"></i> Calendario Compañía</button>
                             <button id="menuRemorsionContainer" onclick="openRemorsionView(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-lock-open text-rose-400 text-sm"></i> Auditoría de Liberaciones</button>
                             <button id="menuPdfContainer" onclick="abrirModalFirmasPdf(); cerrarMenuTresPuntos();" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 flex items-center gap-2 font-medium"><i class="ph ph-file-pdf text-cyan-400 text-sm"></i> Generar Parte PDF</button>
+                            <button onclick="abrirEditorGlobalFichas()" class="w-full text-left px-4 py-2 text-xs text-white hover:bg-slate-800 flex items-center gap-2">
+                                     ✏️ Edición Global de Fichas
+                            </button>
+                            <button onclick="ejecutarCierreDeAnio()" class="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-slate-800 flex items-center gap-2">
+                                     🔄 Cierre de Año
+                           </button>                
                         </div>
                     </div>
                 </div>
@@ -791,24 +796,10 @@
         </div>
     </div>
 
-    <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Fichas de Historial</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">3 Meses</th><th class="px-5 py-3.5 text-center">Anual</th><th class="px-5 py-3.5 text-right">Modificar</th></thead><tbody id="fichasTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
-         <div class="flex justify-between items-center mb-4 px-2">
-              <h3 class="text-white font-bold text-lg">FICHAS DE HISTORIAL</h3>
-              <button onclick="abrirEditorGlobalFichas()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md">
-                    ✏️ Edición Global
-                 </button>
-             </div>
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6 border-t border-slate-800 pt-4">
-            <button onclick="ejecutarCierreDeAnio()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md w-full sm:w-auto justify-center">
-                🔄 Cierre de Año
-            </button>
-            <div class="flex gap-3 w-full sm:w-auto justify-end">
-                <button onclick="cerrarEditorGlobalFichas()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-semibold">Cancelar</button>
-                <button onclick="guardarEditorGlobalFichas()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-semibold">Guardar Todos los Cambios</button>
-            </div>
-            </div>
-    
-    
+    <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+    <div class="flex justify-between items-center mb-4 px-2">
+        <h3 class="text-white font-bold text-lg">FICHAS DE HISTORIAL</h3>
+    </div>     
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5 text-center">Tiempo Transcurrido</th><th class="px-5 py-3.5 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
     
     <!-- BODEGA EPP CON BOTÓN DE FILTRAR VENCIDOS -->
