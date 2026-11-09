@@ -2302,14 +2302,16 @@ function cambiarEstadoMiembro(id) {
             }
             db.ref('roster').set(roster);
 
+            // GUARDAMOS EL RUT EN ESTE CELULAR COMO EL DUEÑO DE LA GUARDIA ACTIVA
+            localStorage.setItem('mi_guardia_activa_rut', rut);
+
             visitorForm.reset(); 
             alert("¡Ingreso a Guardia registrado correctamente tras escanear el QR!");
         }
 
-        function renderVisitors() {
+                function renderVisitors() {
             const tbody = document.getElementById('visitorsTableBody'); if (!tbody) return; tbody.innerHTML = '';
             
-            // FILTRO ESTRICTO: Solo personal activo en cuartel
             const activas = visitors.filter(v => v.status === 'active');
 
             if (activas.length === 0) { 
@@ -2318,11 +2320,21 @@ function cambiarEstadoMiembro(id) {
             }
             
             const sorted = [...activas].sort((a, b) => b.id - a.id);
+            const miRutLocal = (localStorage.getItem('mi_guardia_activa_rut') || '').replace(/[^0-9kK]/g, '').toLowerCase();
             
             sorted.forEach(v => {
                 let statusHtml = `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">En cuartel</span>`;
                 let reasonHtml = `<span class="text-cyan-300 font-semibold">Guardia</span>`;
-                let actionHtml = `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Marcar Salida</button>`;
+                
+                let rutV = v.documentId.replace(/[^0-9kK]/g, '').toLowerCase();
+                let actionHtml = '';
+
+                // SOLO SE MUESTRA EL BOTÓN DE SALIDA SI EL RUT COINCIDE CON EL DEL DISPOSITIVO
+                if (miRutLocal && rutV === miRutLocal) {
+                    actionHtml = `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg hover:bg-rose-900/50">Marcar Salida</button>`;
+                } else {
+                    actionHtml = `<span class="text-slate-500 text-[10px] italic">Su dispositivo</span>`;
+                }
                 
                 tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${v.fullName}</td><td class="px-5 py-3.5 font-mono text-slate-400">${v.documentId}</td><td class="px-5 py-3.5">${reasonHtml}</td><td class="px-5 py-3.5 text-slate-300">${v.entryTime}</td><td class="px-5 py-3.5 text-center">${statusHtml}</td><td class="px-5 py-3.5 text-right">${actionHtml}</td></tr>`;
             });
@@ -2344,22 +2356,24 @@ function cambiarEstadoMiembro(id) {
             closeAssignReasonModal();
         }
 
-        window.markDeparture = function(id) {
+window.markDeparture = function(id) {
             const index = visitors.findIndex(v => v.id === id);
-            if (index !== -1) {
-                const v = visitors[index];
-                v.status = 'departed'; v.exitTime = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }); 
-                db.ref('visitantes').set(visitors);
-                
-                const key = v.documentId.replace(/[^0-9kK]/g, '').toLowerCase();
-                blockedList[key] = { name: v.fullName, rut: v.documentId, timestamp: Date.now() };
-                db.ref('blockedList').set(blockedList);
+            if (index === -1) return;
+            const v = visitors[index];
+            v.status = 'departed'; v.exitTime = new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'});
+            db.ref('visitantes').set(visitors);
 
-                roster.forEach(m => { let visits = visitors.filter(v2 => v2.fullName.toLowerCase().trim() === m.name.toLowerCase().trim()); let pastABs = 0; visits.forEach(v3 => { if (v3.status === 'departed' && v3.abGranted) pastABs++; }); m.garitaHours = pastABs * 4; });
-                db.ref('roster').set(roster); 
-                alert("Salida registrada. El bombero ha quedado bloqueado por 2 horas."); 
-            }
-        }
+            const key = v.documentId.replace(/[^0-9kK]/g, '').toLowerCase();
+            blockedList[key] = { name: v.fullName, rut: v.documentId, timestamp: Date.now() };
+            db.ref('blockedList').set(blockedList);
+
+            // LIMPIA EL REGISTRO LOCAL PARA LIBERAR EL DISPOSITIVO
+            localStorage.removeItem('mi_guardia_activa_rut');
+
+            roster.forEach(m => { let visits = visitors.filter(v2 => v2.fullName.toLowerCase().trim() === m.name.toLowerCase().trim() && v2.status === 'active'); });
+            alert("Salida registrada. El bombero ha quedado bloqueado por 2 horas.");
+            renderVisitors();
+        };
 
         function verificarBloqueoSalida() {
             const now = Date.now(); const limitMs = 2 * 60 * 60 * 1000; let changed = false;
