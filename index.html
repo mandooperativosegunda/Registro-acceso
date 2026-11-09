@@ -2019,19 +2019,21 @@ function cambiarEstadoMiembro(id) {
     
     let nuevoEstado = estadosPermitidos[(estadoActualIndex + 1) % estadosPermitidos.length];
 
-    // 1. Actualizamos localmente de inmediato para que la UI responda al instante
-    m.status = nuevoEstado;
-    renderRoster();
-
-    // 2. Actualizamos de forma directa y atómica en Firebase sin tocar el resto de la lista
+    // Actualizamos en Firebase y al terminar recargamos la página automáticamente
     if (typeof db !== 'undefined') {
         db.ref(`roster/${index}/status`).set(nuevoEstado, (error) => {
             if (error) {
-                console.error("Error al sincronizar estado en Firebase:", error);
+                console.error("Error al actualizar estado en Firebase:", error);
+            } else {
+                // Recarga la página al instante para asegurar que se refleje y guarde perfecto
+                window.location.reload();
             }
         });
+    } else {
+        window.location.reload();
     }
 }
+
 
         function openMemberModal() { document.getElementById('memberForm').reset(); document.getElementById('memberModal').classList.remove('hidden'); }
         function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
