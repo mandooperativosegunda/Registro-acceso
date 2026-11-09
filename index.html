@@ -1031,17 +1031,18 @@
     const data = snap.val();
     roster = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
     
-    renderRoster();
-    renderFichas(); 
-    renderEppVoluntarios(); 
-    renderCertificadosView(); 
-    renderResumenMensual();
+    if (typeof renderRoster === 'function') renderRoster();
+    if (typeof renderFichas === 'function') renderFichas();
+    if (typeof renderEppVoluntarios === 'function') renderEppVoluntarios();
+    if (typeof renderCertificadosView === 'function') renderCertificadosView();
+    if (typeof renderResumenMensual === 'function') renderResumenMensual();
+    
     const sesion = JSON.parse(localStorage.getItem('active_user_session'));
-    if (session && session.cargo === "Bombero") renderPortalBomberoActivo(session);
+    if (sesion && sesion.cargo === "Bombero" && typeof renderPortalBomberoActivo === 'function') {
+        renderPortalBomberoActivo(sesion);
+    }
 });
 
-            if(session && session.cargo === 'Bombero') renderPortalBomberoActivo(session);
-        });
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
