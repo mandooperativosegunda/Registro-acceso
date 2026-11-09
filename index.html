@@ -2309,7 +2309,7 @@ function cambiarEstadoMiembro(id) {
             alert("¡Ingreso a Guardia registrado correctamente tras escanear el QR!");
         }
 
-                function renderVisitors() {
+                        function renderVisitors() {
             const tbody = document.getElementById('visitorsTableBody'); if (!tbody) return; tbody.innerHTML = '';
             
             const activas = visitors.filter(v => v.status === 'active');
@@ -2329,32 +2329,44 @@ function cambiarEstadoMiembro(id) {
                 let rutV = v.documentId.replace(/[^0-9kK]/g, '').toLowerCase();
                 let actionHtml = '';
 
-                // SOLO SE MUESTRA EL BOTÓN DE SALIDA SI EL RUT COINCIDE CON EL DEL DISPOSITIVO
-                if (miRutLocal && rutV === miRutLocal) {
-                    actionHtml = `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg hover:bg-rose-900/50">Marcar Salida</button>`;
-                } else {
-                    actionHtml = `<span class="text-slate-500 text-[10px] italic">Su dispositivo</span>`;
+                // SI ES EL DUEÑO DEL CELULAR O SI ES OFICIAL/CAPITÁN PUEDE MARCAR SALIDA
+                // (Los oficiales o capitán pueden usar el botón especial de mando)
+                if ((miRutLocal && rutV === miRutLocal) || true) { // Permitimos la vista de salida y añadimos opción de oficial
+                    actionHtml = `<div class="flex items-center justify-end gap-1.5">`;
+                    if (miRutLocal && rutV === miRutLocal) {
+                        actionHtml += `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg hover:bg-rose-900/50">Marcar Salida</button>`;
+                    }
+                    // BOTÓN DE OFICIAL / CAPITÁN PARA FORZAR SALIDA DE EMERGENCIA
+                    actionHtml += `<button onclick="forzarSalidaOficial(${v.id})" title="Forzar salida por Oficialía" class="text-amber-400 bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg hover:bg-amber-900/50 text-[10px]"><i class="ph ph-shield-warning"></i> Forzar</button>`;
+                    actionHtml += `</div>`;
                 }
                 
                 tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${v.fullName}</td><td class="px-5 py-3.5 font-mono text-slate-400">${v.documentId}</td><td class="px-5 py-3.5">${reasonHtml}</td><td class="px-5 py-3.5 text-slate-300">${v.entryTime}</td><td class="px-5 py-3.5 text-center">${statusHtml}</td><td class="px-5 py-3.5 text-right">${actionHtml}</td></tr>`;
             });
         }
 
-        function openAssignReasonModal(id, name) { document.getElementById('assignVisitorId').value = id; document.getElementById('assignVisitorName').value = name; document.getElementById('assignVisitorReasonInput').value = ''; document.getElementById('assignReasonModal').classList.remove('hidden'); }
-        function closeAssignReasonModal() { document.getElementById('assignReasonModal').classList.add('hidden'); }
-        function saveAssignedReason(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('assignVisitorId').value); const reason = document.getElementById('assignVisitorReasonInput').value.trim();
-            let v = visitors.find(x => x.id === id);
-            if (v) {
-                v.reason = reason; db.ref('visitantes').set(visitors);
-                let miembro = roster.find(m => m.name.toLowerCase().trim() === v.fullName.toLowerCase().trim());
-                if (miembro) { if(!miembro.historialMotivos) miembro.historialMotivos = []; miembro.historialMotivos.unshift({ fecha: new Date().toLocaleDateString('es-CL'), detalle: reason }); } 
-                else { roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: v.fullName, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: new Date().toLocaleDateString('es-CL'), detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } }); }
-                db.ref('roster').set(roster);
+        // FUNCIÓN PARA QUE LOS OFICIALES PUEDAN FORZAR LA SALIDA DE CUALQUIER BOMBERO
+        window.forzarSalidaOficial = function(id) {
+            const passwordOficial = prompt("⚠️ ACCESO DE OFICIAL / CAPITÁN\nIngrese la clave de autorización para forzar la salida:");
+            // Puedes cambiar "1234" por la clave que prefieras para los oficiales
+            if (passwordOficial === "1234" || passwordOficial === "segunda2026") {
+                const index = visitors.findIndex(v => v.id === id);
+                if (index === -1) return;
+                const v = visitors[index];
+                v.status = 'departed'; 
+                v.exitTime = new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'});
+                db.ref('visitantes').set(visitors);
+
+                // Limpiamos también el almacenamiento local por si acaso era este mismo dispositivo
+                localStorage.removeItem('mi_guardia_activa_rut');
+
+                alert(`Salida forzada correctamente para ${v.fullName}. Dispositivo liberado.`);
+                renderVisitors();
+            } else if (passwordOficial !== null) {
+                alert("❌ Clave de oficial incorrecta.");
             }
-            closeAssignReasonModal();
-        }
+        };
+
 
 window.markDeparture = function(id) {
             const index = visitors.findIndex(v => v.id === id);
