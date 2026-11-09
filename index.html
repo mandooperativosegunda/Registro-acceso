@@ -3269,73 +3269,77 @@ function guardarTransaccion(event) {
 }
 
         function cargarDatosTesoreria() {
-    // Si usas Firestore, asegúrate de apuntar a tu colección, por ejemplo 'transacciones'
-    if (typeof db === 'undefined') return;
-    
-    db.collection('transacciones').orderBy('fecha', 'desc').get().then((querySnapshot) => {
-        let saldo = 0;
-        let ingresosMes = 0;
-        let egresosMes = 0;
-        const tbody = document.getElementById('tablaMovimientos');
-        if (!tbody) return;
+    try {
+        if (typeof db === 'undefined') return;
         
-        tbody.innerHTML = '';
+        db.collection('transacciones').orderBy('fecha', 'desc').get().then((querySnapshot) => {
+            let saldo = 0;
+            let ingresosMes = 0;
+            let egresosMes = 0;
+            
+            const tbody = document.getElementById('tablaMovimientos');
+            if (tbody) {
+                tbody.innerHTML = '';
 
-        if (querySnapshot.empty) {
-            tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
-            document.getElementById('saldoActual').textContent = `$0 CLP`;
-            document.getElementById('ingresosMes').textContent = `$0 CLP`;
-            document.getElementById('egresosMes').textContent = `$0 CLP`;
-            return;
-        }
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        const t = doc.data();
+                        const monto = Number(t.monto) || 0;
+                        const esIngreso = t.tipo === 'ingreso';
 
-        querySnapshot.forEach((doc) => {
-            const t = doc.data();
-            const monto = Number(t.monto) || 0;
-            const esIngreso = t.tipo === 'ingreso';
+                        if (esIngreso) {
+                            saldo += monto;
+                            ingresosMes += monto;
+                        } else {
+                            saldo -= monto;
+                            egresosMes += monto;
+                        }
 
-            if (esIngreso) {
-                saldo += monto;
-                ingresosMes += monto;
-            } else {
-                saldo -= monto;
-                egresosMes += monto;
+                        let fechaStr = 'Reciente';
+                        if (t.fecha && t.fecha.toDate) {
+                            fechaStr = t.fecha.toDate().toLocaleDateString();
+                        }
+
+                        const fila = document.createElement('tr');
+                        fila.className = 'border-b border-slate-800/60 hover:bg-slate-800/40';
+                        fila.innerHTML = `
+                            <td class="py-3">${fechaStr}</td>
+                            <td class="py-3">
+                                <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
+                                <div class="text-[10px] text-slate-400">${t.voluntario ? 'Voluntario: ' + t.voluntario : 'General'}</div>
+                            </td>
+                            <td class="py-3">
+                                <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                                    ${esIngreso ? 'Ingreso' : 'Egreso'}
+                                </span>
+                            </td>
+                            <td class="py-3 text-right font-bold ${esIngreso ? 'text-emerald-400' : 'text-rose-400'}">
+                                ${esIngreso ? '+' : '-'}$${monto.toLocaleString()} CLP
+                            </td>
+                        `;
+                        tbody.appendChild(fila);
+                    });
+                }
             }
 
-            // Formatear fecha si viene de Firestore Timestamp
-            let fechaStr = 'Fecha recientte';
-            if (t.fecha && t.fecha.toDate) {
-                fechaStr = t.fecha.toDate().toLocaleDateString();
-            }
+            // Actualizar tarjetas de resumen de forma segura
+            const elSaldo = document.getElementById('saldoActual');
+            const elIngresos = document.getElementById('ingresosMes');
+            const elEgresos = document.getElementById('egresosMes');
 
-            const fila = document.createElement('tr');
-            fila.className = 'border-b border-slate-800/60 hover:bg-slate-800/40';
-            fila.innerHTML = `
-                <td class="py-3">${fechaStr}</td>
-                <td class="py-3">
-                    <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
-                    <div class="text-[10px] text-slate-400">${t.voluntario ? 'Voluntario: ' + t.voluntario : 'General'}</div>
-                </td>
-                <td class="py-3">
-                    <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-                        ${esIngreso ? 'Ingreso' : 'Egreso'}
-                    </span>
-                </td>
-                <td class="py-3 text-right font-bold ${esIngreso ? 'text-emerald-400' : 'text-rose-400'}">
-                    ${esIngreso ? '+' : '-'}$${monto.toLocaleString()} CLP
-                </td>
-            `;
-            tbody.appendChild(fila);
+            if (elSaldo) elSaldo.textContent = `$${saldo.toLocaleString()} CLP`;
+            if (elIngresos) elIngresos.textContent = `$${ingresosMes.toLocaleString()} CLP`;
+            if (elEgresos) elEgresos.textContent = `$${egresosMes.toLocaleString()} CLP`;
+
+        }).catch(error => {
+            console.error("Error al cargar datos de tesorería:", error);
         });
-
-        // Actualizar tarjetas de resumen
-        document.getElementById('saldoActual').textContent = `$${saldo.toLocaleString()} CLP`;
-        document.getElementById('ingresosMes').textContent = `$${ingresosMes.toLocaleString()} CLP`;
-        document.getElementById('egresosMes').textContent = `$${egresosMes.toLocaleString()} CLP`;
-    }).catch(error => {
-        console.error("Error al cargar datos de tesorería:", error);
-    });
-        }     
+    } catch (e) {
+        console.error("Excepción controlada en tesorería:", e);
+    }
+}
 
     </script>
 </body>
