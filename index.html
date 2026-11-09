@@ -746,8 +746,40 @@
 
     <div id="certificadosView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-violet-400 tracking-wider">Cursos y Certificados</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">N° Cursos</th><th class="px-5 py-3.5 text-right">Acción</th></thead><tbody id="certificadosTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
 
-    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="text-sm font-bold uppercase text-white">Lista Semanal de Asistencia</h2><button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl font-semibold shadow">Agregar Miembro</button></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5 text-center">Horas Guardia</th><th class="px-5 py-3.5 text-center">Estado</th><th class="px-5 py-3.5 text-right">Acciones</th></tr></thead><tbody id="rosterTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
-    
+        <!-- VISTA LISTA SEMANAL DE ASISTENCIA Y MOTIVOS -->
+    <div id="rosterView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs">
+        <div class="glass-card rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-3 border border-slate-800">
+            <button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors">
+                <i class="ph ph-arrow-left"></i> Atrás
+            </button>
+            <h2 class="text-sm font-bold uppercase text-white tracking-wider">LISTA SEMANAL DE ASISTENCIA</h2>
+            
+            <!-- Botones juntos a la derecha (Guardar con Motivo + Agregar Miembro) -->
+            <div class="flex items-center gap-2">
+                <button onclick="promptGuardarAsistenciaSemanal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors shadow-lg">
+                    <i class="ph ph-floppy-disk"></i> Guardar Asistencia
+                </button>
+                <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl font-semibold shadow">
+                    Agregar Miembro
+                </button>
+            </div>
+        </div>
+        <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="px-5 py-3.5">Cargo</th>
+                        <th class="px-5 py-3.5">Nombre</th>
+                        <th class="px-5 py-3.5 text-center">Horas Guardia</th>
+                        <th class="px-5 py-3.5 text-center">Estado</th>
+                        <th class="px-5 py-3.5 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterTableBody" class="divide-y divide-slate-800"></tbody>
+            </table>
+        </div>
+    </div>
+
     <div id="fichasView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Fichas de Historial</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Nombre</th><th class="px-5 py-3.5">Cargo</th><th class="px-5 py-3.5 text-center">3 Meses</th><th class="px-5 py-3.5 text-center">Anual</th><th class="px-5 py-3.5 text-right">Modificar</th></thead><tbody id="fichasTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
     
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5 text-center">Tiempo Transcurrido</th><th class="px-5 py-3.5 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
@@ -2404,6 +2436,74 @@ function descenderMiembro(id) {
             const opt = { margin: 10, filename: `Parte_Guardia_Segunda_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().from(element).set(opt).save().then(() => { element.classList.add('hidden'); });
         }
+        // --- LÓGICA DE GUARDADO DE ASISTENCIA SEMANAL CON MOTIVO ---
+function promptGuardarAsistenciaSemanal() {
+    let input = document.getElementById('inputMotivoAsistenciaGlobal');
+    if (input) input.value = "Asistencia Semanal / Guardia";
+    // Si aún no tienes creado el modal HTML en el archivo, creamos una alerta rápida de respaldo:
+    let motivoPrompt = prompt("Ingrese el motivo general para los cambios de asistencia realizados (ej. Ejercicio General, Guardia, etc.):", "Asistencia Semanal / Guardia");
+    if (motivoPrompt === null) return; // Si cancela
+    
+    confirmarGuardadoConMotivo(motivoPrompt.trim() !== "" ? motivoPrompt.trim() : "Asistencia General");
+}
+
+function cerrarModalMotivoAsistencia() {
+    let modal = document.getElementById('modalMotivoAsistencia');
+    if (modal) modal.classList.add('hidden');
+}
+
+function confirmarGuardadoAsistenciaSemanal() {
+    let input = document.getElementById('inputMotivoAsistenciaGlobal');
+    let motivoFinal = input && input.value.trim() !== "" ? input.value.trim() : "Asistencia General";
+    cerrarModalMotivoAsistencia();
+    confirmarGuardadoConMotivo(motivoFinal);
+}
+
+function confirmarGuardadoConMotivo(motivoFinal) {
+    if (!window.roster && typeof roster !== 'undefined') window.roster = roster;
+    if (!window.roster || window.roster.length === 0) {
+        alert("No hay registros en la lista para guardar.");
+        return;
+    }
+
+    let fechaHoy = new Date().toLocaleDateString('es-CL');
+    let horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+
+    window.roster.forEach(m => {
+        let estadoActual = m.status || 'A'; // Captura la A, AB, F asignada en la tabla
+
+        if (!m.historialMotivos) m.historialMotivos = [];
+
+        let nuevoRegistroAsistencia = {
+            fecha: `${fechaHoy} ${horaActual}`,
+            detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
+        };
+
+        // Lo inyectamos directamente en el historial de su ficha individual
+        m.historialMotivos.unshift(nuevoRegistroAsistencia);
+
+        // Si asistió (A o AB), sumamos en sus contadores trimestrales/anuales
+        if (estadoActual === 'AB' || estadoActual === 'A') {
+            m.count3m = (m.count3m || 0) + 1;
+            m.count1y = (m.count1y || 0) + 1;
+        }
+    });
+
+    // Sincronizamos con Firebase de forma global e individual
+    if (typeof db !== 'undefined') {
+        db.ref('roster').set(window.roster, (error) => {
+            if (!error) {
+                alert("¡Asistencia y motivos guardados con éxito! Los datos ya se reflejan en las fichas individuales.");
+                if (typeof renderRoster === 'function') renderRoster();
+            } else {
+                alert("Error al sincronizar con Firebase: " + error.message);
+            }
+        });
+    } else {
+        alert("¡Guardado local exitoso!");
+    }
+}
+        
     </script>
 </body>
 </html>
