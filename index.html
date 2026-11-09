@@ -164,8 +164,7 @@
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
                 <button type="button" onclick="cerrarModalTransaccion()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">Cancelar</button>
-                <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold">Guardar Transacción</button>
-            </div>
+                <button type="button" onclick="guardarTransaccion(event)" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold">Guardar Transacción</button>
         </form>
     </div>
 </div>
@@ -3239,7 +3238,8 @@ function cargarVoluntariosEnTesoreria() {
 }
 
 function guardarTransaccion(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
+    
     const tipo = document.getElementById('tipoMovimiento').value;
     const voluntario = document.getElementById('selectVoluntarioTesoreria').value;
     const descripcion = document.getElementById('descTransaccion').value;
@@ -3260,7 +3260,7 @@ function guardarTransaccion(event) {
     .then(() => {
         alert('¡Transacción registrada con éxito!');
         cerrarModalTransaccion();
-        cargarDatosTesoreria(); // Recarga la tabla y los saldos automáticamente
+        cargarDatosTesoreria();
     })
     .catch((error) => {
         console.error("Error al guardar transacción: ", error);
