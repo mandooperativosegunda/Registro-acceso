@@ -473,7 +473,7 @@
                     <form id="visitorForm" class="space-y-4">
                         <div><label class="block font-semibold mb-1.5 text-slate-300">Nombre Completo</label><input type="text" id="fullName" required placeholder="Ej. Bastian Cuevas" class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none focus:border-cyan-500" autocomplete="off"></div>
                         <div><label class="block font-semibold mb-1.5 text-slate-300">RUT / DNI</label><input type="text" id="documentId" required placeholder="Ej. 20.646.685-5" oninput="formatearRutInput(this)" class="w-full px-3.5 py-2.5 border border-slate-700 rounded-xl bg-slate-950 text-white outline-none focus:border-cyan-500" autocomplete="off"></div>
-                        <button type="submit" id="submitVisitorBtn" class="w-full flex justify-center items-center gap-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-cyan-900/30"><i class="ph ph-check-circle text-base"></i> Registrar Ingreso</button>
+                        <button type="submit" id="submitVisitorBtn" class="w-full flex justify-center items-center gap-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-cyan-900/30"><i class="ph ph-check-circle text-base"></i> Registrar Guardia</button>
                     </form>
                 </div>
             </div>
@@ -2200,12 +2200,13 @@ function cambiarEstadoMiembro(id) {
             if (member) { member.name = document.getElementById('fichaEditName').value; member.role = document.getElementById('fichaEditRole').value; member.count3m = parseInt(document.getElementById('fichaEdit3m').value); member.count1y = parseInt(document.getElementById('fichaEdit1y').value); db.ref('roster').set(roster); closeFichaEditModal(); }
         }
 
-        const visitorForm = document.getElementById('visitorForm');
+                const visitorForm = document.getElementById('visitorForm');
         if(visitorForm) {
             visitorForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('fullName').value.trim();
                 const rut = document.getElementById('documentId').value.trim();
+                const reason = "Guardia"; // <-- Motivo fijo automático
                 const key = rut.replace(/[^0-9kK]/g, '').toLowerCase();
 
                 if (blockedList[key]) {
@@ -2219,24 +2220,43 @@ function cambiarEstadoMiembro(id) {
                         db.ref('blockedList').set(blockedList);
                     }
                 }
-                visitors.push({ id: Date.now(), fullName: name, documentId: rut, reason: "", entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
-                db.ref('visitantes').set(visitors); visitorForm.reset(); alert("Ingreso registrado correctamente.");
+                
+                visitors.push({ id: Date.now(), fullName: name, documentId: rut, reason: reason, entryTime: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}), startTimestamp: Date.now(), status: 'active', abGranted: false });
+                db.ref('visitantes').set(visitors); 
+                
+                let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
+                let fechaHoy = new Date().toLocaleDateString('es-CL');
+                if (miembro) {
+                    if(!miembro.historialMotivos) miembro.historialMotivos = [];
+                    miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: reason });
+                } else {
+                    roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: name, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: fechaHoy, detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } });
+                }
+                db.ref('roster').set(roster);
+
+                visitorForm.reset(); 
+                alert("¡Ingreso a Guardia registrado correctamente!");
             });
         }
 
         function renderVisitors() {
             const tbody = document.getElementById('visitorsTableBody'); if (!tbody) return; tbody.innerHTML = '';
-            if (visitors.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-10 text-center text-slate-500">Sin bomberos de guardia.</td></tr>`; return; }
             
-            const user = JSON.parse(localStorage.getItem('active_user_session'));
-            const esOficialAsignador = user && (user.cargo === 'Capitan' || user.cargo === 'Ayudante' || user.cargo === 'Tenienteprimero');
-            const sorted = [...visitors].sort((a, b) => b.id - a.id);
+            // FILTRO ESTRICTO: Solo personal activo en cuartel
+            const activas = visitors.filter(v => v.status === 'active');
+
+            if (activas.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-10 text-center text-slate-500">Sin bomberos de guardia en este momento.</td></tr>`; 
+                return; 
+            }
+            
+            const sorted = [...activas].sort((a, b) => b.id - a.id);
             
             sorted.forEach(v => {
-                let statusHtml = v.status === 'active' ? `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">En cuartel</span>` : `<span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px]">Salió</span>`;
-                let reasonHtml = v.reason ? `<span class="text-slate-200 font-medium">${v.reason}</span>` : `<span class="text-amber-400 italic">Pendiente</span>`;
-                if (!v.reason && esOficialAsignador && v.status === 'active') reasonHtml = `<button onclick="openAssignReasonModal(${v.id}, '${v.fullName}')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded-lg font-bold text-[10px] shadow">Asignar Motivo</button>`;
-                let actionHtml = v.status === 'active' ? `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Marcar Salida</button>` : `<span class="text-slate-500 italic text-[10px]">Listo</span>`;
+                let statusHtml = `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">En cuartel</span>`;
+                let reasonHtml = `<span class="text-cyan-300 font-semibold">Guardia</span>`;
+                let actionHtml = `<button onclick="markDeparture(${v.id})" class="text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2.5 py-1 rounded-lg">Marcar Salida</button>`;
+                
                 tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-5 py-3.5 font-semibold text-white">${v.fullName}</td><td class="px-5 py-3.5 font-mono text-slate-400">${v.documentId}</td><td class="px-5 py-3.5">${reasonHtml}</td><td class="px-5 py-3.5 text-slate-300">${v.entryTime}</td><td class="px-5 py-3.5 text-center">${statusHtml}</td><td class="px-5 py-3.5 text-right">${actionHtml}</td></tr>`;
             });
         }
