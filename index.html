@@ -798,6 +798,16 @@
                     ✏️ Edición Global
                  </button>
              </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6 border-t border-slate-800 pt-4">
+            <button onclick="ejecutarCierreDeAnio()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md w-full sm:w-auto justify-center">
+                🔄 Cierre de Año
+            </button>
+            <div class="flex gap-3 w-full sm:w-auto justify-end">
+                <button onclick="cerrarEditorGlobalFichas()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-semibold">Cancelar</button>
+                <button onclick="guardarEditorGlobalFichas()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-semibold">Guardar Todos los Cambios</button>
+            </div>
+            </div>
+    
     
     <div id="liveHoursView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-4 text-xs"><div class="glass-card rounded-2xl shadow-xl p-4 flex justify-between items-center border border-slate-800"><button onclick="backToMainPanel()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition-colors"><i class="ph ph-arrow-left"></i> Atrás</button><h2 class="font-bold uppercase text-white">Control de Tiempo y Abonos</h2><div></div></div><div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800"><table class="w-full text-left"><thead class="bg-slate-950 border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400"><th class="px-5 py-3.5">Bombero</th><th class="px-5 py-3.5 text-center">Tiempo Transcurrido</th><th class="px-5 py-3.5 text-center">Progreso Abono (4 hrs)</th></thead><tbody id="liveHoursTableBody" class="divide-y divide-slate-800"></tbody></table></div></div>
     
@@ -2680,7 +2690,65 @@ function guardarEditorGlobalFichas() {
         window.location.reload();
     }
 }
-            
+        function ejecutarCierreDeAnio() {
+    if (!confirm("⚠️ ADVERTENCIA: Estás a punto de ejecutar el Cierre de Año. Esto descargará un respaldo automático en tu dispositivo, guardará el archivo histórico en la base de datos, pondrá todos los contadores en ceros y dejará el roster limpio para el nuevo periodo. ¿Estás seguro de continuar?")) {
+        return;
+    }
+
+    if (!roster || roster.length === 0) {
+        alert("No hay registros en el roster para cerrar.");
+        return;
+    }
+
+    // 1. Generar y descargar respaldo automático en JSON
+    try {
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
+        let downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `Respaldo_Historico_Bomberos_${new Date().getFullYear()}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    } catch (e) {
+        console.error("Error al generar respaldo local:", e);
+    }
+
+    let anioActual = new Date().getFullYear();
+
+    // 2. Guardar copia de seguridad histórica en Firebase
+    if (typeof db !== 'undefined') {
+        db.ref(`archivo_historico/${anioActual}`).set(roster);
+    }
+
+    // 3. Resetear contadores y limpiar historial activo para el nuevo año
+    roster.forEach(m => {
+        m.count3m = 0;
+        m.countly = 0;
+        m.totalAb = 0;
+        m.totalP = 0;
+        m.totalA = 0;
+        m.totalF = 0;
+        m.historialMotivos = [{
+            fecha: new Date().toLocaleDateString('es-CL') + ' ' + new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+            detalle: `Cierre e Inicio de Ciclo Anual ${anioActual + 1}`
+        }];
+    });
+
+    // 4. Guardar los cambios limpios en Firebase y recargar
+    if (typeof db !== 'undefined') {
+        db.ref('roster').set(roster, (error) => {
+            if (error) {
+                alert("Error al sincronizar el cierre con Firebase: " + error.message);
+            } else {
+                alert("¡Cierre de año ejecutado con éxito! Respaldo descargado y sistema listo para el nuevo periodo.");
+                window.location.reload();
+            }
+        });
+    } else {
+        alert("¡Cierre local exitoso!");
+        window.location.reload();
+    }
+}
 
     </script>
 </body>
