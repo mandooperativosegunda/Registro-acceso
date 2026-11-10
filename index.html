@@ -2401,14 +2401,20 @@ function descargarSolicitudPdf(id) {
 }
 
 
-function ascenderMiembro(id) {
-            let m = roster.find(x => x.id === id);
-            if (!m) return;
+
+        function ascenderMiembro(id) {
+            let m = roster.find(x => String(x.id) === String(id));
+            if (!m) {
+                alert("Error: No se encontró al miembro en la lista.");
+                return;
+            }
             let nuevoCargo = prompt(`Gestionar cargo/categoría para ${m.name}:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Aspirante\n4. Bombero`);
             if (!nuevoCargo) return;
+            
             let categoriaDestino = "Oficiales Operativos";
             let rolDestino = "Teniente Segundo";
             let catLower = nuevoCargo.toLowerCase();
+
             if (catLower.includes("1") || catLower.includes("admin")) {
                 categoriaDestino = "Oficiales Administrativos";
                 rolDestino = prompt("Ingrese el cargo administrativo:") || "Oficial";
@@ -2419,9 +2425,11 @@ function ascenderMiembro(id) {
                 categoriaDestino = "Aspirantes";
                 rolDestino = "Aspirante";
             } else {
-                categoriaDestino = "Bomberos";
+                categoriaDestino = "Bombero";
                 rolDestino = "Bombero";
             }
+
+            // Mantenemos intactos sus datos previos (historial, boletas, horas, etc.) y solo actualizamos el rol y categoría
             db.ref(`roster/${id}`).update({
                 cargo: rolDestino,
                 role: rolDestino,
@@ -2436,13 +2444,18 @@ function ascenderMiembro(id) {
         }
 
         function descenderMiembro(id) {
-            let m = roster.find(x => x.id === id);
-            if (!m) return;
+            let m = roster.find(x => String(x.id) === String(id));
+            if (!m) {
+                alert("Error: No se encontró al miembro en la lista.");
+                return;
+            }
             let nuevoCargo = prompt(`Cambiar categoría para ${m.name}:\n1. Oficiales Operativos\n2. Aspirante\n3. Bombero`);
             if (!nuevoCargo) return;
-            let categoriaDestino = "Bomberos";
+
+            let categoriaDestino = "Bombero";
             let rolDestino = "Bombero";
             let catLower = nuevoCargo.toLowerCase();
+
             if (catLower.includes("1") || catLower.includes("op") || catLower.includes("teniente")) {
                 categoriaDestino = "Oficiales Operativos";
                 rolDestino = prompt("Ingrese el grado:") || "Teniente";
@@ -2450,9 +2463,10 @@ function ascenderMiembro(id) {
                 categoriaDestino = "Aspirantes";
                 rolDestino = "Aspirante";
             } else {
-                categoriaDestino = "Bomberos";
+                categoriaDestino = "Bombero";
                 rolDestino = "Bombero";
             }
+
             db.ref(`roster/${id}`).update({
                 cargo: rolDestino,
                 role: rolDestino,
@@ -2466,19 +2480,25 @@ function ascenderMiembro(id) {
             });
         }
 
-           function guardarCambioDirecto(id, nombre) {
+        function guardarCambioDirecto(id, nombre) {
+            let m = roster.find(x => String(x.id) === String(id));
+            if (!m) return;
+
             let nuevoCargo = prompt(`Actualizar cargo para ${nombre}:\nEscribe el nuevo cargo (Ej: Bombero, Teniente 2°, Aspirante):`);
             if (!nuevoCargo) return;
-            let categoriaDestino = "Bomberos";
+
+            let categoriaDestino = "Bombero";
             let cargoFinal = nuevoCargo;
             let lower = nuevoCargo.toLowerCase();
+
             if (lower.includes("teniente") || lower.includes("oficial")) {
                 categoriaDestino = "Oficiales Operativos";
             } else if (lower.includes("aspirante")) {
                 categoriaDestino = "Aspirantes";
             } else {
-                categoriaDestino = "Bomberos";
+                categoriaDestino = "Bombero";
             }
+
             db.ref(`roster/${id}`).update({
                 cargo: cargoFinal,
                 role: cargoFinal,
@@ -2490,7 +2510,7 @@ function ascenderMiembro(id) {
                 console.error(err);
                 alert("Error al guardar en la base de datos.");
             });
-        } // <--- Esta es la única llave que cierra la función
+        }
 
         function cambiarEstadoMiembro(id) {
             let m = roster.find(x => x.id === id);
