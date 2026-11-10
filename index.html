@@ -1563,11 +1563,24 @@
            } else if (cargo === 'Bombero') {
                renderPortalBomberoActivo(user);
                document.getElementById('voluntarioRasoView').classList.remove('hidden');
-           } else if (cargo === 'Tesorero' || cargo === 'Tesorera') {
-               document.getElementById('tesoreroView').classList.remove('hidden');
-               cargarVoluntariosEnTesoreria();
-               cargarDatosTesoreria();
-           }
+               } else if (cargo === 'Tesorero' || cargo === 'Tesorera') {
+        const tesoreroView = document.getElementById('tesoreroView');
+        if (tesoreroView) tesoreroView.classList.remove('hidden');
+        
+        const moduloTesoreria = document.getElementById('moduloTesoreria');
+        if (moduloTesoreria) moduloTesoreria.classList.remove('hidden');
+
+        if (typeof cargarVoluntariosEnTesoreria === 'function') cargarVoluntariosEnTesoreria();
+        if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
+        if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
+    } else {
+        // Ocultar estrictamente el módulo de tesorería para cualquier otro perfil (Bomberos, Capitán, etc.)
+        const tesoreroView = document.getElementById('tesoreroView');
+        if (tesoreroView) tesoreroView.classList.add('hidden');
+        
+        const moduloTesoreria = document.getElementById('moduloTesoreria');
+        if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
+    }
         
             verificarPermisosRol(cargo);                                                                   
             verificarAlertasAutomaticas();
@@ -3487,9 +3500,56 @@ function alternarEstadoCuota(index, mes) {
     }
 }
 
-function guardarFilaCuotas(nombreVoluntario) {
-    alert(`Estado de cuotas guardado para ${nombreVoluntario}. Se ha actualizado su registro.`);
+function guardarFilaCuotas(nombreVoluntario, index) {
+    if (typeof db === 'undefined') {
+        alert("Error: Base de datos no inicializada.");
+        return;
+    }
+
+    // Recopilar los meses pagados (verdes) para este voluntario
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    let mesesPagados = [];
+    let mesesPendientes = [];
+
+    meses.forEach(mes => {
+        const btn = document.getElementById(`cuota_${index}_${mes}`);
+        if (btn && btn.classList.contains('bg-emerald-500')) {
+            mesesPagados.push(mes.toUpperCase());
+        } else {
+            mesesPendientes.push(mes.toUpperCase());
+        }
+    });
+
+    const fechaActual = new Date().toLocaleDateString('es-CL');
+    const mensajeBoleta = `COMPROBANTE DE CUOTAS - 2ª CÍA BOMBEROS\n` +
+                          `----------------------------------------\n` +
+                          `Voluntario: ${nombreVoluntario}\n` +
+                          `Meses Al Día: ${mesesPagados.length > 0 ? mesesPagados.join(', ') : 'Ninguno'}\n` +
+                          `Fecha de Registro: ${fechaActual}\n` +
+                          `----------------------------------------`;
+
+    // 1. Guardar estado de cuotas en Firebase
+    db.ref(`tesoreria_cuotas/${nombreVoluntario.replace(/\s+/g, '_')}`).set({
+        mesesPagados: mesesPagados,
+        actualizado: fechaActual
+    }).then(() => {
+        // 2. Enviar comprobante al buzón personal del bombero
+        return db.ref('buzon_mensajes').push({
+            destinatario: nombreVoluntario,
+            tipo: 'boleta_cuotas',
+            asunto: 'Actualización de Cuotas Sociales y Comprobante',
+            mensaje: mensajeBoleta,
+            fecha: fechaActual,
+            leido: false
+        });
+    }).then(() => {
+        alert(`¡Cuotas guardadas para ${nombreVoluntario} y boleta enviada a su buzón!`);
+    }).catch(err => {
+        console.error(err);
+        alert("Error al guardar en la base de datos.");
+    });
 }
+
         
     
                 
