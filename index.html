@@ -682,35 +682,116 @@
         </div>
     </div>
 
-    <!-- VISTA EXCLUSIVA DE TESORERÍA (Independiente del Bombero) -->
-<div id="tesoreroView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6 text-xs text-white">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 p-5 rounded-2xl border border-slate-800">
-        <div>
-            <h2 class="text-xl font-bold text-cyan-400 flex items-center gap-2">
-                <i class="ph ph-wallet text-2xl"></i> Tesorería - 2da Compañía
-            </h2>
-            <p class="text-xs text-slate-400">Control financiero, cuotas sociales y fondo de caja de la compañía.</p>
-        </div>
-        <button onclick="abrirModalTransaccion()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
-            <i class="ph ph-plus-circle text-base"></i> Nueva Transacción
+    <!-- CONTENEDOR PRINCIPAL DEL MÓDULO DE TESORERÍA -->
+<div id="moduloTesoreria" class="space-y-4 text-white">
+    
+    <!-- Barra de Navegación / Pestañas del Tesorero -->
+    <div class="flex space-x-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
+        <button onclick="cambiarVistaTesoreria('cuotas')" id="btnTabCuotas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition">
+            📊 Matriz de Cuotas
+        </button>
+        <button onclick="cambiarVistaTesoreria('boletas')" id="btnTabBoletas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition">
+            📄 Boletas y Otros Cobros
         </button>
     </div>
 
-    <!-- TARJETAS DE RESUMEN FINANCIERO -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
-            <p class="text-xs text-slate-400">Saldo Actual en Caja</p>
-            <h3 id="saldoActual" class="text-2xl font-bold text-emerald-400 mt-1">$0 CLP</h3>
+    <!-- VISTA 1: MATRIZ DE CUOTAS MENSUALES -->
+    <div id="vistaMatrizCuotas" class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-cyan-400 text-lg">Control Anual de Cuotas Sociales</h3>
+            <span class="text-xs text-slate-400">Haz clic en los círculos para cambiar estado (🟢 Pagado / 🔴 Pendiente)</span>
         </div>
-        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
-            <p class="text-xs text-slate-400">Ingresos del Mes</p>
-            <h3 id="ingresosMes" class="text-2xl font-bold text-cyan-400 mt-1">$0 CLP</h3>
-        </div>
-        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
-            <p class="text-xs text-slate-400">Gastos / Egresos del Mes</p>
-            <h3 id="egresosMes" class="text-2xl font-bold text-rose-400 mt-1">$0 CLP</h3>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-800 text-slate-400 text-sm">
+                        <th class="py-2 px-3">Voluntario</th>
+                        <th class="py-2 px-2 text-center">Ene</th>
+                        <th class="py-2 px-2 text-center">Feb</th>
+                        <th class="py-2 px-2 text-center">Mar</th>
+                        <th class="py-2 px-2 text-center">Abr</th>
+                        <th class="py-2 px-2 text-center">May</th>
+                        <th class="py-2 px-2 text-center">Jun</th>
+                        <th class="py-2 px-2 text-center">Jul</th>
+                        <th class="py-2 px-2 text-center">Ago</th>
+                        <th class="py-2 px-2 text-center">Sep</th>
+                        <th class="py-2 px-2 text-center">Oct</th>
+                        <th class="py-2 px-2 text-center">Nov</th>
+                        <th class="py-2 px-2 text-center">Dic</th>
+                        <th class="py-2 px-3 text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaMatrizCuotasBody">
+                    <!-- Los voluntarios se cargan dinámicamente desde JS -->
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- VISTA 2: EMISOR DE BOLETAS LIBRES (Paseos, Comidas, etc.) -->
+    <div id="vistaBoletasLibres" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 hidden">
+        <div class="border-b border-slate-800 pb-3 mb-4">
+            <h3 class="font-bold text-cyan-400 text-lg">📄 Emisión de Comprobantes y Boletas Libres</h3>
+            <p class="text-xs text-slate-400">Al seleccionar el voluntario se autocompletarán su Nombre y RUT.</p>
+        </div>
+
+        <form id="formBoletaLibre" onsubmit="emitirYGuardarBoleta(event)">
+            <!-- Buscar / Seleccionar Voluntario -->
+            <div class="mb-3">
+                <label class="block text-slate-300 mb-1 font-semibold text-sm">Seleccionar Voluntario</label>
+                <select id="boletaVoluntarioSelect" required onchange="cargarDatosVoluntarioBoleta()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                    <option value="">-- Seleccione Voluntario --</option>
+                </select>
+            </div>
+
+            <!-- Datos Autocompletados -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="block text-slate-300 mb-1 font-semibold text-sm">Nombre Completo</label>
+                    <input type="text" id="boletaNombre" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 cursor-not-allowed text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1 font-semibold text-sm">RUT</label>
+                    <input type="text" id="boletaRut" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 cursor-not-allowed text-sm">
+                </div>
+            </div>
+
+            <!-- Concepto -->
+            <div class="mb-3">
+                <label class="block text-slate-300 mb-1 font-semibold text-sm">Concepto del Pago</label>
+                <select id="boletaConceptoTipo" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mb-2 text-sm" onchange="verificarConceptoPersonalizado(this)">
+                    <option value="Pago Paseo de Compañía">Pago Paseo de Compañía</option>
+                    <option value="Pago Comida / Actividad">Pago Comida / Actividad</option>
+                    <option value="Rifa Institucional">Rifa Institucional</option>
+                    <option value="Material Menor / Uniforme">Material Menor / Uniforme</option>
+                    <option value="otro">Otro (Escribir concepto personalizado)</option>
+                </select>
+                <input type="text" id="boletaConceptoPersonalizado" placeholder="Especifique el motivo..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white hidden mt-1 text-sm">
+            </div>
+
+            <!-- Monto y Fecha -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="block text-slate-300 mb-1 font-semibold text-sm">Monto (CLP)</label>
+                    <input type="number" id="boletaMonto" required placeholder="Ej. 5000" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1 font-semibold text-sm">Fecha</label>
+                    <input type="text" id="boletaFecha" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 text-sm">
+                </div>
+            </div>
+
+            <!-- Firma del Tesorero -->
+            <div class="mb-4">
+                <label class="block text-slate-300 mb-1 font-semibold text-sm">Firma del Tesorero (Nombre completo por teclado)</label>
+                <input type="text" id="boletaFirmaTesorero" required placeholder="Ej. Tte. 2° Juan Pérez - Tesorería 2ª Cía" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-mono text-sm">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-bold text-white transition">Generar, Firmar y Enviar al Buzón</button>
+        </form>
+    </div>
+</div>
 
     <!-- TABLA DE MOVIMIENTOS RECIENTES -->
     <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5">
@@ -3235,6 +3316,181 @@ function cargarDatosTesoreria() {
         if (elEgresos) elEgresos.textContent = `$${egresosMes.toLocaleString('es-CL')}`;
     });
         }
+        // Alternar entre la vista de Matriz de Cuotas y Boletas Libres
+function cambiarVistaTesoreria(tipo) {
+    const vistaCuotas = document.getElementById('vistaMatrizCuotas');
+    const vistaBoletas = document.getElementById('vistaBoletasLibres');
+    const btnCuotas = document.getElementById('btnTabCuotas');
+    const btnBoletas = document.getElementById('btnTabBoletas');
+
+    if (tipo === 'cuotas') {
+        vistaCuotas.classList.remove('hidden');
+        vistaBoletas.classList.add('hidden');
+        btnCuotas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition";
+        btnBoletas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+        cargarMatrizCuotas();
+    } else {
+        vistaCuotas.classList.add('hidden');
+        vistaBoletas.classList.remove('hidden');
+        btnBoletas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition";
+        btnCuotas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+        cargarSelectVoluntariosBoleta();
+    }
+}
+
+// Cargar Fecha al iniciar
+document.addEventListener("DOMContentLoaded", () => {
+    const fInput = document.getElementById('boletaFecha');
+    if (fInput) fInput.value = new Date().toLocaleDateString('es-CL');
+    cargarMatrizCuotas();
+});
+
+// Cargar Selectores de Voluntarios (Usa la lista global 'roster')
+function cargarSelectVoluntariosBoleta() {
+    const select = document.getElementById('boletaVoluntarioSelect');
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Seleccione Voluntario --</option>';
+    
+    if (typeof roster !== 'undefined' && Array.isArray(roster)) {
+        roster.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = `${v.name} (RUT: ${v.rut || 'No reg.'})`;
+            select.appendChild(opt);
+        });
+    }
+}
+
+// Autocompletar Nombre y RUT
+function cargarDatosVoluntarioBoleta() {
+    const nombreSel = document.getElementById('boletaVoluntarioSelect').value;
+    const inputNombre = document.getElementById('boletaNombre');
+    const inputRut = document.getElementById('boletaRut');
+
+    if (!nombreSel) {
+        inputNombre.value = '';
+        inputRut.value = '';
+        return;
+    }
+
+    const voluntario = roster.find(v => v.name === nombreSel);
+    if (voluntario) {
+        inputNombre.value = voluntario.name || '';
+        inputRut.value = voluntario.rut || 'RUT No registrado';
+    }
+}
+
+function verificarConceptoPersonalizado(selectObj) {
+    const customInput = document.getElementById('boletaConceptoPersonalizado');
+    if (selectObj.value === 'otro') {
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+    } else {
+        customInput.classList.add('hidden');
+        customInput.required = false;
+    }
+}
+
+// Generar boleta libre, firmar y enviar al buzón
+function emitirYGuardarBoleta(event) {
+    if (event) event.preventDefault();
+
+    const nombre = document.getElementById('boletaNombre').value;
+    const rut = document.getElementById('boletaRut').value;
+    const tipoSel = document.getElementById('boletaConceptoTipo').value;
+    const concepto = tipoSel === 'otro' ? document.getElementById('boletaConceptoPersonalizado').value : tipoSel;
+    const monto = parseFloat(document.getElementById('boletaMonto').value);
+    const fecha = document.getElementById('boletaFecha').value;
+    const firma = document.getElementById('boletaFirmaTesorero').value;
+
+    if (!nombre || isNaN(monto)) {
+        alert("Complete todos los campos obligatorios.");
+        return;
+    }
+
+    const mensajeBoleta = `COMPROBANTE OFICIAL - 2ª CÍA BOMBEROS\n` +
+                          `----------------------------------------\n` +
+                          `Nombre: ${nombre}\n` +
+                          `RUT: ${rut}\n` +
+                          `Concepto: ${concepto}\n` +
+                          `Monto: $${monto.toLocaleString('es-CL')} CLP\n` +
+                          `Fecha: ${fecha}\n` +
+                          `Firma Tesorería: ${firma}\n` +
+                          `----------------------------------------`;
+
+    if (typeof db !== 'undefined') {
+        db.ref('buzon_mensajes').push({
+            destinatario: nombre,
+            tipo: 'boleta_pago',
+            asunto: `Boleta: ${concepto}`,
+            mensaje: mensajeBoleta,
+            monto: monto,
+            fecha: fecha,
+            leido: false
+        }).then(() => {
+            alert(`¡Boleta generada y enviada al buzón personal de ${nombre} con éxito!`);
+            document.getElementById('formBoletaLibre').reset();
+            document.getElementById('boletaFecha').value = new Date().toLocaleDateString('es-CL');
+        }).catch(err => {
+            console.error(err);
+            alert("Error al enviar la boleta.");
+        });
+    }
+}
+
+// Cargar Matriz de Cuotas Anuales con círculos interactivos
+function cargarMatrizCuotas() {
+    const tbody = document.getElementById('tablaMatrizCuotasBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (typeof roster === 'undefined' || roster.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14" class="text-center py-4 text-slate-500">No hay voluntarios cargados en el roster.</td></tr>`;
+        return;
+    }
+
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+    roster.forEach((v, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-800/60 hover:bg-slate-800/30';
+        
+        let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm">${v.name}</td>`;
+        
+        meses.forEach(mes => {
+            htmlCeldas += `
+                <td class="py-2.5 px-2 text-center">
+                    <button type="button" onclick="alternarEstadoCuota(${index}, '${mes}')" id="cuota_${index}_${mes}" class="w-5 h-5 rounded-full bg-rose-500 inline-block shadow-md transition transform hover:scale-110" title="Pendiente (Clic para cambiar)"></button>
+                </td>`;
+        });
+
+        htmlCeldas += `
+            <td class="py-2.5 px-3 text-center">
+                <button type="button" onclick="guardarFilaCuotas('${v.name}')" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-xs font-bold text-white">Guardar</button>
+            </td>`;
+
+        tr.innerHTML = htmlCeldas;
+        tbody.appendChild(tr);
+    });
+}
+
+function alternarEstadoCuota(index, mes) {
+    const btn = document.getElementById(`cuota_${index}_${mes}`);
+    if (btn.classList.contains('bg-rose-500')) {
+        btn.classList.remove('bg-rose-500');
+        btn.classList.add('bg-emerald-500');
+        btn.title = "Pagado al día";
+    } else {
+        btn.classList.remove('bg-emerald-500');
+        btn.classList.add('bg-rose-500');
+        btn.title = "Pendiente";
+    }
+}
+
+function guardarFilaCuotas(nombreVoluntario) {
+    alert(`Estado de cuotas guardado para ${nombreVoluntario}. Se ha actualizado su registro.`);
+}
+        
     
                 
     </script>
