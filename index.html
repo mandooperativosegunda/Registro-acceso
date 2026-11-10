@@ -1102,15 +1102,24 @@
             </button>
             <h2 class="text-sm font-bold uppercase text-white tracking-wider">LISTA SEMANAL DE ASISTENCIA</h2>
             
-            <!-- Botones juntos a la derecha (Guardar con Motivo + Agregar Miembro) -->
-            <div class="flex items-center gap-2">
-                <button onclick="promptGuardarAsistenciaSemanal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors shadow-lg">
-                    <i class="ph ph-floppy-disk"></i> Guardar Asistencia
-                </button>
-                <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl font-semibold shadow">
-                    Agregar Miembro
-                </button>
-            </div>
+            <!-- Botones juntos en la parte superior -->
+<div class="flex items-center gap-2">
+    <!-- Botón existente de Guardar Asistencia -->
+    <button onclick="promptGuardarAsistenciaSemanal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded font-semibold">
+        <i class="ph ph-floppy-disk"></i> Guardar Asistencia
+    </button>
+
+    <!-- Nuevo Botón al lado para Guardar Cambios de Cargo -->
+    <button onclick="guardarCambioDirectoDesdeLista()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs px-3 py-2 rounded font-semibold">
+        <i class="ph ph-user-gear"></i> Guardar Cambios de Cargo
+    </button>
+
+    <!-- Botón existente de Agregar Miembro -->
+    <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-4 py-2 rounded font-semibold">
+        Agregar Miembro
+    </button>
+</div>
+
         </div>
         <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
             <table class="w-full text-left border-collapse">
@@ -2393,53 +2402,96 @@ function descargarSolicitudPdf(id) {
 
 
 function ascenderMiembro(id) {
-    let m = roster.find(x => x.id === id);
-    if (!m) return;
-    
-    let nuevaCat = prompt(`Gestionar cargo/categoría para ${m.name}.\nSeleccione nueva categoría:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Bombero\n4. Aspirante`, m.category);
-    if (!nuevaCat) return;
-    
-    let catLower = nuevaCat.toLowerCase();
-    if (catLower.includes("adm") || catLower.includes("1")) {
-        m.category = "Oficiales Administrativos";
-        m.role = prompt("Ingrese el cargo administrativo (Ej. Directora, Tesorero, Secretaria):", m.role) || m.role;
-    } else if (catLower.includes("op") || catLower.includes("2")) {
-        m.category = "Oficiales Operativos";
-        m.role = prompt("Ingrese el cargo operativo (Ej. Capitán, Teniente Primero, Ayudante):", m.role) || m.role;
-    } else if (catLower.includes("asp") || catLower.includes("4")) {
-        m.category = "Aspirante";
-        m.role = "Aspirante";
-    } else {
-        m.category = "Bombero";
-        m.role = prompt("Ingrese el cargo o especialidad:", "Bombero") || "Bombero";
-    }
+            let m = roster.find(x => x.id === id);
+            if (!m) return;
+            let nuevoCargo = prompt(`Gestionar cargo/categoría para ${m.name}:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Aspirante\n4. Bombero`);
+            if (!nuevoCargo) return;
+            let categoriaDestino = "Oficiales Operativos";
+            let rolDestino = "Teniente Segundo";
+            let catLower = nuevoCargo.toLowerCase();
+            if (catLower.includes("1") || catLower.includes("admin")) {
+                categoriaDestino = "Oficiales Administrativos";
+                rolDestino = prompt("Ingrese el cargo administrativo:") || "Oficial";
+            } else if (catLower.includes("2") || catLower.includes("op") || catLower.includes("teniente")) {
+                categoriaDestino = "Oficiales Operativos";
+                rolDestino = prompt("Ingrese el grado de oficial (ej. Teniente 2°):") || "Teniente";
+            } else if (catLower.includes("3") || catLower.includes("asp")) {
+                categoriaDestino = "Aspirantes";
+                rolDestino = "Aspirante";
+            } else {
+                categoriaDestino = "Bomberos";
+                rolDestino = "Bombero";
+            }
+            db.ref(`roster/${id}`).update({
+                cargo: rolDestino,
+                role: rolDestino,
+                category: categoriaDestino
+            }).then(() => {
+                alert(`¡Estructura de mando actualizada con éxito para ${m.name}!`);
+                location.reload();
+            }).catch(err => {
+                console.error(err);
+                alert("Error al actualizar en la base de datos.");
+            });
+        }
 
-    db.ref('roster').set(roster);
-    renderRoster();
-    alert("¡Estructura de mando actualizada con éxito!");
-}
+        function descenderMiembro(id) {
+            let m = roster.find(x => x.id === id);
+            if (!m) return;
+            let nuevoCargo = prompt(`Cambiar categoría para ${m.name}:\n1. Oficiales Operativos\n2. Aspirante\n3. Bombero`);
+            if (!nuevoCargo) return;
+            let categoriaDestino = "Bomberos";
+            let rolDestino = "Bombero";
+            let catLower = nuevoCargo.toLowerCase();
+            if (catLower.includes("1") || catLower.includes("op") || catLower.includes("teniente")) {
+                categoriaDestino = "Oficiales Operativos";
+                rolDestino = prompt("Ingrese el grado:") || "Teniente";
+            } else if (catLower.includes("2") || catLower.includes("asp")) {
+                categoriaDestino = "Aspirantes";
+                rolDestino = "Aspirante";
+            } else {
+                categoriaDestino = "Bomberos";
+                rolDestino = "Bombero";
+            }
+            db.ref(`roster/${id}`).update({
+                cargo: rolDestino,
+                role: rolDestino,
+                category: categoriaDestino
+            }).then(() => {
+                alert(`¡Categoría y cargo actualizados correctamente para ${m.name}!`);
+                location.reload();
+            }).catch(err => {
+                console.error(err);
+                alert("Error al actualizar en la base de datos.");
+            });
+        }
 
-function descenderMiembro(id) {
-    let m = roster.find(x => x.id === id);
-    if (!m) return;
-    
-    let nuevaCat = prompt(`Cambiar de categoría a ${m.name}:\n1. Oficiales Operativos\n2. Bombero\n3. Aspirante`, "Bombero");
-    if (!nuevaCat) return;
+        function guardarCambioDirecto(id, nombre) {
+            let nuevoCargo = prompt(`Actualizar cargo para ${nombre}:\nEscribe el nuevo cargo (Ej: Bombero, Teniente 2°, Aspirante):`);
+            if (!nuevoCargo) return;
+            let categoriaDestino = "Bomberos";
+            let cargoFinal = nuevoCargo;
+            let lower = nuevoCargo.toLowerCase();
+            if (lower.includes("teniente") || lower.includes("oficial")) {
+                categoriaDestino = "Oficiales Operativos";
+            } else if (lower.includes("aspirante")) {
+                categoriaDestino = "Aspirantes";
+            } else {
+                categoriaDestino = "Bomberos";
+            }
+            db.ref(`roster/${id}`).update({
+                cargo: cargoFinal,
+                role: cargoFinal,
+                category: categoriaDestino
+            }).then(() => {
+                alert(`¡Cambios guardados con éxito para ${nombre}!`);
+                location.reload();
+            }).catch(err => {
+                console.error(err);
+                alert("Error al guardar en la base de datos.");
+            });
+        }
 
-    if (nuevaCat.includes("1") || nuevaCat.toLowerCase().includes("op")) {
-        m.category = "Oficiales Operativos";
-        m.role = "Teniente";
-    } else if (nuevaCat.includes("3") || nuevaCat.toLowerCase().includes("asp")) {
-        m.category = "Aspirante";
-        m.role = "Aspirante";
-    } else {
-        m.category = "Bombero";
-        m.role = "Bombero";
-    }
-
-    db.ref('roster').set(roster);
-    renderRoster();
-    alert("¡Categoría actualizada correctamente!");
 }
 function cambiarEstadoMiembro(id) {
     let m = roster.find(x => x.id === id);
@@ -3913,7 +3965,19 @@ function aplicarRolesYPermisosDinamicos(usuario) {
     console.log(`Permisos aplicados para el cargo: ${usuario.cargo}`);
         }
         
+    function guardarCambioDirectoDesdeLista() {
+    let nombreBuscado = prompt("Ingrese el nombre exacto del voluntario cuyo cargo desea actualizar:");
+    if (!nombreBuscado) return;
     
+    let miembro = roster.find(x => x.name.toLowerCase().includes(nombreBuscado.toLowerCase()));
+    if (!miembro) {
+        alert("No se encontró ningún voluntario con ese nombre en el roster.");
+        return;
+    }
+    
+    guardarCambioDirecto(miembro.id, miembro.name);
+        }
+        
               
     </script>
 </body>
