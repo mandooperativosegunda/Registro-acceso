@@ -696,11 +696,18 @@
 
     <!-- VISTA 1: MATRIZ DE CUOTAS MENSUALES -->
     <div id="vistaMatrizCuotas" class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-cyan-400 text-lg">Control Anual de Cuotas Sociales</h3>
-            <span class="text-xs text-slate-400">Haz clic en los círculos para cambiar estado (🟢 Pagado / 🔴 Pendiente)</span>
-        </div>
-        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+    <div>
+        <h3 class="font-bold text-cyan-400 text-lg">Control Anual de Cuotas Sociales</h3>
+        <span class="text-xs text-slate-400">Haz clic en los círculos para cambiar estado (⬛ Neutro / 🟢 Pagado / 🔴 Pendiente)</span>
+    </div>
+    
+    <!-- INPUT DE MONTO GLOBAL -->
+    <div class="flex items-center space-x-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
+        <span class="text-xs text-slate-400 font-semibold">Valor Cuota (CLP):</span>
+        <input type="number" value="4000" onchange="actualizarMontoCuotaGlobal(this)" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-1 text-white text-xs font-bold text-center">
+    </div>
+</div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
