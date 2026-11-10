@@ -2466,7 +2466,7 @@ function ascenderMiembro(id) {
             });
         }
 
-        function guardarCambioDirecto(id, nombre) {
+           function guardarCambioDirecto(id, nombre) {
             let nuevoCargo = prompt(`Actualizar cargo para ${nombre}:\nEscribe el nuevo cargo (Ej: Bombero, Teniente 2°, Aspirante):`);
             if (!nuevoCargo) return;
             let categoriaDestino = "Bomberos";
@@ -2490,12 +2490,12 @@ function ascenderMiembro(id) {
                 console.error(err);
                 alert("Error al guardar en la base de datos.");
             });
-        }
+        } // <--- Esta es la única llave que cierra la función
 
-}
-function cambiarEstadoMiembro(id) {
-    let m = roster.find(x => x.id === id);
-    if (!m) return;
+        function cambiarEstadoMiembro(id) {
+            let m = roster.find(x => x.id === id);
+            if (!m) return;
+            // ... resto del código ...
 
     // Ciclo de estados permitidos: A -> AB -> F -> P
     const estadosPermitidos = ["A", "AB", "F", "P"];
