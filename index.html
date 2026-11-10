@@ -3751,39 +3751,50 @@ function guardarFilaCuotas(nombreVoluntario, index) {
 
     const idLimio = nombreVoluntario.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
 
-    // 1. Guardar estado en tesoreria_cuotas
-    db.ref(`tesoreria_cuotas/${idLimio}`).set({
+       // 1. Guardar estado en tesoreria_cuotas
+    db.ref(`tesoreria_cuotas/${idLimpio}`).set({
         nombre: nombreVoluntario,
         mesesDetalle: estadosMeses,
         ultimaActualizacion: fechaActual
     }).then(() => {
-        // 2. Enviar a la tarjeta de Cuentas de Compañía / Buzón del bombero
+        // 2. Enviar a la Tarjeta de Cuentas de Compañía / Buzón del bombero
         return db.ref('buzon_mensajes').push({
             destinatario: nombreVoluntario,
             tipo: 'boleta_cuotas',
             asunto: `Comprobante de Cuotas - $${montoTotal.toLocaleString('es-CL')} CLP`,
             mensaje: mensajeBoleta,
             monto: montoTotal,
-            fecha: fechaActual,
-            firmadoPor: firmaTesorero,
-            leido: false
+            fecha: fechaActual
         });
     }).then(() => {
-        // 3. Registrar en el Historial de Movimientos Financieros general
-        return db.ref('historial_financiero').push({
+        // 3. Registrar automáticamente en el Historial de Movimientos Financieros
+        const sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
+        const registradoPor = sesionActual ? (sesionActual.nombre || sesionActual.name) : firmaTesorero;
+
+        return db.ref('historialMovimientos').push({
+            id: Date.now(),
             fecha: fechaActual,
-            descripcion: `Cuotas Sociales (${mesesPagados.join(', ')}) - ${nombreVoluntario}`,
+            hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
             tipo: 'Ingreso',
-            monto: montoTotal
+            categoria: 'Cuotas Sociales',
+            detalle: `Pago Cuotas (${mesesPagados.join(', ')}) - ${nombreVoluntario}`,
+            monto: montoTotal,
+            registradoPor: registradoPor,
+            firma: firmaTesorero
         });
     }).then(() => {
-        alert(`¡Cuotas guardadas, boleta firmada por "${firmaTesorero}" y enviada a la cuenta de compañía de ${nombreVoluntario}!`);
-        if (typeof cargarHistorialMovimientos === 'function') cargarHistorialMovimientos();
-    }).catch(err => {
-        console.error(err);
-        alert("Error al procesar el guardado en la base de datos.");
-    });
+        alert(`¡Cuotas de ${nombreVoluntario} guardadas, comprobante enviado e ingreso registrado en el historial!`);
+        
+        // Actualizar tabla del historial si la función está disponible
+        if (typeof cargarDatosTesoreria === 'function') {
+            cargarDatosTesoreria();
         }
+    }).catch(err => {
+        console.error("Error al procesar el guardado:", err);
+        alert("Ocurrió un error al guardar o registrar el movimiento.");
+    });
+}
+
         // Cargar y renderizar las boletas en la tarjeta "Cuentas de Compañía" del bombero
 function renderizarCuentasCompaniaBombero(sesionUsuario) {
     const contenedor = document.getElementById('listaBoletasBombero');
