@@ -804,23 +804,11 @@
                 </div>
             </div>
 
-                    <!-- Concepto -->
-        <div class="mb-3">
-            <label class="block text-slate-300 mb-1 font-semibold text-sm">Concepto del Pago</label>
-            <select id="boletaConceptoTipo" class="w-full bg-slate-950 border border-slate-800 rounded-xl...">
-                <option value="Pago Paseo de Compañia">Pago Paseo de Compañia</option>
-            </select> <!-- ESTA ES LA ETIQUETA QUE FALTA -->
-        </div> <!-- ESTA ES LA OTRA ETIQUETA QUE FALTA -->
-            
-<!-- ESTO ES LO QUE DEBES AGREGAR PARA CERRAR EL MODAL -->
-        <div class="flex justify-end gap-2 mt-4">
-            <button onclick="document.getElementById('modalBoletasLibres').classList.add('hidden')" class="px-4 py-2 bg-slate-700 text-white rounded-xl">Cancelar</button>
-            <button class="px-4 py-2 bg-cyan-600 text-white rounded-xl font-bold">Guardar</button>
-        </div>
-    </form> <!-- Cierra el cuadro del modal -->
-</div> <!-- Cierra el fondo oscuro del modal -->
-<!-- FIN DEL MODAL DE BOLETAS -->
-    
+            <!-- Concepto -->
+            <div class="mb-3">
+                <label class="block text-slate-300 mb-1 font-semibold text-sm">Concepto del Pago</label>
+                <select id="boletaConceptoTipo" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mb-2 text-sm" onchange="verificarConceptoPersonalizado(this)">
+                    <option value="Pago Paseo de Compañía">Pago Paseo de Compañía</option>
 <!-- CONTENEDOR EXCLUSIVO DEL TESORERO -->
 <div id="tesoreroView" class="hidden space-y-4 text-white">
     <div id="moduloTesoreria" class="space-y-4 text-white">
@@ -1114,24 +1102,15 @@
             </button>
             <h2 class="text-sm font-bold uppercase text-white tracking-wider">LISTA SEMANAL DE ASISTENCIA</h2>
             
-            <!-- Botones juntos en la parte superior -->
-<div class="flex items-center gap-2">
-    <!-- Botón existente de Guardar Asistencia -->
-    <button onclick="promptGuardarAsistenciaSemanal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded font-semibold">
-        <i class="ph ph-floppy-disk"></i> Guardar Asistencia
-    </button>
-
-    <!-- Nuevo Botón al lado para Guardar Cambios de Cargo -->
-    <button onclick="guardarCambioDirectoDesdeLista()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs px-3 py-2 rounded font-semibold">
-        <i class="ph ph-user-gear"></i> Guardar Cambios de Cargo
-    </button>
-
-    <!-- Botón existente de Agregar Miembro -->
-    <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-4 py-2 rounded font-semibold">
-        Agregar Miembro
-    </button>
-</div>
-
+            <!-- Botones juntos a la derecha (Guardar con Motivo + Agregar Miembro) -->
+            <div class="flex items-center gap-2">
+                <button onclick="promptGuardarAsistenciaSemanal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors shadow-lg">
+                    <i class="ph ph-floppy-disk"></i> Guardar Asistencia
+                </button>
+                <button onclick="openMemberModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl font-semibold shadow">
+                    Agregar Miembro
+                </button>
+            </div>
         </div>
         <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-800">
             <table class="w-full text-left border-collapse">
@@ -2329,16 +2308,11 @@ function descargarSolicitudPdf(id) {
             db.ref('bodegaEpp').set(bodegaEpp); db.ref('roster').set(roster); openFichaEppModal(memberId);
         }
 
-        function openRosterView() { 
-    hideAllViews(); 
-    document.getElementById('rosterView').classList.remove('hidden'); 
-}
-
-function renderRoster() {
-    const tbody = document.getElementById('rosterTableBody');
-    if (!tbody) return;
+        function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
+        function renderRoster() {
+    const tbody = document.getElementById('rosterTableBody'); 
+    if (!tbody) return; 
     tbody.innerHTML = '';
-
     
     if (roster.length === 0) { 
         tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin miembros.</td></tr>`; 
@@ -2372,172 +2346,104 @@ function renderRoster() {
 
     let categoriaActual = "";
 
-roster.forEach(m => {
-    // 1. Protección contra elementos nulos o indefinidos en el array
-    if (!m) return;
+    roster.forEach(m => {
+        if (m.category !== categoriaActual) {
+            categoriaActual = m.category;
+            tbody.innerHTML += `
+                <tr class="bg-slate-950 border-y border-slate-800">
+                    <td colspan="5" class="px-5 py-2 font-bold text-cyan-400 uppercase tracking-wider text-[11px]">
+                        ${categoriaActual}
+                    </td>
+                </tr>`;
+        }
 
-    // 2. Validación de nombre seguro para evitar 'undefined' en la interfaz
-    let nombreValido = (m.name && m.name !== 'undefined') ? m.name : 'Sin Nombre Asignado';
+        let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30"; // A
+        if (m.status === "AB") {
+            estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
+        } else if (m.status === "P") {
+            estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
+        } else if (m.status === "F") {
+            estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
+        }
 
-    if (m.category !== categoriaActual) {
-        categoriaActual = m.category || "Sin Categoría";
+        let botonesReacomodar = `
+            <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender / Cambiar Cargo">▲ Ascender</button>
+            <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender / Cambiar Categoría">▼</button>`;
+
         tbody.innerHTML += `
-            <tr class="bg-slate-950 border-y border-slate-800">
-                <td colspan="5" class="px-5 py-2 font-bold text-cyan-400 uppercase">
-                    ${categoriaActual}
+            <tr class="hover:bg-slate-900 border-b border-slate-800/50">
+                <td class="px-5 py-3.5 text-slate-300">
+                    <span class="block font-bold text-white">${m.role}</span>
+                    <span class="text-[10px] text-slate-400">${m.category}</span>
+                </td>
+                <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
+                <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
+                <td class="px-5 py-3.5 text-center">
+                    <button onclick="cambiarEstadoMiembro(${m.id})" class="px-3 py-1 rounded-lg font-bold border transition-colors ${estadoClass}" title="Cambiar Estado">
+                        ${m.status || 'A'}
+                    </button>
+                 </td>
+                <td class="px-5 py-3.5 text-right flex items-center justify-end gap-1">
+                    ${botonesReacomodar}
+                    <button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg ml-2">Eliminar</button>
                 </td>
             </tr>`;
+    });
+}
+
+
+function ascenderMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+    
+    let nuevaCat = prompt(`Gestionar cargo/categoría para ${m.name}.\nSeleccione nueva categoría:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Bombero\n4. Aspirante`, m.category);
+    if (!nuevaCat) return;
+    
+    let catLower = nuevaCat.toLowerCase();
+    if (catLower.includes("adm") || catLower.includes("1")) {
+        m.category = "Oficiales Administrativos";
+        m.role = prompt("Ingrese el cargo administrativo (Ej. Directora, Tesorero, Secretaria):", m.role) || m.role;
+    } else if (catLower.includes("op") || catLower.includes("2")) {
+        m.category = "Oficiales Operativos";
+        m.role = prompt("Ingrese el cargo operativo (Ej. Capitán, Teniente Primero, Ayudante):", m.role) || m.role;
+    } else if (catLower.includes("asp") || catLower.includes("4")) {
+        m.category = "Aspirante";
+        m.role = "Aspirante";
+    } else {
+        m.category = "Bombero";
+        m.role = prompt("Ingrese el cargo o especialidad:", "Bombero") || "Bombero";
     }
 
-    let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30";
-    if (m.status === "AB") {
-        estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
-    } else if (m.status === "P") {
-        estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
-    } else if (m.status === "F") {
-        estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
+    db.ref('roster').set(roster);
+    renderRoster();
+    alert("¡Estructura de mando actualizada con éxito!");
+}
+
+function descenderMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
+    
+    let nuevaCat = prompt(`Cambiar de categoría a ${m.name}:\n1. Oficiales Operativos\n2. Bombero\n3. Aspirante`, "Bombero");
+    if (!nuevaCat) return;
+
+    if (nuevaCat.includes("1") || nuevaCat.toLowerCase().includes("op")) {
+        m.category = "Oficiales Operativos";
+        m.role = "Teniente";
+    } else if (nuevaCat.includes("3") || nuevaCat.toLowerCase().includes("asp")) {
+        m.category = "Aspirante";
+        m.role = "Aspirante";
+    } else {
+        m.category = "Bombero";
+        m.role = "Bombero";
     }
 
-    let botonesReacomodar = `
-        <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 hover:text-cyan-300 mr-2">▲</button>
-        <button onclick="descenderMiembro(${m.id})" class="text-amber-400 hover:text-amber-300">▼</button>
-    `;
-
-    tbody.innerHTML += `
-        <tr class="hover:bg-slate-900 border-b border-slate-800/50">
-            <td class="px-5 py-3.5 text-slate-300">
-                <span class="block font-bold text-white">${m.role || 'Sin Cargo'}</span>
-                <span class="text-[10px] text-slate-400">${m.category || ''}</span>
-            </td>
-            <td class="px-5 py-3.5 font-bold text-white">${nombreValido}</td>
-            <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.count3m || 0}</td>
-            <td class="px-5 py-3.5 text-center">
-                <button onclick="cambiarEstadoMiembro(${m.id})" class="px-2.5 py-1 rounded text-xs font-semibold border ${estadoClass}">
-                    ${m.status || 'A'}
-                </button>
-            </td>
-            <td class="px-5 py-3.5 text-right flex items-center justify-end space-x-2">
-                ${botonesReacomodar}
-            </td>
-        </tr>`;
-});
-
-
-
-        function ascenderMiembro(id) {
-            let m = roster.find(x => String(x.id) === String(id));
-            if (!m) {
-                alert("Error: No se encontró al miembro en la lista.");
-                return;
-            }
-            let nuevoCargo = prompt(`Gestionar cargo/categoría para ${m.name}:\n1. Oficiales Administrativos\n2. Oficiales Operativos\n3. Aspirante\n4. Bombero`);
-            if (!nuevoCargo) return;
-            
-            let categoriaDestino = "Oficiales Operativos";
-            let rolDestino = "Teniente Segundo";
-            let catLower = nuevoCargo.toLowerCase();
-
-            if (catLower.includes("1") || catLower.includes("admin")) {
-                categoriaDestino = "Oficiales Administrativos";
-                rolDestino = prompt("Ingrese el cargo administrativo:") || "Oficial";
-            } else if (catLower.includes("2") || catLower.includes("op") || catLower.includes("teniente")) {
-                categoriaDestino = "Oficiales Operativos";
-                rolDestino = prompt("Ingrese el grado de oficial (ej. Teniente 2°):") || "Teniente";
-            } else if (catLower.includes("3") || catLower.includes("asp")) {
-                categoriaDestino = "Aspirantes";
-                rolDestino = "Aspirante";
-            } else {
-                categoriaDestino = "Bombero";
-                rolDestino = "Bombero";
-            }
-
-            // Mantenemos intactos sus datos previos (historial, boletas, horas, etc.) y solo actualizamos el rol y categoría
-            db.ref(`roster/${id}`).update({
-                cargo: rolDestino,
-                role: rolDestino,
-                category: categoriaDestino
-            }).then(() => {
-                alert(`¡Estructura de mando actualizada con éxito para ${m.name}!`);
-                location.reload();
-            }).catch(err => {
-                console.error(err);
-                alert("Error al actualizar en la base de datos.");
-            });
-        }
-
-        function descenderMiembro(id) {
-            let m = roster.find(x => String(x.id) === String(id));
-            if (!m) {
-                alert("Error: No se encontró al miembro en la lista.");
-                return;
-            }
-            let nuevoCargo = prompt(`Cambiar categoría para ${m.name}:\n1. Oficiales Operativos\n2. Aspirante\n3. Bombero`);
-            if (!nuevoCargo) return;
-
-            let categoriaDestino = "Bombero";
-            let rolDestino = "Bombero";
-            let catLower = nuevoCargo.toLowerCase();
-
-            if (catLower.includes("1") || catLower.includes("op") || catLower.includes("teniente")) {
-                categoriaDestino = "Oficiales Operativos";
-                rolDestino = prompt("Ingrese el grado:") || "Teniente";
-            } else if (catLower.includes("2") || catLower.includes("asp")) {
-                categoriaDestino = "Aspirantes";
-                rolDestino = "Aspirante";
-            } else {
-                categoriaDestino = "Bombero";
-                rolDestino = "Bombero";
-            }
-
-            db.ref(`roster/${id}`).update({
-                cargo: rolDestino,
-                role: rolDestino,
-                category: categoriaDestino
-            }).then(() => {
-                alert(`¡Categoría y cargo actualizados correctamente para ${m.name}!`);
-                location.reload();
-            }).catch(err => {
-                console.error(err);
-                alert("Error al actualizar en la base de datos.");
-            });
-        }
-
-        function guardarCambioDirecto(id, nombre) {
-            let m = roster.find(x => String(x.id) === String(id));
-            if (!m) return;
-
-            let nuevoCargo = prompt(`Actualizar cargo para ${nombre}:\nEscribe el nuevo cargo (Ej: Bombero, Teniente 2°, Aspirante):`);
-            if (!nuevoCargo) return;
-
-            let categoriaDestino = "Bombero";
-            let cargoFinal = nuevoCargo;
-            let lower = nuevoCargo.toLowerCase();
-
-            if (lower.includes("teniente") || lower.includes("oficial")) {
-                categoriaDestino = "Oficiales Operativos";
-            } else if (lower.includes("aspirante")) {
-                categoriaDestino = "Aspirantes";
-            } else {
-                categoriaDestino = "Bombero";
-            }
-
-            db.ref(`roster/${id}`).update({
-                cargo: cargoFinal,
-                role: cargoFinal,
-                category: categoriaDestino
-            }).then(() => {
-                alert(`¡Cambios guardados con éxito para ${nombre}!`);
-                location.reload();
-            }).catch(err => {
-                console.error(err);
-                alert("Error al guardar en la base de datos.");
-            });
-        }
-
-        function cambiarEstadoMiembro(id) {
-            let m = roster.find(x => x.id === id);
-            if (!m) return;
-            // ... resto del código ...
+    db.ref('roster').set(roster);
+    renderRoster();
+    alert("¡Categoría actualizada correctamente!");
+}
+function cambiarEstadoMiembro(id) {
+    let m = roster.find(x => x.id === id);
+    if (!m) return;
 
     // Ciclo de estados permitidos: A -> AB -> F -> P
     const estadosPermitidos = ["A", "AB", "F", "P"];
@@ -3112,11 +3018,13 @@ function confirmarGuardadoAsistenciaSemanal() {
 }
 
 function confirmarGuardadoConMotivo(motivoFinal) {
+    // Si no existe el roster, detenemos
     if (typeof roster === 'undefined' || !roster) {
         alert("No hay registros en la lista para guardar.");
         return;
     }
 
+    // Nos aseguramos estrictamente de que roster sea un array válido
     if (!Array.isArray(roster)) {
         roster = Object.values(roster);
     }
@@ -3130,33 +3038,47 @@ function confirmarGuardadoConMotivo(motivoFinal) {
     let horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
     roster.forEach(m => {
-    // Proteger contra elementos nulos o indefinidos en el array
-    if (!m) return; 
+        let estadoActual = m.status || 'A';
 
-    // Validamos que el nombre o estado no estén corruptos
-    if (!m.name || m.name === 'undefined') return;
+        if (!m.historialMotivos) m.historialMotivos = [];
 
-    let estadoActual = m.status || 'A';
-    if (!m.historialMotivos) m.historialMotivos = [];
+        let nuevoRegistroAsistencia = {
+            fecha: `${fechaHoy} ${horaActual}`,
+            detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
+        };
+        m.historialMotivos.unshift(nuevoRegistroAsistencia);
 
-    let nuevoRegistroAsistencia = {
-        fecha: `${fechaHoy} ${horaActual}`,
-        detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
-    };
-    m.historialMotivos.unshift(nuevoRegistroAsistencia);
-});
+        // Contadores según el estado
+        if (estadoActual === 'AB' || estadoActual === 'A') {
+            m.count3m = (m.count3m || 0) + 1;
+            m.countly = (m.countly || 0) + 1;
+        }
+        if (estadoActual === 'AB') {
+            m.totalAb = (m.totalAb || 0) + 1;
+        }
+        if (estadoActual === 'P') {
+            m.totalP = (m.totalP || 0) + 1;
+        }
+        if (estadoActual === 'F') {
+            m.totalF = (m.totalF || 0) + 1;
+        }
+    });
 
     if (typeof db !== 'undefined') {
         db.ref('roster').set(roster, (error) => {
             if (error) {
                 alert("Error al sincronizar con Firebase: " + error.message);
             } else {
-                alert("¡Asistencia y registros guardados con éxito!");
+                alert("Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
                 if (typeof renderRoster === 'function') renderRoster();
+                
+                // Recargamos la página al instante tras guardar con éxito
+                window.location.reload();
             }
         });
     } else {
         alert("Guardado local exitoso!");
+        window.location.reload();
     }
 }
         function abrirEditorGlobalFichas() {
@@ -3233,13 +3155,12 @@ function guardarEditorGlobalFichas() {
         let valF = document.getElementById(`global_f_${idx}`);
         let valHist = document.getElementById(`global_historial_${idx}`);
 
-        // Solo actualizamos si el input existe y tiene un valor válido
-        if (val3m && val3m.value !== '') m.count3m = parseInt(val3m.value) || 0;
-        if (valAnual && valAnual.value !== '') m.countly = parseInt(valAnual.value) || 0;
-        if (valAb && valAb.value !== '') m.totalAb = parseInt(valAb.value) || 0;
-        if (valP && valP.value !== '') m.totalP = parseInt(valP.value) || 0;
-        if (valA && valA.value !== '') m.totalA = parseInt(valA.value) || 0;
-        if (valF && valF.value !== '') m.totalF = parseInt(valF.value) || 0;
+        if (val3m) m.count3m = parseInt(val3m.value) || 0;
+        if (valAnual) m.countly = parseInt(valAnual.value) || 0;
+        if (valAb) m.totalAb = parseInt(valAb.value) || 0;
+        if (valP) m.totalP = parseInt(valP.value) || 0;
+        if (valA) m.totalA = parseInt(valA.value) || 0;
+        if (valF) m.totalF = parseInt(valF.value) || 0;
 
         if (valHist && valHist.value.trim() !== '') {
             if (!m.historialMotivos) m.historialMotivos = [];
@@ -3252,23 +3173,21 @@ function guardarEditorGlobalFichas() {
         }
     });
 
-    // Guardar en Firebase SOLO al presionar el botón correspondiente
+    // Guardar en Firebase y recargar página para refrescar todo
     if (typeof db !== 'undefined') {
         db.ref('roster').set(roster, (error) => {
             if (error) {
                 alert("Error al actualizar en Firebase: " + error.message);
             } else {
                 alert("¡Fichas globales actualizadas con éxito!");
-                cerrarEditorGlobalFichas();
-                if (typeof renderRoster === 'function') renderRoster();
+                window.location.reload();
             }
         });
     } else {
         alert("¡Guardado local exitoso!");
-        cerrarEditorGlobalFichas();
+        window.location.reload();
     }
 }
-
         function ejecutarCierreDeAnio() {
     if (!confirm("⚠️ ADVERTENCIA: Estás a punto de ejecutar el Cierre de Año. Esto descargará un respaldo automático en tu dispositivo, guardará el archivo histórico en la base de datos, pondrá todos los contadores en ceros y dejará el roster limpio para el nuevo periodo. ¿Estás seguro de continuar?")) {
         return;
@@ -3994,19 +3913,7 @@ function aplicarRolesYPermisosDinamicos(usuario) {
     console.log(`Permisos aplicados para el cargo: ${usuario.cargo}`);
         }
         
-    function guardarCambioDirectoDesdeLista() {
-    let nombreBuscado = prompt("Ingrese el nombre exacto del voluntario cuyo cargo desea actualizar:");
-    if (!nombreBuscado) return;
     
-    let miembro = roster.find(x => x.name.toLowerCase().includes(nombreBuscado.toLowerCase()));
-    if (!miembro) {
-        alert("No se encontró ningún voluntario con ese nombre en el roster.");
-        return;
-    }
-    
-    guardarCambioDirecto(miembro.id, miembro.name);
-        }
-        
               
     </script>
 </body>
