@@ -2317,11 +2317,16 @@ function descargarSolicitudPdf(id) {
             db.ref('bodegaEpp').set(bodegaEpp); db.ref('roster').set(roster); openFichaEppModal(memberId);
         }
 
-        function openRosterView() { hideAllViews(); document.getElementById('rosterView').classList.remove('hidden'); renderRoster(); }
-        function renderRoster() {
-    const tbody = document.getElementById('rosterTableBody'); 
-    if (!tbody) return; 
+        function openRosterView() { 
+    hideAllViews(); 
+    document.getElementById('rosterView').classList.remove('hidden'); 
+}
+
+function renderRoster() {
+    const tbody = document.getElementById('rosterTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
+
     
     if (roster.length === 0) { 
         tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-500">Sin miembros.</td></tr>`; 
