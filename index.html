@@ -657,48 +657,7 @@
                 <p class="text-[11px] text-slate-400">Segunda Compañía Collipulli</p>
             </div>
         </div>
-<!-- TARJETA: CUENTAS DE COMPAÑÍA Y BOLETAS -->
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 mt-4">
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <h3 class="font-bold text-cyan-400 text-sm flex items-center gap-2">
-            📄 Cuentas de Compañía y Boletas
-        </h3>
-        <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="contadorBoletasBombero">0 comprobantes</span>
-    </div>
-    
-    <div id="listaBoletasBombero" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-        <p class="text-xs text-slate-500 text-center py-4">No tienes comprobantes ni boletas registradas.</p>
-    </div>
-</div>
-        <!-- TARJETA: EDITAR PERFIL DE USUARIO -->
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 mt-4">
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <h3 class="font-bold text-cyan-400 text-sm flex items-center gap-2">
-            ⚙️ Editar mi Perfil
-        </h3>
-        <span class="text-xs text-slate-400">Actualiza tus datos</span>
-    </div>
-    
-    <form id="formEditarPerfil" onsubmit="guardarPerfilUsuario(event)" class="space-y-3 text-xs">
-        <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Nombre Completo:</label>
-            <input type="text" id="inputPerfilNombre" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-medium focus:border-cyan-500 outline-none">
-        </div>
-        <div>
-            <label class="block text-slate-400 mb-1 font-semibold">RUT:</label>
-            <input type="text" id="inputPerfilRut" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-medium focus:border-cyan-500 outline-none">
-        </div>
-        <div>
-            <label class="block text-slate-400 mb-1 font-semibold">Cargo / Especialidad:</label>
-            <input type="text" id="inputPerfilCargo" disabled class="w-full bg-slate-950/50 border border-slate-800/60 rounded-xl p-2.5 text-slate-400 cursor-not-allowed">
-        </div>
-        <button type="submit" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition shadow">
-            Guardar Cambios de Perfil
-        </button>
-    </form>
-</div>
-        
-        
+
         <!-- ACCESOS RÁPIDOS DEL BOMBERO -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openCalendarView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg group"><i class="ph ph-calendar-blank text-4xl text-cyan-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Calendario Compañía</h3></div>
@@ -737,18 +696,11 @@
 
     <!-- VISTA 1: MATRIZ DE CUOTAS MENSUALES -->
     <div id="vistaMatrizCuotas" class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
-    <div>
-        <h3 class="font-bold text-cyan-400 text-lg">Control Anual de Cuotas Sociales</h3>
-        <span class="text-xs text-slate-400">Haz clic en los círculos para cambiar estado (⬛ Neutro / 🟢 Pagado / 🔴 Pendiente)</span>
-    </div>
-    
-    <!-- INPUT DE MONTO GLOBAL -->
-    <div class="flex items-center space-x-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
-        <span class="text-xs text-slate-400 font-semibold">Valor Cuota (CLP):</span>
-        <input type="number" value="4000" onchange="actualizarMontoCuotaGlobal(this)" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-1 text-white text-xs font-bold text-center">
-    </div>
-</div>
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-cyan-400 text-lg">Control Anual de Cuotas Sociales</h3>
+            <span class="text-xs text-slate-400">Haz clic en los círculos para cambiar estado (🟢 Pagado / 🔴 Pendiente)</span>
+        </div>
+        
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -1421,14 +1373,8 @@
     // <--- AGREGA ESTA LÍNEA PARA QUE LA MATRIZ CARGUE LOS VOLUNTARIOS --->
     if (typeof actualizarGraficoAsistencia === 'function') actualizarGraficoAsistencia();
     if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
-        
+
     const sesion = JSON.parse(localStorage.getItem('active_user_session'));
-
-    // Aplicar roles y permisos dinámicos automáticamente
-    if (typeof aplicarRolesYPermisosDinamicos === 'function') {
-        aplicarRolesYPermisosDinamicos(sesion);
-    }
-
     
     // Validar visibilidad del módulo de tesorería según el rol activo
     const tesoreroView = document.getElementById('tesoreroView');
@@ -1738,11 +1684,7 @@
         function renderPortalBomberoActivo(user) {
             document.getElementById('saludoVoluntario').textContent = `Bienvenido, Bombero ${user.nombre}`;
             let miembro = roster.find(m => m.name.toLowerCase().trim() === user.nombre.toLowerCase().trim());
-
-                if (typeof cargarDatosPerfilUsuario === 'function') {
-                    cargarDatosPerfilUsuario(user);
-        }
-        
+            
             let horas = miembro ? (miembro.garitaHours || 0) : 0;
             let asist3m = miembro ? (miembro.count3m || 0) : 0;
 
@@ -1762,10 +1704,6 @@
                 miembro.historialMotivos.slice(0, 5).forEach(mot => {
                     tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-4 py-2.5 font-mono text-slate-400 whitespace-nowrap">${mot.fecha}</td><td class="px-4 py-2.5 font-medium text-slate-200">${mot.detalle}</td></tr>`;
                 });
-            if (typeof renderizarCuentasCompaniaBombero === 'function') {
-                renderizarCuentasCompaniaBombero(user);
-        }
-        
             }
         }
 
@@ -3785,135 +3723,6 @@ function guardarFilaCuotas(nombreVoluntario, index) {
         alert("Error al procesar el guardado en la base de datos.");
     });
         }
-        // Cargar y renderizar las boletas en la tarjeta "Cuentas de Compañía" del bombero
-function renderizarCuentasCompaniaBombero(sesionUsuario) {
-    const contenedor = document.getElementById('listaBoletasBombero');
-    const contador = document.getElementById('contadorBoletasBombero');
-    if (!contenedor || !sesionUsuario) return;
-
-    if (typeof db === 'undefined') return;
-
-    // Buscar en el buzón los mensajes dirigidos a este voluntario
-    db.ref('buzon_mensajes').orderByChild('destinatario').equalTo(sesionUsuario.name).once('value').then(snapshot => {
-        const data = snapshot.val() || {};
-        const boletas = Object.values(data).filter(m => m.tipo === 'boleta_cuotas' || m.tipo === 'boleta_pago');
-
-        if (boletas.length === 0) {
-            contenedor.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No tienes comprobantes ni boletas registradas.</p>`;
-            if (contador) contador.textContent = `0 comprobantes`;
-            return;
-        }
-
-        if (contador) contador.textContent = `${boletas.length} comprobante${boletas.length > 1 ? 's' : ''}`;
-        contenedor.innerHTML = '';
-
-        // Ordenar del más reciente al más antiguo si tienen fecha
-        boletas.reverse().forEach(b => {
-            let div = document.createElement('div');
-            div.className = 'bg-slate-950 border border-slate-800/80 rounded-xl p-3 text-xs space-y-1.5 shadow-sm';
-            
-            div.innerHTML = `
-                <div class="flex justify-between items-center text-slate-400 border-b border-slate-900 pb-1">
-                    <span class="font-bold text-cyan-400">${b.asunto || 'Comprobante de Tesorería'}</span>
-                    <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${b.fecha || 'Sin fecha'}</span>
-                </div>
-                <p class="text-slate-300 whitespace-pre-line font-mono text-[11px] bg-slate-900/50 p-2 rounded-lg border border-slate-800/40">${b.mensaje}</p>
-                ${b.firmadoPor ? `<div class="text-[10px] text-slate-400 italic text-right">Firmado por: ${b.firmadoPor}</div>` : ''}
-            `;
-            contenedor.appendChild(div);
-        });
-    });
-        }   
-        // Cargar los datos actuales del usuario en el formulario del perfil
-function cargarDatosPerfilUsuario(usuario) {
-    if (!usuario) return;
-    const inputNombre = document.getElementById('inputPerfilNombre');
-    const inputRut = document.getElementById('inputPerfilRut');
-    const inputCargo = document.getElementById('inputPerfilCargo');
-
-    if (inputNombre) inputNombre.value = usuario.name || '';
-    if (inputRut) inputRut.value = usuario.rut || '';
-    if (inputCargo) inputCargo.value = usuario.cargo || 'Bombero';
-}
-
-// Guardar los cambios del perfil en localStorage y opcionalmente en Firebase
-function guardarPerfilUsuario(event) {
-    event.preventDefault();
-
-    const nuevoNombre = document.getElementById('inputPerfilNombre').value.trim();
-    const nuevoRut = document.getElementById('inputPerfilRut').value.trim();
-
-    if (!nuevoNombre) {
-        alert("El nombre no puede estar vacío.");
-        return;
-    }
-
-    // Obtener la sesión activa actual
-    let sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
-    if (!sesionActual) {
-        alert("No hay una sesión activa.");
-        return;
-    }
-
-    const nombreAnterior = sesionActual.name;
-
-    // Actualizar los datos en el objeto de sesión
-    sesionActual.name = nuevoNombre;
-    sesionActual.rut = nuevoRut;
-
-    // Guardar la nueva sesión en localStorage
-    localStorage.setItem('active_user_session', JSON.stringify(sesionActual));
-
-    // Si usas Firebase, también podemos actualizar el nodo del roster o usuario si lo deseas
-    if (typeof db !== 'undefined') {
-        const idLimpioAnterior = nombreAnterior.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-        const idLimpioNuevo = nuevoNombre.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-
-        // Actualizar registro en Firebase si existe base de datos de usuarios/roster
-        db.ref(`roster/${idLimpioNuevo}`).set({
-            name: nuevoNombre,
-            rut: nuevoRut,
-            cargo: sesionActual.cargo || 'Bombero'
-        }).then(() => {
-            alert("¡Perfil actualizado con éxito en el sistema!");
-            location.reload(); // Recargar para aplicar los cambios en toda la app
-        }).catch(err => {
-            console.error(err);
-            alert("Perfil guardado localmente, pero hubo un error al sincronizar con la nube.");
-            location.reload();
-        });
-    } else {
-        alert("¡Perfil actualizado con éxito!");
-        location.reload();
-    }
-}
-        // Aplicar roles y permisos de forma dinámica según el cargo actual del usuario
-function aplicarRolesYPermisosDinamicos(usuario) {
-    if (!usuario) return;
-
-    const cargo = (usuario.cargo || 'Bombero').toLowerCase();
-    
-    // Contenedores principales de vistas
-    const moduloTesoreria = document.getElementById('moduloTesoreria');
-    const tesoreroView = document.getElementById('tesoreroView');
-    const voluntarioRasoView = document.getElementById('voluntarioRasoView');
-
-    // 1. Controlar módulo de Tesorería (Solo si es Tesorero o Capitán)
-    if (moduloTesoreria || tesoreroView) {
-        if (cargo.includes('tesorero') || cargo.includes('capitan') || cargo.includes('directora')) {
-            if (moduloTesoreria) moduloTesoreria.classList.remove('hidden');
-            if (tesoreroView) tesoreroView.classList.remove('hidden');
-        } else {
-            if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
-            if (tesoreroView) tesoreroView.classList.add('hidden');
-        }
-    }
-
-    // 2. Controlar permisos especiales de Oficial / Teniente / Bombero
-    console.log(`Permisos aplicados para el cargo: ${usuario.cargo}`);
-        }
-        
-    
               
     </script>
 </body>
