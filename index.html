@@ -683,8 +683,7 @@
     </div>
 
     <!-- CONTENEDOR PRINCIPAL DEL MÓDULO DE TESORERÍA -->
-<div id="moduloTesoreria" class="space-y-4 text-white">
-    
+<div id="moduloTesoreria" class="space-y-4 text-white hidden">
     <!-- Barra de Navegación / Pestañas del Tesorero -->
     <div class="flex space-x-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
         <button onclick="cambiarVistaTesoreria('cuotas')" id="btnTabCuotas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition">
@@ -1280,22 +1279,24 @@
         db.ref('perfiles').on('value', snap => { if(snap.val()) profiles = snap.val(); });
         db.ref('visitantes').on('value', snap => { visitors = snap.val() || []; renderVisitors(); if(!document.getElementById('liveHoursView').classList.contains('hidden')) renderLiveHours(); verificarAlertasAutomaticas(); });
         db.ref('roster').on('value', snap => {
-            const data = snap.val();
-            roster = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+    const data = snap.val();
+    roster = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
     
-            if (typeof renderRoster === 'function') renderRoster();
-            if (typeof renderFichas === 'function') renderFichas();
-            if (typeof renderEppVoluntarios === 'function') renderEppVoluntarios();
-            if (typeof renderCertificadosView === 'function') renderCertificadosView();
-            if (typeof renderResumenMensual === 'function') renderResumenMensual();
+    if (typeof renderRoster === 'function') renderRoster();
+    if (typeof renderFichas === 'function') renderFichas();
+    if (typeof renderEppVoluntarios === 'function') renderEppVoluntarios();
+    if (typeof renderCertificadosView === 'function') renderCertificadosView();
+    if (typeof renderResumenMensual === 'function') renderResumenMensual();
+    if (typeof actualizarGraficoAsistencia === 'function') actualizarGraficoAsistencia();
     
-            if (typeof actualizarGraficoAsistencia === 'function') actualizarGraficoAsistencia();
+    // <--- AGREGA ESTA LÍNEA PARA QUE LA MATRIZ CARGUE LOS VOLUNTARIOS --->
+    if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
 
-            const sesion = JSON.parse(localStorage.getItem('active_user_session'));
-            if (sesion && sesion.cargo === "Bombero" && typeof renderPortalBomberoActivo === 'function') {
-               renderPortalBomberoActivo(sesion);
-           }
-       });
+    const sesion = JSON.parse(localStorage.getItem('active_user_session'));
+    if (sesion && sesion.cargo === "Bombero" && typeof renderPortalBomberoActivo === 'function') {
+        renderPortalBomberoActivo(sesion);
+    }
+});
 
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
