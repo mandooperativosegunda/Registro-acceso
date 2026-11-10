@@ -811,7 +811,16 @@
                 <option value="Pago Paseo de Compañia">Pago Paseo de Compañia</option>
             </select> <!-- ESTA ES LA ETIQUETA QUE FALTA -->
         </div> <!-- ESTA ES LA OTRA ETIQUETA QUE FALTA -->
-
+            
+<!-- ESTO ES LO QUE DEBES AGREGAR PARA CERRAR EL MODAL -->
+        <div class="flex justify-end gap-2 mt-4">
+            <button onclick="document.getElementById('modalBoletasLibres').classList.add('hidden')" class="px-4 py-2 bg-slate-700 text-white rounded-xl">Cancelar</button>
+            <button class="px-4 py-2 bg-cyan-600 text-white rounded-xl font-bold">Guardar</button>
+        </div>
+    </form> <!-- Cierra el cuadro del modal -->
+</div> <!-- Cierra el fondo oscuro del modal -->
+<!-- FIN DEL MODAL DE BOLETAS -->
+    
 <!-- CONTENEDOR EXCLUSIVO DEL TESORERO -->
 <div id="tesoreroView" class="hidden space-y-4 text-white">
     <div id="moduloTesoreria" class="space-y-4 text-white">
