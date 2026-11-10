@@ -3544,103 +3544,186 @@ function emitirYGuardarBoleta(event) {
         });
     }
 }
+// Variable global para el monto de cuota configurado
+let montoCuotaGlobal = 4000;
 
-// Cargar Matriz de Cuotas Anuales con círculos interactivos
+function actualizarMontoCuotaGlobal(input) {
+    montoCuotaGlobal = Number(input.value) || 0;
+}
+
+// Cargar la Matriz de Cuotas con Círculos de 3 Estados (Neutro ⬛, Rojo 🔴, Verde 🟢)
 function cargarMatrizCuotas() {
     const tbody = document.getElementById('tablaMatrizCuotasBody');
     if (!tbody) return;
     tbody.innerHTML = '';
 
     if (typeof roster === 'undefined' || roster.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" class="text-center py-4 text-slate-500">No hay voluntarios cargados en el roster.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" class="text-center py-4 text-slate-500">No hay voluntarios cargados en el roster</td></tr>`;
         return;
     }
 
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
-    roster.forEach((v, index) => {
-        const tr = document.createElement('tr');
-        tr.className = 'border-b border-slate-800/60 hover:bg-slate-800/30';
-        
-        let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm">${v.name}</td>`;
-        
-        meses.forEach(mes => {
-        htmlCeldas += `
-    <td class="py-2.5 px-3 text-center">
-        <button type="button" onclick="guardarFilaCuotas('${v.name}', ${index})" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-xs font-bold text-white transition">Guardar</button>
-    </td>`;
-
+    // Cargar estados previos desde Firebase si existen
+    if (typeof db !== 'undefined') {
+        db.ref('tesoreria_cuotas').once('value').then(snapshot => {
+            const dataCuotas = snapshot.val() || {};
+            renderizarFilasMatriz(roster, meses, dataCuotas);
         });
+    } else {
+        renderizarFilasMatriz(roster, meses, {});
+    }
+}
+
+function renderizarFilasMatriz(rosterList, meses, dataCuotas) {
+    const tbody = document.getElementById('tablaMatrizCuotasBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    rosterList.forEach((v, index) => {
+        const idLimio = v.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+        const registroVoluntario = dataCuotas[idLimio] || { mesesDetalle: {} };
+
+        let tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-800/60 hover:bg-slate-800/30';
+
+        let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm whitespace-nowrap">${v.name}</td>`;
+
+        meses.forEach(mes => {
+            let estadoActual = registroVoluntario.mesesDetalle && registroVoluntario.mesesDetalle[mes] ? registroVoluntario.mesesDetalle[mes] : 'neutro';
+            let colorClase = 'bg-slate-800 text-slate-400'; // Neutro
+            let titleText = 'Neutro / Sin registro';
+
+            if (estadoActual === 'pagado') {
+                colorClase = 'bg-emerald-500 text-white';
+                titleText = 'Pagado (Positivo)';
+            } else if (estadoActual === 'pendiente') {
+                colorClase = 'bg-rose-500 text-white';
+                titleText = 'Pendiente (Negativo)';
+            }
+
+            htmlCeldas += `
+                <td class="py-2.5 px-2 text-center">
+                    <button type="button" id="cuota_${index}_${mes}" onclick="alternarEstadoCuota(${index}, '${mes}')" data-estado="${estadoActual}" class="w-7 h-7 rounded-full ${colorClase} font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow" title="${titleText}">
+                        ●
+                    </button>
+                </td>`;
+        });
+
+        // Botón Guardar Fila
+        htmlCeldas += `
+            <td class="py-2.5 px-3 text-center">
+                <button type="button" onclick="guardarFilaCuotas('${v.name}', ${index})" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-bold text-white transition shadow">Guardar</button>
+            </td>`;
 
         tr.innerHTML = htmlCeldas;
         tbody.appendChild(tr);
     });
 }
 
+// Rotar entre 3 estados: Neutro (slate) -> Pagado (verde) -> Pendiente (rojo) -> Neutro
 function alternarEstadoCuota(index, mes) {
     const btn = document.getElementById(`cuota_${index}_${mes}`);
-    if (btn.classList.contains('bg-rose-500')) {
-        btn.classList.remove('bg-rose-500');
-        btn.classList.add('bg-emerald-500');
-        btn.title = "Pagado al día";
+    if (!btn) return;
+
+    let estado = btn.getAttribute('data-estado');
+
+    if (estado === 'neutro' || !estado) {
+        btn.setAttribute('data-estado', 'pagado');
+        btn.className = 'w-7 h-7 rounded-full bg-emerald-500 text-white font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow';
+        btn.title = 'Pagado (Positivo)';
+    } else if (estado === 'pagado') {
+        btn.setAttribute('data-estado', 'pendiente');
+        btn.className = 'w-7 h-7 rounded-full bg-rose-500 text-white font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow';
+        btn.title = 'Pendiente (Negativo)';
     } else {
-        btn.classList.remove('bg-emerald-500');
-        btn.classList.add('bg-rose-500');
-        btn.title = "Pendiente";
+        btn.setAttribute('data-estado', 'neutro');
+        btn.className = 'w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow';
+        btn.title = 'Neutro / Sin registro';
     }
 }
 
+// Guardar fila, generar boleta firmada, sumar al historial y enviar a la tarjeta del bombero
 function guardarFilaCuotas(nombreVoluntario, index) {
     if (typeof db === 'undefined') {
         alert("Error: Base de datos no inicializada.");
         return;
     }
 
-    // Recopilar los meses pagados (verdes) para este voluntario
+    const firmaTesorero = prompt("Ingrese su nombre y cargo para firmar la boleta de cuotas (Ej: Tte. Tesorero Juan Pérez):");
+    if (!firmaTesorero) {
+        alert("Se requiere la firma del tesorero para emitir el comprobante.");
+        return;
+    }
+
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    let estadosMeses = {};
     let mesesPagados = [];
-    let mesesPendientes = [];
 
     meses.forEach(mes => {
         const btn = document.getElementById(`cuota_${index}_${mes}`);
-        if (btn && btn.classList.contains('bg-emerald-500')) {
-            mesesPagados.push(mes.toUpperCase());
-        } else {
-            mesesPendientes.push(mes.toUpperCase());
+        if (btn) {
+            let estado = btn.getAttribute('data-estado') || 'neutro';
+            estadosMeses[mes] = estado;
+            if (estado === 'pagado') {
+                mesesPagados.push(mes.toUpperCase());
+            }
         }
     });
 
+    if (mesesPagados.length === 0) {
+        alert("No hay meses marcados como Pagados (Verde) en esta fila para generar cobro.");
+        return;
+    }
+
+    const montoTotal = mesesPagados.length * montoCuotaGlobal;
     const fechaActual = new Date().toLocaleDateString('es-CL');
-    const mensajeBoleta = `COMPROBANTE DE CUOTAS - 2ª CÍA BOMBEROS\n` +
+
+    const mensajeBoleta = `COMPROBANTE DE CUOTAS SOCIALES - 2ª CÍA\n` +
                           `----------------------------------------\n` +
                           `Voluntario: ${nombreVoluntario}\n` +
-                          `Meses Al Día: ${mesesPagados.length > 0 ? mesesPagados.join(', ') : 'Ninguno'}\n` +
-                          `Fecha de Registro: ${fechaActual}\n` +
+                          `Meses Pagados: ${mesesPagados.join(', ')}\n` +
+                          `Monto Total: $${montoTotal.toLocaleString('es-CL')} CLP\n` +
+                          `Fecha: ${fechaActual}\n` +
+                          `Firma Tesorería: ${firmaTesorero}\n` +
                           `----------------------------------------`;
 
-    // 1. Guardar estado de cuotas en Firebase
-    db.ref(`tesoreria_cuotas/${nombreVoluntario.replace(/\s+/g, '_')}`).set({
-        mesesPagados: mesesPagados,
-        actualizado: fechaActual
+    const idLimio = nombreVoluntario.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+
+    // 1. Guardar estado en tesoreria_cuotas
+    db.ref(`tesoreria_cuotas/${idLimio}`).set({
+        nombre: nombreVoluntario,
+        mesesDetalle: estadosMeses,
+        ultimaActualizacion: fechaActual
     }).then(() => {
-        // 2. Enviar comprobante al buzón personal del bombero
+        // 2. Enviar a la tarjeta de Cuentas de Compañía / Buzón del bombero
         return db.ref('buzon_mensajes').push({
             destinatario: nombreVoluntario,
             tipo: 'boleta_cuotas',
-            asunto: 'Actualización de Cuotas Sociales y Comprobante',
+            asunto: `Comprobante de Cuotas - $${montoTotal.toLocaleString('es-CL')} CLP`,
             mensaje: mensajeBoleta,
+            monto: montoTotal,
             fecha: fechaActual,
+            firmadoPor: firmaTesorero,
             leido: false
         });
     }).then(() => {
-        alert(`¡Cuotas guardadas para ${nombreVoluntario} y boleta enviada a su buzón!`);
+        // 3. Registrar en el Historial de Movimientos Financieros general
+        return db.ref('historial_financiero').push({
+            fecha: fechaActual,
+            descripcion: `Cuotas Sociales (${mesesPagados.join(', ')}) - ${nombreVoluntario}`,
+            tipo: 'Ingreso',
+            monto: montoTotal
+        });
+    }).then(() => {
+        alert(`¡Cuotas guardadas, boleta firmada por "${firmaTesorero}" y enviada a la cuenta de compañía de ${nombreVoluntario}!`);
+        if (typeof cargarHistorialMovimientos === 'function') cargarHistorialMovimientos();
     }).catch(err => {
         console.error(err);
-        alert("Error al guardar en la base de datos.");
+        alert("Error al procesar el guardado en la base de datos.");
     });
-}
-  
-                
+        }
+              
     </script>
 </body>
 </html>
