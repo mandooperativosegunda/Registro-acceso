@@ -2355,50 +2355,55 @@ function descargarSolicitudPdf(id) {
 
     let categoriaActual = "";
 
-    roster.forEach(m => {
-        if (m.category !== categoriaActual) {
-            categoriaActual = m.category;
-            tbody.innerHTML += `
-                <tr class="bg-slate-950 border-y border-slate-800">
-                    <td colspan="5" class="px-5 py-2 font-bold text-cyan-400 uppercase tracking-wider text-[11px]">
-                        ${categoriaActual}
-                    </td>
-                </tr>`;
-        }
+roster.forEach(m => {
+    // 1. Protección contra elementos nulos o indefinidos en el array
+    if (!m) return;
 
-        let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30"; // A
-        if (m.status === "AB") {
-            estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
-        } else if (m.status === "P") {
-            estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
-        } else if (m.status === "F") {
-            estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
-        }
+    // 2. Validación de nombre seguro para evitar 'undefined' en la interfaz
+    let nombreValido = (m.name && m.name !== 'undefined') ? m.name : 'Sin Nombre Asignado';
 
-        let botonesReacomodar = `
-            <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/40 px-2 py-1 rounded-lg mr-1" title="Ascender / Cambiar Cargo">▲ Ascender</button>
-            <button onclick="descenderMiembro(${m.id})" class="text-amber-400 font-semibold bg-amber-950/40 border border-amber-800/40 px-2 py-1 rounded-lg" title="Descender / Cambiar Categoría">▼</button>`;
-
+    if (m.category !== categoriaActual) {
+        categoriaActual = m.category || "Sin Categoría";
         tbody.innerHTML += `
-            <tr class="hover:bg-slate-900 border-b border-slate-800/50">
-                <td class="px-5 py-3.5 text-slate-300">
-                    <span class="block font-bold text-white">${m.role}</span>
-                    <span class="text-[10px] text-slate-400">${m.category}</span>
-                </td>
-                <td class="px-5 py-3.5 font-bold text-white">${m.name}</td>
-                <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.garitaHours || 0} hrs</td>
-                <td class="px-5 py-3.5 text-center">
-                    <button onclick="cambiarEstadoMiembro(${m.id})" class="px-3 py-1 rounded-lg font-bold border transition-colors ${estadoClass}" title="Cambiar Estado">
-                        ${m.status || 'A'}
-                    </button>
-                 </td>
-                <td class="px-5 py-3.5 text-right flex items-center justify-end gap-1">
-                    ${botonesReacomodar}
-                    <button onclick="deleteMember(${m.id})" class="text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/40 px-3 py-1 rounded-lg ml-2">Eliminar</button>
+            <tr class="bg-slate-950 border-y border-slate-800">
+                <td colspan="5" class="px-5 py-2 font-bold text-cyan-400 uppercase">
+                    ${categoriaActual}
                 </td>
             </tr>`;
-    });
-}
+    }
+
+    let estadoClass = "bg-slate-800 text-emerald-400 border-emerald-500/30";
+    if (m.status === "AB") {
+        estadoClass = "bg-cyan-950/60 text-cyan-300 border-cyan-500/30";
+    } else if (m.status === "P") {
+        estadoClass = "bg-amber-950/60 text-amber-300 border-amber-500/30";
+    } else if (m.status === "F") {
+        estadoClass = "bg-rose-950/60 text-rose-300 border-rose-500/30";
+    }
+
+    let botonesReacomodar = `
+        <button onclick="ascenderMiembro(${m.id})" class="text-cyan-400 hover:text-cyan-300 mr-2">▲</button>
+        <button onclick="descenderMiembro(${m.id})" class="text-amber-400 hover:text-amber-300">▼</button>
+    `;
+
+    tbody.innerHTML += `
+        <tr class="hover:bg-slate-900 border-b border-slate-800/50">
+            <td class="px-5 py-3.5 text-slate-300">
+                <span class="block font-bold text-white">${m.role || 'Sin Cargo'}</span>
+                <span class="text-[10px] text-slate-400">${m.category || ''}</span>
+            </td>
+            <td class="px-5 py-3.5 font-bold text-white">${nombreValido}</td>
+            <td class="px-5 py-3.5 text-center text-cyan-400 font-bold">${m.count3m || 0}</td>
+            <td class="px-5 py-3.5 text-center">
+                <button onclick="cambiarEstadoMiembro(${m.id})" class="px-2.5 py-1 rounded text-xs font-semibold border ${estadoClass}">
+                    ${m.status || 'A'}
+                </button>
+            </td>
+            <td class="px-5 py-3.5 text-right flex items-center justify-end space-x-2">
+                ${botonesReacomodar}
+            </td>
+        </tr>`;
+});
 
 
 
@@ -3090,13 +3095,11 @@ function confirmarGuardadoAsistenciaSemanal() {
 }
 
 function confirmarGuardadoConMotivo(motivoFinal) {
-    // Si no existe el roster, detenemos
     if (typeof roster === 'undefined' || !roster) {
         alert("No hay registros en la lista para guardar.");
         return;
     }
 
-    // Nos aseguramos estrictamente de que roster sea un array válido
     if (!Array.isArray(roster)) {
         roster = Object.values(roster);
     }
@@ -3110,47 +3113,33 @@ function confirmarGuardadoConMotivo(motivoFinal) {
     let horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
     roster.forEach(m => {
-        let estadoActual = m.status || 'A';
+    // Proteger contra elementos nulos o indefinidos en el array
+    if (!m) return; 
 
-        if (!m.historialMotivos) m.historialMotivos = [];
+    // Validamos que el nombre o estado no estén corruptos
+    if (!m.name || m.name === 'undefined') return;
 
-        let nuevoRegistroAsistencia = {
-            fecha: `${fechaHoy} ${horaActual}`,
-            detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
-        };
-        m.historialMotivos.unshift(nuevoRegistroAsistencia);
+    let estadoActual = m.status || 'A';
+    if (!m.historialMotivos) m.historialMotivos = [];
 
-        // Contadores según el estado
-        if (estadoActual === 'AB' || estadoActual === 'A') {
-            m.count3m = (m.count3m || 0) + 1;
-            m.countly = (m.countly || 0) + 1;
-        }
-        if (estadoActual === 'AB') {
-            m.totalAb = (m.totalAb || 0) + 1;
-        }
-        if (estadoActual === 'P') {
-            m.totalP = (m.totalP || 0) + 1;
-        }
-        if (estadoActual === 'F') {
-            m.totalF = (m.totalF || 0) + 1;
-        }
-    });
+    let nuevoRegistroAsistencia = {
+        fecha: `${fechaHoy} ${horaActual}`,
+        detalle: `Asistencia [ ${estadoActual} ] - Motivo: ${motivoFinal}`
+    };
+    m.historialMotivos.unshift(nuevoRegistroAsistencia);
+});
 
     if (typeof db !== 'undefined') {
         db.ref('roster').set(roster, (error) => {
             if (error) {
                 alert("Error al sincronizar con Firebase: " + error.message);
             } else {
-                alert("Asistencia, permisos, faltas y motivos guardados con éxito en las fichas individuales!");
+                alert("¡Asistencia y registros guardados con éxito!");
                 if (typeof renderRoster === 'function') renderRoster();
-                
-                // Recargamos la página al instante tras guardar con éxito
-                window.location.reload();
             }
         });
     } else {
         alert("Guardado local exitoso!");
-        window.location.reload();
     }
 }
         function abrirEditorGlobalFichas() {
@@ -3227,12 +3216,13 @@ function guardarEditorGlobalFichas() {
         let valF = document.getElementById(`global_f_${idx}`);
         let valHist = document.getElementById(`global_historial_${idx}`);
 
-        if (val3m) m.count3m = parseInt(val3m.value) || 0;
-        if (valAnual) m.countly = parseInt(valAnual.value) || 0;
-        if (valAb) m.totalAb = parseInt(valAb.value) || 0;
-        if (valP) m.totalP = parseInt(valP.value) || 0;
-        if (valA) m.totalA = parseInt(valA.value) || 0;
-        if (valF) m.totalF = parseInt(valF.value) || 0;
+        // Solo actualizamos si el input existe y tiene un valor válido
+        if (val3m && val3m.value !== '') m.count3m = parseInt(val3m.value) || 0;
+        if (valAnual && valAnual.value !== '') m.countly = parseInt(valAnual.value) || 0;
+        if (valAb && valAb.value !== '') m.totalAb = parseInt(valAb.value) || 0;
+        if (valP && valP.value !== '') m.totalP = parseInt(valP.value) || 0;
+        if (valA && valA.value !== '') m.totalA = parseInt(valA.value) || 0;
+        if (valF && valF.value !== '') m.totalF = parseInt(valF.value) || 0;
 
         if (valHist && valHist.value.trim() !== '') {
             if (!m.historialMotivos) m.historialMotivos = [];
@@ -3245,21 +3235,23 @@ function guardarEditorGlobalFichas() {
         }
     });
 
-    // Guardar en Firebase y recargar página para refrescar todo
+    // Guardar en Firebase SOLO al presionar el botón correspondiente
     if (typeof db !== 'undefined') {
         db.ref('roster').set(roster, (error) => {
             if (error) {
                 alert("Error al actualizar en Firebase: " + error.message);
             } else {
                 alert("¡Fichas globales actualizadas con éxito!");
-                window.location.reload();
+                cerrarEditorGlobalFichas();
+                if (typeof renderRoster === 'function') renderRoster();
             }
         });
     } else {
         alert("¡Guardado local exitoso!");
-        window.location.reload();
+        cerrarEditorGlobalFichas();
     }
 }
+
         function ejecutarCierreDeAnio() {
     if (!confirm("⚠️ ADVERTENCIA: Estás a punto de ejecutar el Cierre de Año. Esto descargará un respaldo automático en tu dispositivo, guardará el archivo histórico en la base de datos, pondrá todos los contadores en ceros y dejará el roster limpio para el nuevo periodo. ¿Estás seguro de continuar?")) {
         return;
