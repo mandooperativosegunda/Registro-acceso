@@ -1421,8 +1421,14 @@
     // <--- AGREGA ESTA LÍNEA PARA QUE LA MATRIZ CARGUE LOS VOLUNTARIOS --->
     if (typeof actualizarGraficoAsistencia === 'function') actualizarGraficoAsistencia();
     if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
-
+        
     const sesion = JSON.parse(localStorage.getItem('active_user_session'));
+
+    // Aplicar roles y permisos dinámicos automáticamente
+    if (typeof aplicarRolesYPermisosDinamicos === 'function') {
+        aplicarRolesYPermisosDinamicos(sesion);
+    }
+
     
     // Validar visibilidad del módulo de tesorería según el rol activo
     const tesoreroView = document.getElementById('tesoreroView');
@@ -3881,6 +3887,32 @@ function guardarPerfilUsuario(event) {
         location.reload();
     }
 }
+        // Aplicar roles y permisos de forma dinámica según el cargo actual del usuario
+function aplicarRolesYPermisosDinamicos(usuario) {
+    if (!usuario) return;
+
+    const cargo = (usuario.cargo || 'Bombero').toLowerCase();
+    
+    // Contenedores principales de vistas
+    const moduloTesoreria = document.getElementById('moduloTesoreria');
+    const tesoreroView = document.getElementById('tesoreroView');
+    const voluntarioRasoView = document.getElementById('voluntarioRasoView');
+
+    // 1. Controlar módulo de Tesorería (Solo si es Tesorero o Capitán)
+    if (moduloTesoreria || tesoreroView) {
+        if (cargo.includes('tesorero') || cargo.includes('capitan') || cargo.includes('directora')) {
+            if (moduloTesoreria) moduloTesoreria.classList.remove('hidden');
+            if (tesoreroView) tesoreroView.classList.remove('hidden');
+        } else {
+            if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
+            if (tesoreroView) tesoreroView.classList.add('hidden');
+        }
+    }
+
+    // 2. Controlar permisos especiales de Oficial / Teniente / Bombero
+    console.log(`Permisos aplicados para el cargo: ${usuario.cargo}`);
+        }
+        
     
               
     </script>
