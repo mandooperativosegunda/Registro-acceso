@@ -3565,16 +3565,12 @@ function cargarMatrizCuotas() {
         let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm">${v.name}</td>`;
         
         meses.forEach(mes => {
-            htmlCeldas += `
-                <td class="py-2.5 px-2 text-center">
-                    <button type="button" onclick="alternarEstadoCuota(${index}, '${mes}')" id="cuota_${index}_${mes}" class="w-5 h-5 rounded-full bg-rose-500 inline-block shadow-md transition transform hover:scale-110" title="Pendiente (Clic para cambiar)"></button>
-                </td>`;
-        });
-
         htmlCeldas += `
-            <td class="py-2.5 px-3 text-center">
-                <button type="button" onclick="guardarFilaCuotas('${v.name}')" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-xs font-bold text-white">Guardar</button>
-            </td>`;
+    <td class="py-2.5 px-3 text-center">
+        <button type="button" onclick="guardarFilaCuotas('${v.name}', ${index})" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-xs font-bold text-white transition">Guardar</button>
+    </td>`;
+
+        });
 
         tr.innerHTML = htmlCeldas;
         tbody.appendChild(tr);
@@ -3643,9 +3639,7 @@ function guardarFilaCuotas(nombreVoluntario, index) {
         alert("Error al guardar en la base de datos.");
     });
 }
-
-        
-    
+  
                 
     </script>
 </body>
