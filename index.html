@@ -657,7 +657,20 @@
                 <p class="text-[11px] text-slate-400">Segunda Compañía Collipulli</p>
             </div>
         </div>
-
+<!-- TARJETA: CUENTAS DE COMPAÑÍA Y BOLETAS -->
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 mt-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-cyan-400 text-sm flex items-center gap-2">
+            📄 Cuentas de Compañía y Boletas
+        </h3>
+        <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="contadorBoletasBombero">0 comprobantes</span>
+    </div>
+    
+    <div id="listaBoletasBombero" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+        <p class="text-xs text-slate-500 text-center py-4">No tienes comprobantes ni boletas registradas.</p>
+    </div>
+</div>
+        
         <!-- ACCESOS RÁPIDOS DEL BOMBERO -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div onclick="openCalendarView()" class="glass-card rounded-2xl border border-slate-800 p-6 text-center cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg group"><i class="ph ph-calendar-blank text-4xl text-cyan-400 mb-3 group-hover:scale-110 transition-transform"></i><h3 class="font-bold text-sm text-white">Calendario Compañía</h3></div>
@@ -1711,6 +1724,10 @@
                 miembro.historialMotivos.slice(0, 5).forEach(mot => {
                     tbody.innerHTML += `<tr class="hover:bg-slate-900"><td class="px-4 py-2.5 font-mono text-slate-400 whitespace-nowrap">${mot.fecha}</td><td class="px-4 py-2.5 font-medium text-slate-200">${mot.detalle}</td></tr>`;
                 });
+            if (typeof renderizarCuentasCompaniaBombero === 'function') {
+                renderizarCuentasCompaniaBombero(user);
+        }
+        
             }
         }
 
@@ -3730,6 +3747,45 @@ function guardarFilaCuotas(nombreVoluntario, index) {
         alert("Error al procesar el guardado en la base de datos.");
     });
         }
+        // Cargar y renderizar las boletas en la tarjeta "Cuentas de Compañía" del bombero
+function renderizarCuentasCompaniaBombero(sesionUsuario) {
+    const contenedor = document.getElementById('listaBoletasBombero');
+    const contador = document.getElementById('contadorBoletasBombero');
+    if (!contenedor || !sesionUsuario) return;
+
+    if (typeof db === 'undefined') return;
+
+    // Buscar en el buzón los mensajes dirigidos a este voluntario
+    db.ref('buzon_mensajes').orderByChild('destinatario').equalTo(sesionUsuario.name).once('value').then(snapshot => {
+        const data = snapshot.val() || {};
+        const boletas = Object.values(data).filter(m => m.tipo === 'boleta_cuotas' || m.tipo === 'boleta_pago');
+
+        if (boletas.length === 0) {
+            contenedor.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No tienes comprobantes ni boletas registradas.</p>`;
+            if (contador) contador.textContent = `0 comprobantes`;
+            return;
+        }
+
+        if (contador) contador.textContent = `${boletas.length} comprobante${boletas.length > 1 ? 's' : ''}`;
+        contenedor.innerHTML = '';
+
+        // Ordenar del más reciente al más antiguo si tienen fecha
+        boletas.reverse().forEach(b => {
+            let div = document.createElement('div');
+            div.className = 'bg-slate-950 border border-slate-800/80 rounded-xl p-3 text-xs space-y-1.5 shadow-sm';
+            
+            div.innerHTML = `
+                <div class="flex justify-between items-center text-slate-400 border-b border-slate-900 pb-1">
+                    <span class="font-bold text-cyan-400">${b.asunto || 'Comprobante de Tesorería'}</span>
+                    <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${b.fecha || 'Sin fecha'}</span>
+                </div>
+                <p class="text-slate-300 whitespace-pre-line font-mono text-[11px] bg-slate-900/50 p-2 rounded-lg border border-slate-800/40">${b.mensaje}</p>
+                ${b.firmadoPor ? `<div class="text-[10px] text-slate-400 italic text-right">Firmado por: ${b.firmadoPor}</div>` : ''}
+            `;
+            contenedor.appendChild(div);
+        });
+    });
+        }   
               
     </script>
 </body>
