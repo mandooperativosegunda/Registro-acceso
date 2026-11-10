@@ -1435,11 +1435,13 @@
     // Validar visibilidad del módulo de tesorería según el rol activo
     const tesoreroView = document.getElementById('tesoreroView');
     if (tesoreroView) {
-        if (sesion && (sesion.cargo === 'Tesorero' || sesion.cargo === 'Tesorera')) {
-            tesoreroView.classList.remove('hidden');
-        } else {
-            tesoreroView.classList.add('hidden');
-        }
+            // Validar visibilidad del módulo de tesorería según el rol activo
+    if (sesion && (sesion.cargo === 'Tesorero' || sesion.cargo === 'Tesorera')) {
+        document.querySelectorAll('#tesoreroView, #moduloTesoreria').forEach(el => el.classList.remove('hidden'));
+    } else {
+        document.querySelectorAll('#tesoreroView, #moduloTesoreria').forEach(el => el.classList.add('hidden'));
+    }
+
     }
 
     if (sesion && sesion.cargo === "Bombero" && typeof renderPortalBomberoActivo === 'function') {
@@ -1655,9 +1657,13 @@
 
         function logout() { localStorage.removeItem('active_user_session'); window.location.reload(); }
 
-        function hideAllViews() {
+                function hideAllViews() {
             ['accessView', 'guardiasView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            
+            // Forzar el ocultamiento de CUALQUIER contenedor de tesorería para limpiar la pantalla
+            document.querySelectorAll('#moduloTesoreria, #tesoreroView').forEach(el => el.classList.add('hidden'));
         }
+
 
         function activateSession(user) {
             document.getElementById('activeUserBadge').textContent = user.nombre;
@@ -1710,32 +1716,23 @@
             else if (cargo === 'Aspirante') {
                 document.getElementById('saludoAspirante').textContent = `Bienvenido, Aspirante ${user.nombre}`;
                 document.getElementById('aspiranteView').classList.remove('hidden');
-           } else if (cargo === 'Bombero') {
-               renderPortalBomberoActivo(user);
-               document.getElementById('voluntarioRasoView').classList.remove('hidden');
-               } else if (cargo === 'Tesorero' || cargo === 'Tesorera') {
-        const tesoreroView = document.getElementById('tesoreroView');
-        if (tesoreroView) tesoreroView.classList.remove('hidden');
+                       } else if (cargo === 'Bombero') {
+                renderPortalBomberoActivo(user);
+                document.getElementById('voluntarioRasoView').classList.remove('hidden');
+            } else if (cargo === 'Tesorero' || cargo === 'Tesorera') {
+                // Mostrar todas las interfaces de tesorería SOLO si es tesorero
+                document.querySelectorAll('#tesoreroView, #moduloTesoreria').forEach(el => el.classList.remove('hidden'));
+                
+                if (typeof cargarVoluntariosEnTesoreria === 'function') cargarVoluntariosEnTesoreria();
+                if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
+                if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
+            }
         
-        const moduloTesoreria = document.getElementById('moduloTesoreria');
-        if (moduloTesoreria) moduloTesoreria.classList.remove('hidden');
-
-        if (typeof cargarVoluntariosEnTesoreria === 'function') cargarVoluntariosEnTesoreria();
-        if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
-        if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
-    } else {
-        // Ocultar estrictamente el módulo de tesorería para cualquier otro perfil (Bomberos, Capitán, etc.)
-        const tesoreroView = document.getElementById('tesoreroView');
-        if (tesoreroView) tesoreroView.classList.add('hidden');
-        
-        const moduloTesoreria = document.getElementById('moduloTesoreria');
-        if (moduloTesoreria) moduloTesoreria.classList.add('hidden');
-    }
-        
-            verificarPermisosRol(cargo);                                                                   
+            if (typeof verificarPermisosRol === 'function') verificarPermisosRol(cargo);                                                                   
             verificarAlertasAutomaticas();
             setTimeout(actualizarGraficoAsistencia, 250);
         }
+
 
         function renderPortalBomberoActivo(user) {
             document.getElementById('saludoVoluntario').textContent = `Bienvenido, Bombero ${user.nombre}`;
