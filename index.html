@@ -1689,42 +1689,30 @@
 
         function logout() { localStorage.removeItem('active_user_session'); window.location.reload(); }
 
-                function hideAllViews() {
-    // 1. Ocultar el panel principal/contenedor general del inicio si existe
-    const mainDashboard = document.getElementById('mainDashboard') || document.getElementById('panelInicio');
-    if (mainDashboard) mainDashboard.classList.add('hidden');
-
-    // 2. Ocultar componentes fijos del inicio (formulario RUT, banner de guardia y gráficos)
-    const elementosInicio = [
-        'registroIngresoCard',       // Tarjeta de Registro RUT/DNI
-        'guardiaBanner',             // Banner u Oficial de Guardia en Cuartel
-        'graficoAsistenciaContainer', // Gráfico de Asistencia General
-        'gridTarjetas'               // Rejilla de tarjetas principales
+    function hideAllViews() {
+    // 1. Ocultar todos los módulos principales y vistas secundarias
+    const vistas = [
+        'accessView', 'guardiasView', 'capitanTenientePrimeroView', 'ayudanteView', 
+        'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 
+        'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 
+        'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 
+        'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'
     ];
+    vistas.forEach(id => { 
+        const el = document.getElementById(id); 
+        if (el) el.classList.add('hidden'); 
+    });
 
-    elementosInicio.forEach(id => {
+    // 2. Ocultar banners de la parte superior para despejar la vista en PC
+    const banners = ['guardiaBanner', 'alertaOperativaBanner'];
+    banners.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
     });
 
-    // 3. Ocultar todas las demás vistas y módulos de perfiles
-    const vistasModulos = [
-        'novedadesView',
-        'rosterView',
-        'certificadosView',
-        'bodegaEppView',
-        'eppVoluntariosView',
-        'resumenMensualView',
-        'liveHoursView',
-        'fichasView' // Vista de fichas y perfiles
-    ];
-
-    vistasModulos.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('hidden');
-    });
+    // 3. Ocultar vistas de Tesorería
+    document.querySelectorAll('#moduloTesoreria, #tesoreroView').forEach(el => el.classList.add('hidden'));
 }
-
 
         function activateSession(user) {
             document.getElementById('activeUserBadge').textContent = user.nombre;
@@ -1941,20 +1929,16 @@ function descargarSolicitudPdf(id) {
 
 
 
-    function backToMainPanel() {
-    hideAllViews();
-    
-    // Volver a mostrar el contenedor del inicio
-    const mainDashboard = document.getElementById('mainDashboard') || document.getElementById('panelInicio');
-    if (mainDashboard) mainDashboard.classList.remove('hidden');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+   function backToMainPanel() { 
+    const sessionStr = localStorage.getItem('active_user_session');
+    if (sessionStr) {
+        activateSession(JSON.parse(sessionStr));
+    } else {
+        hideAllViews();
+        const accessView = document.getElementById('accessView');
+        if (accessView) accessView.classList.remove('hidden');
+    }
 }
-        function openGuardiasView() {
-            hideAllViews();
-            document.getElementById('guardiasView').classList.remove('hidden');
-            renderGuardiasView();
-        }
 
         function inscribirseGuardia(tipo) {
             const user = JSON.parse(localStorage.getItem('active_user_session'));
