@@ -3791,77 +3791,94 @@ function guardarFilaCuotasPorRut(nombreVoluntario, rutVoluntario, rutLimpio) {
         return;
     }
 
+    // 1. Capturar el estado actual seleccionado en los botones del DOM para este RUT
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    let estadosMeses = {};
-    let mesesPagados = [];
+    let estadosMesesActual = {};
 
     meses.forEach(mes => {
         const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
         if (btn) {
             let estado = btn.getAttribute('data-estado') || 'neutro';
-            estadosMeses[mes] = estado;
-            if (estado === 'pagado') {
-                mesesPagados.push(mes.toUpperCase());
-            }
+            estadosMesesActual[mes] = estado;
         }
     });
 
-    if (mesesPagados.length === 0) {
-        alert("No hay meses marcados como Pagados (Verde) en esta fila para generar cobro.");
-        return;
-    }
+    // 2. Consultar Firebase para comparar con el estado guardado anteriormente
+    db.ref('tesoreria_cuotas/' + rutLimpio).once('value').then(snapshot => {
+        const datosPrevios = snapshot.val() || {};
+        const mesesDetallePrevio = datosPrevios.mesesDetalle || {};
 
-    const montoTotal = mesesPagados.length * montoCuotaGlobal;
-    const fechaActual = new Date().toLocaleDateString('es-CL');
-
-    const mensajeBoleta = `COMPROBANTE DE CUOTAS SOCIALES - 2ª CÍA\n` +
-                          `----------------------------------------\n` +
-                          `Voluntario: ${nombreVoluntario}\n` +
-                          `RUT: ${rutVoluntario}\n` +
-                          `Meses Pagados: ${mesesPagados.join(', ')}\n` +
-                          `Monto Total: $${montoTotal.toLocaleString('es-CL')} CLP\n` +
-                          `Fecha: ${fechaActual}\n` +
-                          `Firma Tesorería: ${firmaTesorero}\n` +
-                          `----------------------------------------`;
-
-    db.ref(`tesoreria_cuotas/${rutLimpio}`).set({
-        nombre: nombreVoluntario,
-        rut: rutVoluntario,
-        mesesDetalle: estadosMeses,
-        ultimaActualizacion: fechaActual
-    }).then(() => {
-        return db.ref('buzon_mensajes').push({
-            destinatario: nombreVoluntario,
-            rutDestinatario: rutLimpio,
-            tipo: 'boleta_cuotas',
-            asunto: `Comprobante de Cuotas - $${montoTotal.toLocaleString('es-CL')} CLP`,
-            mensaje: mensajeBoleta,
-            monto: montoTotal,
-            fecha: fechaActual
+        // 3. Identificar SOLO los meses que cambiaron a 'pagado' en ESTA operación
+        letnuevosMesesPagados = [];
+        meses.forEach(mes => {
+            const estadoAnterior = mesesDetallePrevio[mes] || 'neutro';
+            const estadoActual = estadosMesesActual[mes];
+            if (estadoActual === 'pagado' && estadoAnterior !== 'pagado') {
+                nuevosMesesPagados.push(mes.toUpperCase());
+            }
         });
-    }).then(() => {
-        const sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
-        const registradoPor = sesionActual ? (sesionActual.nombre || sesionActual.name) : firmaTesorero;
 
-        return db.ref('historialMovimientos').push({
-            id: Date.now(),
-            fecha: fechaActual,
-            hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
-            tipo: 'Ingreso',
-            categoria: 'Cuotas Sociales',
-            detalle: `Pago Cuotas (${mesesPagados.join(', ')}) - ${nombreVoluntario} (${rutVoluntario})`,
-            monto: montoTotal,
-            registradoPor: registradoPor,
-            firma: firmaTesorero
-        });
-    }).then(() => {
-        alert(`¡Cuotas de ${nombreVoluntario} guardadas por RUT, comprobante enviado al buzón e historial actualizado!`);
-        cargarMatrizCuotas();
-        if (typeof cargarDatosTesoreria === 'function') {
-            cargarDatosTesoreria();
+        if (nuevosMesesPagados.length === 0) {
+            alert("No hay nuevos meses marcados como Pagados (Verde) para generar cobro en esta ocasión.");
+            return;
         }
-    }).catch(err => {
-        console.error("Error al procesar el guardado:", err);
+
+        // 4. Calcular el monto a cobrar y redactar la boleta únicamente para los NUEVOS meses
+        const montoTotal = nuevosMesesPagados.length * montoCuotaGlobal;
+        const fechaActual = new Date().toLocaleDateString('es-CL');
+
+        const mensajeBoleta = `COMPROBANTE DE CUOTAS SOCIALES - 2ª CÍA\n` +
+                              `----------------------------------------\n` +
+                              `Voluntario: ${nombreVoluntario}\n` +
+                              `RUT: ${rutVoluntario}\n` +
+                              `Meses Pagados (Este Pago): ${nuevosMesesPagados.join(', ')}\n` +
+                              `Monto Total: $${montoTotal.toLocaleString('es-CL')} CLP\n` +
+                              `Fecha: ${fechaActual}\n` +
+                              `Firma Tesorería: ${firmaTesorero}\n` +
+                              `----------------------------------------`;
+
+        // 5. Guardar el estado acumulado global del voluntario en la matriz
+        return db.ref('tesoreria_cuotas/' + rutLimpio).set({
+            nombre: nombreVoluntario,
+            rut: rutVoluntario,
+            mesesDetalle: estadosMesesActual,
+            ultimaActualizacion: fechaActual
+        }).then(() => {
+            // 6. Enviar comprobante al buzón personal del bombero por los nuevos meses cobrados
+            return db.ref('buzon_mensajes').push({
+                destinatario: nombreVoluntario,
+                rutDestinatario: rutLimpio,
+                tipo: 'boleta_cuotas',
+                asunto: `Comprobante de Cuotas - $${montoTotal.toLocaleString('es-CL')} CLP`,
+                mensaje: mensajeBoleta,
+                monto: montoTotal,
+                fecha: fechaActual
+            });
+        }).then(() => {
+            // 7. Registrar el movimiento en el historial general de tesorería
+            const sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
+            const registradoPor = sesionActual ? (sesionActual.nombre || sesionActual.name) : firmaTesorero;
+
+            return db.ref('historialMovimientos').push({
+                id: Date.now(),
+                fecha: fechaActual,
+                hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+                tipo: 'Ingreso',
+                categoria: 'Cuotas Sociales',
+                detalle: `Pago Cuotas (${nuevosMesesPagados.join(', ')}) - ${nombreVoluntario} (${rutVoluntario})`,
+                monto: montoTotal,
+                registradoPor: registradoPor,
+                firma: firmaTesorero
+            });
+        }).then(() => {
+            alert(`¡Cuotas de ${nombreVoluntario} (${nuevosMesesPagados.join(', ')}) guardadas por RUT, comprobante emitido por $${montoTotal.toLocaleString('es-CL')}!`);
+            
+            // Recargar matriz y tesorería si las funciones existen
+            if (typeof cargarMatrizCuotas === 'function') cargarMatrizCuotas();
+            if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
+        });
+    }).catch(error => {
+        console.error("Error al procesar el guardado por RUT: ", error);
         alert("Ocurrió un error al guardar o registrar el movimiento.");
     });
 }
