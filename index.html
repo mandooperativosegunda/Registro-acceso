@@ -3771,6 +3771,7 @@ function alternarEstadoCuotaPorRut(rutLimpio, mes) {
 }
 
 // 1. Maneja el clic directo en la casilla de un mes
+// 1. Menú de selección al hacer clic en el botón del mes
 function cambiarEstadoCuotaDirecto(nombreVoluntario, rutVoluntario, rutLimpio, mes) {
     if (typeof db === 'undefined') {
         alert("Error: Base de datos no inicializada.");
@@ -3781,34 +3782,70 @@ function cambiarEstadoCuotaDirecto(nombreVoluntario, rutVoluntario, rutLimpio, m
         return;
     }
 
-    const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
-    const estadoActual = btn ? (btn.getAttribute('data-estado') || 'neutro') : 'neutro';
+    const seleccion = prompt(
+        `GESTIÓN DE CUOTA: ${mes.toUpperCase()} - ${nombreVoluntario}\n\n` +
+        `Seleccione una opción:\n` +
+        `1. Pagado (Verde) - Registrar pago y boleta\n` +
+        `2. Deuda / Pendiente (Rojo) - Marcar deuda y notificar\n` +
+        `3. Neutro (Gris) - Sin registro / restablecer\n\n` +
+        `Ingrese 1, 2 o 3:`
+    );
 
-    let nuevoEstado = 'neutro';
-    if (estadoActual === 'neutro') nuevoEstado = 'pagado';
-    else if (estadoActual === 'pagado') nuevoEstado = 'deudor';
-    else if (estadoActual === 'deudor') nuevoEstado = 'neutro';
+    if (!seleccion) return; // Si cancela, no hace nada
 
-    if (nuevoEstado === 'pagado') {
-        const firmaTesorero = prompt(`Confirmar pago cuota ${mes.toUpperCase()} para ${nombreVoluntario}.\nIngrese su nombre/cargo:`);
+    const opcion = seleccion.trim();
+
+    if (opcion === '1') {
+        // Opción Pagado -> Pide firma y procesa pago con boleta
+        const firmaTesorero = prompt(`Confirmar pago cuota ${mes.toUpperCase()} para ${nombreVoluntario}.\nIngrese su firma o nombre como Tesorero:`);
         if (!firmaTesorero) {
             alert("Operación cancelada: Se requiere firma para procesar el pago.");
             return;
         }
         procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, mes, firmaTesorero);
-    } else {
-        db.ref(`tesoreria_cuotas/${rutLimpio}/mesesDetalle/${mes}`).set(nuevoEstado)
+    } 
+    else if (opcion === '2') {
+        // Opción Deudor / Pendiente -> Marca rojo y notifica al perfil del voluntario
+        const mensajeDeuda = `Estimado(a) ${nombreVoluntario}, se le notifica que su cuota del mes de ${mes.toUpperCase()} se encuentra PENDIENTE de pago. Por favor regularizar con Tesorería.`;
+        
+        db.ref(`tesoreria_cuotas/${rutLimpio}/mesesDetalle/${mes}`).set('deudor')
             .then(() => {
-                actualizarBotonDOM(rutLimpio, mes, nuevoEstado);
+                // Envía la notificación de deuda al buzón del voluntario
+                return db.ref('buzon_mensajes').push({
+                    destinatario: nombreVoluntario,
+                    rutDestinatario: rutLimpio,
+                    tipo: 'aviso_deuda',
+                    asunto: `Cuota Pendiente: ${mes.toUpperCase()}`,
+                    mensaje: mensajeDeuda,
+                    fecha: new Date().toLocaleDateString('es-CL')
+                });
+            })
+            .then(() => {
+                actualizarBotonDOM(rutLimpio, mes, 'deudor');
+                alert(`Cuota de ${mes.toUpperCase()} marcada como PENDIENTE (Rojo) y notificada al perfil de ${nombreVoluntario}.`);
             })
             .catch(error => {
-                console.error("Error al actualizar estado:", error);
+                console.error("Error al registrar deuda:", error);
                 alert("Error al actualizar el estado en la base de datos.");
             });
+    } 
+    else if (opcion === '3') {
+        // Opción Neutro -> Restablece el mes
+        db.ref(`tesoreria_cuotas/${rutLimpio}/mesesDetalle/${mes}`).set('neutro')
+            .then(() => {
+                actualizarBotonDOM(rutLimpio, mes, 'neutro');
+            })
+            .catch(error => {
+                console.error("Error al restablecer estado:", error);
+                alert("Error al actualizar el estado en la base de datos.");
+            });
+    } 
+    else {
+        alert("Opción no válida. Debe ingresar 1, 2 o 3.");
     }
 }
 
-// 2. Procesa cobro, comprobante e historial para UN SOLAMENTE MES
+// 2. Procesa cobro, boleta y registro financiero (Para la opción 1: Pagado)
 function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, mes, firmaTesorero) {
     const mesNombre = mes.toUpperCase();
     const montoUnico = typeof montoCuotaGlobal !== 'undefined' ? montoCuotaGlobal : 4000;
@@ -3870,26 +3907,22 @@ function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, m
         });
 }
 
-// 3. Actualiza el estilo del botón inmediatamente con tus clases de color
+// 3. Actualiza el color del botón en pantalla instantáneamente
 function actualizarBotonDOM(rutLimpio, mes, nuevoEstado) {
     const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
     if (!btn) return;
 
     btn.setAttribute('data-estado', nuevoEstado);
-    
-    // Quitamos los colores anteriores
     btn.classList.remove('bg-emerald-500', 'bg-rose-500', 'bg-slate-800', 'text-white', 'text-slate-400');
 
-    // Asignamos el color según el nuevo estado
     if (nuevoEstado === 'pagado') {
         btn.classList.add('bg-emerald-500', 'text-white');
-    } else if (nuevoEstado === 'deudor') {
+    } else if (nuevoEstado === 'deudor' || nuevoEstado === 'pendiente') {
         btn.classList.add('bg-rose-500', 'text-white');
     } else {
         btn.classList.add('bg-slate-800', 'text-slate-400');
     }
 }
-
 // ----------------------------------------------------
 // 5. RENDERIZAR CUENTAS Y BOLETAS EN EL PERFIL DEL BOMBERO POR RUT
 // ----------------------------------------------------
