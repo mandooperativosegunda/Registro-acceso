@@ -1690,11 +1690,40 @@
         function logout() { localStorage.removeItem('active_user_session'); window.location.reload(); }
 
                 function hideAllViews() {
-            ['accessView', 'guardiasView', 'capitanTenientePrimeroView', 'ayudanteView', 'tenienteSegundoView', 'tenienteTerceroView', 'aspiranteView', 'voluntarioRasoView', 'rosterView', 'certificadosView', 'novedadesView', 'resumenMensualView', 'carroInventoryView', 'cuartelInventoryView', 'bodegaEppView', 'eppVoluntariosView', 'fichasView', 'liveHoursView', 'calendarView', 'remorsionView'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
-            
-            // Forzar el ocultamiento de CUALQUIER contenedor de tesorería para limpiar la pantalla
-            document.querySelectorAll('#moduloTesoreria, #tesoreroView').forEach(el => el.classList.add('hidden'));
-        }
+    // 1. Ocultar el panel principal/contenedor general del inicio si existe
+    const mainDashboard = document.getElementById('mainDashboard') || document.getElementById('panelInicio');
+    if (mainDashboard) mainDashboard.classList.add('hidden');
+
+    // 2. Ocultar componentes fijos del inicio (formulario RUT, banner de guardia y gráficos)
+    const elementosInicio = [
+        'registroIngresoCard',       // Tarjeta de Registro RUT/DNI
+        'guardiaBanner',             // Banner u Oficial de Guardia en Cuartel
+        'graficoAsistenciaContainer', // Gráfico de Asistencia General
+        'gridTarjetas'               // Rejilla de tarjetas principales
+    ];
+
+    elementosInicio.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+
+    // 3. Ocultar todas las demás vistas y módulos de perfiles
+    const vistasModulos = [
+        'novedadesView',
+        'rosterView',
+        'certificadosView',
+        'bodegaEppView',
+        'eppVoluntariosView',
+        'resumenMensualView',
+        'liveHoursView',
+        'fichasView' // Vista de fichas y perfiles
+    ];
+
+    vistasModulos.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+}
 
 
         function activateSession(user) {
@@ -1912,8 +1941,15 @@ function descargarSolicitudPdf(id) {
 
 
 
-        function backToMainPanel() { activateSession(JSON.parse(localStorage.getItem('active_user_session'))); setTimeout(actualizarGraficoAsistencia, 200); }
+    function backToMainPanel() {
+    hideAllViews();
+    
+    // Volver a mostrar el contenedor del inicio
+    const mainDashboard = document.getElementById('mainDashboard') || document.getElementById('panelInicio');
+    if (mainDashboard) mainDashboard.classList.remove('hidden');
 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
         function openGuardiasView() {
             hideAllViews();
             document.getElementById('guardiasView').classList.remove('hidden');
@@ -4026,7 +4062,16 @@ function procesarRegistroGuardiaModal() {
     rutInput.value = '';
     toggleModalRegistroGuardia();
 }
-                
+         function mostrarVista(idVista) {
+    if (typeof hideAllViews === 'function') {
+        hideAllViews();
+    }
+    const vistaDestino = document.getElementById(idVista);
+    if (vistaDestino) {
+        vistaDestino.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}       
     </script>
 </body>
 </html>
