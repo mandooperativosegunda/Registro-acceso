@@ -3674,7 +3674,235 @@ function actualizarMontoCuotaGlobal(input) {
     montoCuotaGlobal = Number(input.value) || 0;
 }
 
-// Cargar la Matriz de Cuotas con Círculos de 3 Estados (Neutro ⬛, Rojo 🔴, Verde 🟢)
+// ----------------------------------------------------
+// 1. TRANSACCIONES FINANCIERAS
+// ----------------------------------------------------
+function guardarTransaccion(event) {
+    if (event) event.preventDefault();
+
+    const tipo = document.getElementById('tipoMovimiento').value;
+    const voluntario = document.getElementById('selectVoluntarioTesoreria').value;
+    const descripcion = document.getElementById('descTransaccion').value.trim();
+    const monto = parseFloat(document.getElementById('montoTransaccion').value);
+
+    if (!descripcion || isNaN(monto)) {
+        alert("Por favor ingrese la descripción y el monto.");
+        return;
+    }
+
+    if (typeof db === 'undefined') {
+        alert("Error: Base de datos no inicializada.");
+        return;
+    }
+
+    const nuevaTransaccion = {
+        tipo: tipo,
+        voluntario: voluntario || 'General',
+        descripcion: descripcion,
+        monto: monto,
+        fecha: new Date().toLocaleDateString('es-CL')
+    };
+
+    db.ref('tesoreria').push(nuevaTransaccion)
+    .then(() => {
+        alert('Transacción registrada con éxito');
+        cerrarModalTesoreria();
+    })
+    .catch((error) => {
+        console.error("Error al guardar transacción: ", error);
+        alert('Hubo un error al registrar la transacción.');
+    });
+}
+
+function cargarDatosTesoreria() {
+    if (typeof db === 'undefined') return;
+
+    db.ref('tesoreria').on('value', (snapshot) => {
+        const data = snapshot.val();
+        let saldo = 0;
+        let ingresosMes = 0;
+        let egresosMes = 0;
+
+        const tbody = document.getElementById('tablaMovimientos');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+
+        if (!data) {
+            tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">No hay movimientos registrados.</td></tr>`;
+        } else {
+            Object.values(data).forEach(t => {
+                const monto = Number(t.monto) || 0;
+                const esIngreso = t.tipo === 'ingreso';
+
+                if (esIngreso) {
+                    saldo += monto;
+                    ingresosMes += monto;
+                } else {
+                    saldo -= monto;
+                    egresosMes += monto;
+                }
+
+                const fila = document.createElement('tr');
+                fila.className = 'border-b border-slate-850 hover:bg-slate-800/40';
+                fila.innerHTML = `
+                    <td class="py-3 text-slate-400">${t.fecha || 'Reciente'}</td>
+                    <td class="py-3">
+                        <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
+                        <div class="text-[10px] text-slate-400">${t.voluntario || 'General'}</div>
+                    </td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                            ${esIngreso ? 'Ingreso' : 'Egreso'}
+                        </span>
+                    </td>
+                    <td class="py-3 text-right font-bold ${esIngreso ? 'text-emerald-400' : 'text-rose-400'}">
+                        ${esIngreso ? '+' : '-'}$${monto.toLocaleString('es-CL')} CLP
+                    </td>
+                `;
+                tbody.prepend(fila);
+            });
+        }
+
+        const elSaldo = document.getElementById('saldoActual');
+        const elIngresos = document.getElementById('ingresosMes');
+        const elEgresos = document.getElementById('egresosMes');
+
+        if (elSaldo) elSaldo.textContent = `$${saldo.toLocaleString('es-CL')} CLP`;
+        if (elIngresos) elIngresos.textContent = `$${ingresosMes.toLocaleString('es-CL')}`;
+        if (elEgresos) elEgresos.textContent = `$${egresosMes.toLocaleString('es-CL')}`;
+    });
+}
+
+// ----------------------------------------------------
+// 2. VISTAS Y SELECTORES DE TESORERÍA
+// ----------------------------------------------------
+function cambiarVistaTesoreria(tipo) {
+    const vistaCuotas = document.getElementById('vistaMatrizCuotas');
+    const vistaBoletas = document.getElementById('vistaBoletasLibres');
+    const btnCuotas = document.getElementById('btnTabCuotas');
+    const btnBoletas = document.getElementById('btnTabBoletas');
+
+    if (tipo === 'cuotas') {
+        vistaCuotas.classList.remove('hidden');
+        vistaBoletas.classList.add('hidden');
+        btnCuotas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition";
+        btnBoletas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+        cargarMatrizCuotas();
+    } else {
+        vistaCuotas.classList.add('hidden');
+        vistaBoletas.classList.remove('hidden');
+        btnBoletas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition";
+        btnCuotas.className = "flex-1 py-2 px-4 rounded-xl font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+        cargarSelectVoluntariosBoleta();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const fInput = document.getElementById('boletaFecha');
+    if (fInput) fInput.value = new Date().toLocaleDateString('es-CL');
+    cargarMatrizCuotas();
+});
+
+function cargarSelectVoluntariosBoleta() {
+    const select = document.getElementById('boletaVoluntarioSelect');
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Seleccione Voluntario --</option>';
+    
+    if (typeof roster !== 'undefined' && Array.isArray(roster)) {
+        roster.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = `${v.name} (RUT: ${v.rut || 'No reg.'})`;
+            select.appendChild(opt);
+        });
+    }
+}
+
+function cargarDatosVoluntarioBoleta() {
+    const nombreSel = document.getElementById('boletaVoluntarioSelect').value;
+    const inputNombre = document.getElementById('boletaNombre');
+    const inputRut = document.getElementById('boletaRut');
+
+    if (!nombreSel) {
+        inputNombre.value = '';
+        inputRut.value = '';
+        return;
+    }
+
+    const voluntario = roster.find(v => v.name === nombreSel);
+    if (voluntario) {
+        inputNombre.value = voluntario.name || '';
+        inputRut.value = voluntario.rut || 'RUT No registrado';
+    }
+}
+
+function verificarConceptoPersonalizado(selectObj) {
+    const customInput = document.getElementById('boletaConceptoPersonalizado');
+    if (selectObj.value === 'otro') {
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+    } else {
+        customInput.classList.add('hidden');
+        customInput.required = false;
+    }
+}
+
+// ----------------------------------------------------
+// 3. EMISIÓN DE BOLETAS LIBRES (POR RUT)
+// ----------------------------------------------------
+function emitirYGuardarBoleta(event) {
+    if (event) event.preventDefault();
+
+    const nombre = document.getElementById('boletaNombre').value;
+    const rut = document.getElementById('boletaRut').value;
+    const tipoSel = document.getElementById('boletaConceptoTipo').value;
+    const concepto = tipoSel === 'otro' ? document.getElementById('boletaConceptoPersonalizado').value : tipoSel;
+    const monto = parseFloat(document.getElementById('boletaMonto').value);
+    const fecha = document.getElementById('boletaFecha').value;
+    const firma = document.getElementById('boletaFirmaTesorero').value;
+
+    if (!nombre || isNaN(monto)) {
+        alert("Complete todos los campos obligatorios.");
+        return;
+    }
+
+    const rutLimpio = rut ? rut.trim().replace(/\./g, "").toUpperCase() : '';
+
+    const mensajeBoleta = `COMPROBANTE OFICIAL - 2ª CÍA BOMBEROS\n` +
+                          `----------------------------------------\n` +
+                          `Nombre: ${nombre}\n` +
+                          `RUT: ${rut}\n` +
+                          `Concepto: ${concepto}\n` +
+                          `Monto: $${monto.toLocaleString('es-CL')} CLP\n` +
+                          `Fecha: ${fecha}\n` +
+                          `Firma Tesorería: ${firma}\n` +
+                          `----------------------------------------`;
+
+    if (typeof db !== 'undefined') {
+        db.ref('buzon_mensajes').push({
+            destinatario: nombre,
+            rutDestinatario: rutLimpio,
+            tipo: 'boleta_pago',
+            asunto: `Boleta: ${concepto}`,
+            mensaje: mensajeBoleta,
+            monto: monto,
+            fecha: fecha,
+            leido: false
+        }).then(() => {
+            alert(`¡Boleta generada y enviada al buzón personal de ${nombre} con éxito!`);
+            document.getElementById('formBoletaLibre').reset();
+            document.getElementById('boletaFecha').value = new Date().toLocaleDateString('es-CL');
+        }).catch(err => {
+            console.error(err);
+            alert("Error al enviar la boleta.");
+        });
+    }
+}
+
+// ----------------------------------------------------
+// 4. MATRIZ DE CUOTAS GESTIONADA ESTRICTAMENTE POR RUT
+// ----------------------------------------------------
 function cargarMatrizCuotas() {
     const tbody = document.getElementById('tablaMatrizCuotasBody');
     if (!tbody) return;
@@ -3687,34 +3915,33 @@ function cargarMatrizCuotas() {
 
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
-    // Cargar estados previos desde Firebase si existen
     if (typeof db !== 'undefined') {
         db.ref('tesoreria_cuotas').once('value').then(snapshot => {
             const dataCuotas = snapshot.val() || {};
-            renderizarFilasMatriz(roster, meses, dataCuotas);
+            renderizarFilasMatrizPorRut(roster, meses, dataCuotas);
         });
     } else {
-        renderizarFilasMatriz(roster, meses, {});
+        renderizarFilasMatrizPorRut(roster, meses, {});
     }
 }
 
-function renderizarFilasMatriz(rosterList, meses, dataCuotas) {
+function renderizarFilasMatrizPorRut(rosterList, meses, dataCuotas) {
     const tbody = document.getElementById('tablaMatrizCuotasBody');
     if (!tbody) return;
     tbody.innerHTML = '';
 
     rosterList.forEach((v, index) => {
-        const idLimio = v.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-        const registroVoluntario = dataCuotas[idLimio] || { mesesDetalle: {} };
+        const rutLimpio = v.rut ? v.rut.trim().replace(/\./g, "").toUpperCase() : `SIN_RUT_${index}`;
+        const registroVoluntario = dataCuotas[rutLimpio] || { mesesDetalle: {} };
 
         let tr = document.createElement('tr');
         tr.className = 'border-b border-slate-800/60 hover:bg-slate-800/30';
 
-        let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm whitespace-nowrap">${v.name}</td>`;
+        let htmlCeldas = `<td class="py-2.5 px-3 font-semibold text-white text-sm whitespace-nowrap">${v.name} <span class="block text-[10px] text-slate-400">${v.rut || 'Sin RUT'}</span></td>`;
 
         meses.forEach(mes => {
             let estadoActual = registroVoluntario.mesesDetalle && registroVoluntario.mesesDetalle[mes] ? registroVoluntario.mesesDetalle[mes] : 'neutro';
-            let colorClase = 'bg-slate-800 text-slate-400'; // Neutro
+            let colorClase = 'bg-slate-800 text-slate-400';
             let titleText = 'Neutro / Sin registro';
 
             if (estadoActual === 'pagado') {
@@ -3727,16 +3954,15 @@ function renderizarFilasMatriz(rosterList, meses, dataCuotas) {
 
             htmlCeldas += `
                 <td class="py-2.5 px-2 text-center">
-                    <button type="button" id="cuota_${index}_${mes}" onclick="alternarEstadoCuota(${index}, '${mes}')" data-estado="${estadoActual}" class="w-7 h-7 rounded-full ${colorClase} font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow" title="${titleText}">
+                    <button type="button" id="cuota_${rutLimpio}_${mes}" onclick="alternarEstadoCuotaPorRut('${rutLimpio}', '${mes}')" data-estado="${estadoActual}" class="w-7 h-7 rounded-full ${colorClase} font-bold text-xs inline-flex items-center justify-center transition transform active:scale-95 shadow" title="${titleText}">
                         ●
                     </button>
                 </td>`;
         });
 
-        // Botón Guardar Fila
         htmlCeldas += `
             <td class="py-2.5 px-3 text-center">
-                <button type="button" onclick="guardarFilaCuotas('${v.name}', ${index})" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-bold text-white transition shadow">Guardar</button>
+                <button type="button" onclick="guardarFilaCuotasPorRut('${v.name}', '${v.rut || 'Sin RUT'}', '${rutLimpio}')" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-bold text-white transition shadow">Guardar</button>
             </td>`;
 
         tr.innerHTML = htmlCeldas;
@@ -3744,9 +3970,8 @@ function renderizarFilasMatriz(rosterList, meses, dataCuotas) {
     });
 }
 
-// Rotar entre 3 estados: Neutro (slate) -> Pagado (verde) -> Pendiente (rojo) -> Neutro
-function alternarEstadoCuota(index, mes) {
-    const btn = document.getElementById(`cuota_${index}_${mes}`);
+function alternarEstadoCuotaPorRut(rutLimpio, mes) {
+    const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
     if (!btn) return;
 
     let estado = btn.getAttribute('data-estado');
@@ -3766,10 +3991,14 @@ function alternarEstadoCuota(index, mes) {
     }
 }
 
-// Guardar fila, generar boleta firmada, sumar al historial y enviar a la tarjeta del bombero
-function guardarFilaCuotas(nombreVoluntario, index) {
+function guardarFilaCuotasPorRut(nombreVoluntario, rutVoluntario, rutLimpio) {
     if (typeof db === 'undefined') {
         alert("Error: Base de datos no inicializada.");
+        return;
+    }
+
+    if (!rutVoluntario || rutVoluntario === 'Sin RUT') {
+        alert("Advertencia: Este voluntario no tiene un RUT válido registrado en el roster.");
         return;
     }
 
@@ -3784,7 +4013,7 @@ function guardarFilaCuotas(nombreVoluntario, index) {
     let mesesPagados = [];
 
     meses.forEach(mes => {
-        const btn = document.getElementById(`cuota_${index}_${mes}`);
+        const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
         if (btn) {
             let estado = btn.getAttribute('data-estado') || 'neutro';
             estadosMeses[mes] = estado;
@@ -3805,23 +4034,22 @@ function guardarFilaCuotas(nombreVoluntario, index) {
     const mensajeBoleta = `COMPROBANTE DE CUOTAS SOCIALES - 2ª CÍA\n` +
                           `----------------------------------------\n` +
                           `Voluntario: ${nombreVoluntario}\n` +
+                          `RUT: ${rutVoluntario}\n` +
                           `Meses Pagados: ${mesesPagados.join(', ')}\n` +
                           `Monto Total: $${montoTotal.toLocaleString('es-CL')} CLP\n` +
                           `Fecha: ${fechaActual}\n` +
                           `Firma Tesorería: ${firmaTesorero}\n` +
                           `----------------------------------------`;
 
-    const idLimio = nombreVoluntario.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-
-       // 1. Guardar estado en tesoreria_cuotas
-    db.ref(`tesoreria_cuotas/${idLimpio}`).set({
+    db.ref(`tesoreria_cuotas/${rutLimpio}`).set({
         nombre: nombreVoluntario,
+        rut: rutVoluntario,
         mesesDetalle: estadosMeses,
         ultimaActualizacion: fechaActual
     }).then(() => {
-        // 2. Enviar a la Tarjeta de Cuentas de Compañía / Buzón del bombero
         return db.ref('buzon_mensajes').push({
             destinatario: nombreVoluntario,
+            rutDestinatario: rutLimpio,
             tipo: 'boleta_cuotas',
             asunto: `Comprobante de Cuotas - $${montoTotal.toLocaleString('es-CL')} CLP`,
             mensaje: mensajeBoleta,
@@ -3829,7 +4057,6 @@ function guardarFilaCuotas(nombreVoluntario, index) {
             fecha: fechaActual
         });
     }).then(() => {
-        // 3. Registrar automáticamente en el Historial de Movimientos Financieros
         const sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
         const registradoPor = sesionActual ? (sesionActual.nombre || sesionActual.name) : firmaTesorero;
 
@@ -3839,15 +4066,14 @@ function guardarFilaCuotas(nombreVoluntario, index) {
             hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
             tipo: 'Ingreso',
             categoria: 'Cuotas Sociales',
-            detalle: `Pago Cuotas (${mesesPagados.join(', ')}) - ${nombreVoluntario}`,
+            detalle: `Pago Cuotas (${mesesPagados.join(', ')}) - ${nombreVoluntario} (${rutVoluntario})`,
             monto: montoTotal,
             registradoPor: registradoPor,
             firma: firmaTesorero
         });
     }).then(() => {
-        alert(`¡Cuotas de ${nombreVoluntario} guardadas, comprobante enviado e ingreso registrado en el historial!`);
-        
-        // Actualizar tabla del historial si la función está disponible
+        alert(`¡Cuotas de ${nombreVoluntario} guardadas por RUT, comprobante enviado al buzón e historial actualizado!`);
+        cargarMatrizCuotas();
         if (typeof cargarDatosTesoreria === 'function') {
             cargarDatosTesoreria();
         }
@@ -3857,7 +4083,9 @@ function guardarFilaCuotas(nombreVoluntario, index) {
     });
 }
 
-        // Cargar y renderizar las boletas en la tarjeta "Cuentas de Compañía" del bombero
+// ----------------------------------------------------
+// 5. RENDERIZAR CUENTAS Y BOLETAS EN EL PERFIL DEL BOMBERO POR RUT
+// ----------------------------------------------------
 function renderizarCuentasCompaniaBombero(sesionUsuario) {
     const contenedor = document.getElementById('listaBoletasBombero');
     const contador = document.getElementById('contadorBoletasBombero');
@@ -3865,10 +4093,17 @@ function renderizarCuentasCompaniaBombero(sesionUsuario) {
 
     if (typeof db === 'undefined') return;
 
-    // Buscar en el buzón los mensajes dirigidos a este voluntario
-    db.ref('buzon_mensajes').orderByChild('destinatario').equalTo(sesionUsuario.name).once('value').then(snapshot => {
+    const rutUsuario = sesionUsuario.rut ? sesionUsuario.rut.trim().replace(/\./g, "").toUpperCase() : '';
+    const nombreUsuario = sesionUsuario.name || sesionUsuario.nombre;
+
+    db.ref('buzon_mensajes').once('value').then(snapshot => {
         const data = snapshot.val() || {};
-        const boletas = Object.values(data).filter(m => m.tipo === 'boleta_cuotas' || m.tipo === 'boleta_pago');
+        const boletas = Object.values(data).filter(m => {
+            const rutDestLimpio = m.rutDestinatario ? m.rutDestinatario.trim().replace(/\./g, "").toUpperCase() : '';
+            const coincideRut = rutUsuario && rutDestLimpio === rutUsuario;
+            const coincideNombre = nombreUsuario && m.destinatario && m.destinatario.trim() === nombreUsuario.trim();
+            return (coincideRut || coincideNombre) && (m.tipo === 'boleta_cuotas' || m.tipo === 'boleta_pago');
+        });
 
         if (boletas.length === 0) {
             contenedor.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No tienes comprobantes ni boletas registradas.</p>`;
@@ -3879,7 +4114,6 @@ function renderizarCuentasCompaniaBombero(sesionUsuario) {
         if (contador) contador.textContent = `${boletas.length} comprobante${boletas.length > 1 ? 's' : ''}`;
         contenedor.innerHTML = '';
 
-        // Ordenar del más reciente al más antiguo si tienen fecha
         boletas.reverse().forEach(b => {
             let div = document.createElement('div');
             div.className = 'bg-slate-950 border border-slate-800/80 rounded-xl p-3 text-xs space-y-1.5 shadow-sm';
@@ -3890,11 +4124,11 @@ function renderizarCuentasCompaniaBombero(sesionUsuario) {
                     <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${b.fecha || 'Sin fecha'}</span>
                 </div>
                 <p class="text-slate-300 whitespace-pre-line font-mono text-[11px] bg-slate-900/50 p-2 rounded-lg border border-slate-800/40">${b.mensaje}</p>
-                ${b.firmadoPor ? `<div class="text-[10px] text-slate-400 italic text-right">Firmado por: ${b.firmadoPor}</div>` : ''}
             `;
             contenedor.appendChild(div);
         });
     });
+}
         }   // Cargar los datos actuales del usuario en el formulario del perfil
 function cargarDatosPerfilUsuario(usuario) {
     if (!usuario) return;
