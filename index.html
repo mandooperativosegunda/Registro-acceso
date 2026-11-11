@@ -3870,20 +3870,23 @@ function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, m
         });
 }
 
-// 3. Actualiza el estilo del botón inmediatamente
+// 3. Actualiza el estilo del botón inmediatamente con tus clases de color
 function actualizarBotonDOM(rutLimpio, mes, nuevoEstado) {
     const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
     if (!btn) return;
 
     btn.setAttribute('data-estado', nuevoEstado);
-    btn.classList.remove('btn-neutro', 'btn-pagado', 'btn-deudor', 'bg-secondary', 'bg-success', 'bg-danger');
+    
+    // Quitamos los colores anteriores
+    btn.classList.remove('bg-emerald-500', 'bg-rose-500', 'bg-slate-800', 'text-white', 'text-slate-400');
 
+    // Asignamos el color según el nuevo estado
     if (nuevoEstado === 'pagado') {
-        btn.classList.add('btn-pagado', 'bg-success');
+        btn.classList.add('bg-emerald-500', 'text-white');
     } else if (nuevoEstado === 'deudor') {
-        btn.classList.add('btn-deudor', 'bg-danger');
+        btn.classList.add('bg-rose-500', 'text-white');
     } else {
-        btn.classList.add('btn-neutro', 'bg-secondary');
+        btn.classList.add('bg-slate-800', 'text-slate-400');
     }
 }
 
