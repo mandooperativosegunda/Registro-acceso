@@ -2066,25 +2066,11 @@ function ejecutarDescargaPdf() {
     html2pdf().from(element).set(opt).save();
 }
 
-// 4. Cierra el modal
 function cerrarVistaPreviaSolicitud() {
     document.getElementById('modalVistaPreviaSolicitud').classList.add('hidden');
     solicitudActualPdfId = null;
 }
-    // 2. Damos 500ms para que el navegador dibuje el texto antes de capturar
-    setTimeout(() => {
-        html2pdf().from(element).set(opt).save().then(() => {
-            // 3. Volvemos a ocultarlo limpiamente al terminar
-            element.style.display = '';
-            element.style.position = '';
-            element.style.top = '';
-            element.style.left = '';
-            element.style.zIndex = '';
-            element.style.width = '';
-            element.classList.add('hidden');
-        });
-    }, 500);
-}
+
 
   function backToMainPanel() {
     hideAllViews();
