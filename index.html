@@ -1981,15 +1981,16 @@ function descargarSolicitudPdf(id) {
     element.classList.remove('hidden');
 
     const opt = {
-        const element = document.getElementById('pdfSolicitudContainer');
-        element.classList.remove('hidden');
+        margin: 10,
+        filename: `Solicitud_${sol.tipo.replace(/\s/g, '_')}_${sol.nombreBombero.replace(/\s/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-        setTimeout(() => {
-            html2pdf().from(element).set(opt).save().then(() => element.classList.add('hidden'));
-        }, 300); // Espera 300ms a que se muestre
-    
-
-
+    setTimeout(() => {
+        html2pdf().from(element).set(opt).save().then(() => element.classList.add('hidden'));
+    }, 300);
 
 
   function backToMainPanel() {
