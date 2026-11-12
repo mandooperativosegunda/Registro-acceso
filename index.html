@@ -1920,7 +1920,7 @@ window.addEventListener('popstate', (event) => {
         nombreBombero: user.nombre,
         tipo: tipo,
         detalle: detalle,
-        firmaBombero: firmaBombero, // <-- Firma por teclado del bombero
+        firmaBombero: firmaBombero || user.nombre, // <-- Firma por teclado del bombero
         fecha: new Date().toLocaleString('es-CL'),
         status: 'Pendiente'
     };
@@ -1981,14 +1981,13 @@ window.addEventListener('popstate', (event) => {
 
 let solicitudActualPdfId = null;
 
-// 1. Abre el modal, rellena los datos y controla qué botones se ven
 function descargarSolicitudPdf(id) {
     let sol = solicitudesPermisos.find(s => s.id === id);
     if (!sol) return;
 
     solicitudActualPdfId = id;
 
-    // Llenar datos de la hoja
+    // Llenar datos básicos
     document.getElementById('pdfSolicitudTitulo').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
     document.getElementById('pdfSolicitudFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleDateString('es-CL')}`;
     document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
@@ -1996,57 +1995,81 @@ function descargarSolicitudPdf(id) {
     document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
     document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
 
-    // Firma del solicitante
-    document.getElementById('pdfSolFirmaBombero').innerHTML = `<span class="signature-font">${sol.nombreBombero}</span>`;
+    // Mostrar firma y nombre del Solicitante
+    const contenedorFirmaSol = document.getElementById('pdfSolFirmaBombero');
+    if (contenedorFirmaSol) {
+        contenedorFirmaSol.innerHTML = `
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-serif italic text-slate-900 border-b border-slate-900 px-4">${sol.firmaBombero || sol.nombreBombero}</span>
+                <span class="text-xs text-slate-600 mt-1 font-sans">${sol.nombreBombero}</span>
+            </div>
+        `;
+    }
 
-    // Firma de Capitán / Ayudante y visibilidad del botón "Firmar"
+    // Gestionar firma del Capitán / Ayudante
     const contenedorFirmaCap = document.getElementById('pdfSolFirmaCapitanContainer');
     const btnFirmar = document.getElementById('btnFirmarDesdeVistaPrevia');
 
-    if (sol.estado === 'Aprobada' && sol.firmaCapitan) {
-        contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan}</span>`;
-        btnFirmar.classList.add('hidden'); // Si ya está firmada, oculta el botón de firmar
+    if (sol.status === 'Aprobada' && sol.firmaCapitan) {
+        contenedorFirmaCap.innerHTML = `
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-serif italic text-slate-900 border-b border-slate-900 px-4">${sol.firmaCapitan}</span>
+                <span class="text-xs text-slate-600 mt-1 font-sans">V°B° Autorizado</span>
+            </div>
+        `;
+        btnFirmar.classList.add('hidden');
     } else {
-        contenedorFirmaCap.innerHTML = `<span class="text-xs text-slate-400 italic">Pendiente de V°B°</span>`;
-        btnFirmar.classList.remove('hidden'); // Si falta firma, muestra el botón
+        contenedorFirmaCap.innerHTML = `<span class="text-xs text-slate-400 italic">Pendiente de Firma</span>`;
+        btnFirmar.classList.remove('hidden');
     }
 
-    // Mostrar la vista previa en pantalla
     document.getElementById('modalVistaPreviaSolicitud').classList.remove('hidden');
 }
 
-// 2. Firma la solicitud, guarda en Firebase, actualiza la vista previa y deja solo el botón de descarga
 function firmarDesdeVistaPrevia() {
     let sol = solicitudesPermisos.find(s => s.id === solicitudActualPdfId);
     if (!sol) return;
 
-    // Toma el nombre de la sesión activa o lo pide si no existe
     let sessionStr = localStorage.getItem('active_user_session');
-    let nombreFirmante = '';
-    if (sessionStr) {
-        let sessionData = JSON.parse(sessionStr);
-        nombreFirmante = `${sessionData.nombre} (${sessionData.cargo})`;
-    } else {
-        nombreFirmante = prompt("Ingresa tu nombre y cargo (Capitán / Ayudante) para firmar:");
-    }
-    
-    if (!nombreFirmante) return;
+    let nombreSesion = "Autoridad";
+    let cargoSesion = "Mando";
 
-    // Actualizar datos en memoria y en Firebase
-    sol.estado = "Aprobada";
-    sol.firmaCapitan = nombreFirmante;
+    if (sessionStr) {
+        try {
+            let sessionData = JSON.parse(sessionStr);
+            nombreSesion = sessionData.nombre;
+            cargoSesion = sessionData.cargo;
+        } catch (e) {}
+    }
+
+    // Pedimos la firma manuscrita/nombre corto para el documento
+    const firmaIngresada = prompt(`Firmar como ${cargoSesion}: Ingresa tu nombre o iniciales para el documento:`, nombreSesion);
+    if (!firmaIngresada || firmaIngresada.trim() === "") return;
+
+    const textoFirmaCompleto = `${firmaIngresada.trim()} (${cargoSesion})`;
+
+    // Actualizamos datos
+    sol.status = 'Aprobada';
+    sol.firmaCapitan = textoFirmaCompleto;
     db.ref('solicitudesPermisos/' + sol.id).set(sol);
 
-    // Actualizar la vista previa en tiempo real
-    document.getElementById('pdfSolFirmaCapitanContainer').innerHTML = `<span class="signature-font">${nombreFirmante}</span>`;
+    // Actualizamos la vista previa en vivo
+    const contenedorFirmaCap = document.getElementById('pdfSolFirmaCapitanContainer');
+    if (contenedorFirmaCap) {
+        contenedorFirmaCap.innerHTML = `
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-serif italic text-slate-900 border-b border-slate-900 px-4">${textoFirmaCompleto}</span>
+                <span class="text-xs text-slate-600 mt-1 font-sans">V°B° Autorizado</span>
+            </div>
+        `;
+    }
     
-    // Ocultar el botón de firmar para que quede solo Descargar y Cerrar
     document.getElementById('btnFirmarDesdeVistaPrevia').classList.add('hidden');
 
-    // Actualizar la tabla de fondo si existe la función
     if (typeof renderGestionSolicitudes === 'function') {
         renderGestionSolicitudes();
     }
+    alert("Documento firmado y actualizado correctamente.");
 }
 
 // 3. Descarga exactamente lo que se ve en la hoja blanca
