@@ -1271,36 +1271,56 @@
         </div>
     </div>
 
-  <div id="pdfSolicitudContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans">
-    <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
-        <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
-        <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
-        <h3 class="text-md font-bold mt-3 text-slate-800 uppercase" id="pdfSolicitudTitulo">SOLICITUD OFICIAL</h3>
-        <p class="text-[10px] text-slate-500" id="pdfSolicitudFechaEmision"></p>
-    </div>
+  <!-- MODAL VISTA PREVIA PDF SOLICITUD / PERMISO -->
+<div id="modalVistaPreviaSolicitud" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 overflow-y-auto">
     
-    <div class="space-y-4">
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-            <div><strong>Bombero Solicitante:</strong> <span id="pdfSolNombreBombero"></span></div>
-            <div><strong>Tipo de Trámite:</strong> <span id="pdfSolTipoTramite"></span></div>
-            <div><strong>Fecha de Envío:</strong> <span id="pdfSolFechaEnvio"></span></div>
+    <!-- HOJA DEL DOCUMENTO (Esta es la que se convierte a PDF) -->
+    <div id="pdfSolicitudContainer" class="p-8 bg-white text-slate-900 w-full max-w-2xl font-sans shadow-2xl rounded-sm">
+        <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
+            <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
+            <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
+            <h3 class="text-md font-bold mt-3 text-slate-800 uppercase" id="pdfSolicitudTitulo">SOLICITUD OFICIAL</h3>
+            <p class="text-[10px] text-slate-500" id="pdfSolicitudFechaEmision"></p>
         </div>
         
-        <div class="pt-2 border-t border-slate-200">
-            <strong class="block mb-1">Detalle / Motivo:</strong>
-            <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200"></p>
+        <div class="space-y-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-sm">
+                <div><strong>Bombero Solicitante:</strong> <span id="pdfSolNombreBombero"></span></div>
+                <div><strong>Tipo de Trámite:</strong> <span id="pdfSolTipoTramite"></span></div>
+                <div><strong>Fecha de Envío:</strong> <span id="pdfSolFechaEnvio"></span></div>
+            </div>
+            
+            <div class="pt-2 border-t border-slate-200 text-sm">
+                <strong class="block mb-1">Detalle / Motivo:</strong>
+                <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200 min-h-[80px] whitespace-pre-wrap"></p>
+            </div>
+        </div>
+
+        <div class="pt-20 flex justify-between text-center">
+            <div class="border-t border-slate-400 w-48 pt-2">
+                <div id="pdfSolFirmaBombero" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
+                <p class="text-[10px] text-slate-500 mt-1">Solicitante</p>
+            </div>
+            <div class="border-t border-slate-400 w-48 pt-2">
+                <div id="pdfSolFirmaCapitanContainer" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
+                <p class="text-[10px] text-slate-500 mt-1">Capitán / Ayudante V°B°</p>
+            </div>
         </div>
     </div>
 
-    <div class="pt-20 flex justify-between text-center">
-        <div class="border-t border-slate-400 w-48 pt-2">
-            <div id="pdfSolFirmaBombero" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
-            <p class="text-[10px] text-slate-500 mt-1">Solicitante</p>
-        </div>
-        <div class="border-t border-slate-400 w-48 pt-2">
-            <div id="pdfSolFirmaCapitanContainer" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
-            <p class="text-[10px] text-slate-500 mt-1">Capitán / V°B°</p>
-        </div>
+    <!-- BOTONERA INFERIOR (No sale en el PDF) -->
+    <div class="mt-4 flex flex-wrap gap-3 justify-center w-full max-w-2xl">
+        <button id="btnFirmarDesdeVistaPrevia" onclick="firmarDesdeVistaPrevia()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition flex items-center gap-2">
+            ✍️ Firmar y Aprobar
+        </button>
+        
+        <button id="btnDescargarPdfFinal" onclick="ejecutarDescargaPdf()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition flex items-center gap-2">
+            📥 Descargar / Guardar PDF
+        </button>
+
+        <button onclick="cerrarVistaPreviaSolicitud()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg transition">
+            Cerrar
+        </button>
     </div>
 </div>
 
@@ -1959,10 +1979,16 @@ window.addEventListener('popstate', (event) => {
     }
 }
 
+let solicitudActualPdfId = null;
+
+// 1. Abre el modal, rellena los datos y controla qué botones se ven
 function descargarSolicitudPdf(id) {
     let sol = solicitudesPermisos.find(s => s.id === id);
     if (!sol) return;
 
+    solicitudActualPdfId = id;
+
+    // Llenar datos de la hoja
     document.getElementById('pdfSolicitudTitulo').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
     document.getElementById('pdfSolicitudFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleDateString('es-CL')}`;
     document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
@@ -1970,29 +1996,65 @@ function descargarSolicitudPdf(id) {
     document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
     document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
 
+    // Firma del solicitante
     document.getElementById('pdfSolFirmaBombero').innerHTML = `<span class="signature-font">${sol.nombreBombero}</span>`;
 
+    // Firma de Capitán / Ayudante y visibilidad del botón "Firmar"
     const contenedorFirmaCap = document.getElementById('pdfSolFirmaCapitanContainer');
-    if (contenedorFirmaCap) {
-        if (sol.estado === 'Aprobada' && sol.firmaCapitan) {
-            contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan}</span>`;
-        } else {
-            contenedorFirmaCap.innerHTML = `<span class="text-xs text-slate-400 italic">Pendiente de V°B°</span>`;
-        }
+    const btnFirmar = document.getElementById('btnFirmarDesdeVistaPrevia');
+
+    if (sol.estado === 'Aprobada' && sol.firmaCapitan) {
+        contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan}</span>`;
+        btnFirmar.classList.add('hidden'); // Si ya está firmada, oculta el botón de firmar
+    } else {
+        contenedorFirmaCap.innerHTML = `<span class="text-xs text-slate-400 italic">Pendiente de V°B°</span>`;
+        btnFirmar.classList.remove('hidden'); // Si falta firma, muestra el botón
     }
 
-    const element = document.getElementById('pdfSolicitudContainer');
-    
-    // 1. Lo hacemos visible y lo forzamos a renderizarse en pantalla
-    element.classList.remove('hidden');
-    element.style.display = 'block';
-    element.style.position = 'fixed';
-    element.style.top = '0';
-    element.style.left = '0';
-    element.style.zIndex = '99999';
-    element.style.backgroundColor = '#ffffff';
-    element.style.width = '800px';
+    // Mostrar la vista previa en pantalla
+    document.getElementById('modalVistaPreviaSolicitud').classList.remove('hidden');
+}
 
+// 2. Firma la solicitud, guarda en Firebase, actualiza la vista previa y deja solo el botón de descarga
+function firmarDesdeVistaPrevia() {
+    let sol = solicitudesPermisos.find(s => s.id === solicitudActualPdfId);
+    if (!sol) return;
+
+    // Toma el nombre de la sesión activa o lo pide si no existe
+    let sessionStr = localStorage.getItem('active_user_session');
+    let nombreFirmante = '';
+    if (sessionStr) {
+        let sessionData = JSON.parse(sessionStr);
+        nombreFirmante = `${sessionData.nombre} (${sessionData.cargo})`;
+    } else {
+        nombreFirmante = prompt("Ingresa tu nombre y cargo (Capitán / Ayudante) para firmar:");
+    }
+    
+    if (!nombreFirmante) return;
+
+    // Actualizar datos en memoria y en Firebase
+    sol.estado = "Aprobada";
+    sol.firmaCapitan = nombreFirmante;
+    db.ref('solicitudesPermisos/' + sol.id).set(sol);
+
+    // Actualizar la vista previa en tiempo real
+    document.getElementById('pdfSolFirmaCapitanContainer').innerHTML = `<span class="signature-font">${nombreFirmante}</span>`;
+    
+    // Ocultar el botón de firmar para que quede solo Descargar y Cerrar
+    document.getElementById('btnFirmarDesdeVistaPrevia').classList.add('hidden');
+
+    // Actualizar la tabla de fondo si existe la función
+    if (typeof renderGestionSolicitudes === 'function') {
+        renderGestionSolicitudes();
+    }
+}
+
+// 3. Descarga exactamente lo que se ve en la hoja blanca
+function ejecutarDescargaPdf() {
+    let sol = solicitudesPermisos.find(s => s.id === solicitudActualPdfId);
+    if (!sol) return;
+
+    const element = document.getElementById('pdfSolicitudContainer');
     const opt = {
         margin: 10,
         filename: `Solicitud_${sol.tipo.replace(/\s/g, '_')}_${sol.nombreBombero.replace(/\s/g, '_')}.pdf`,
@@ -2001,6 +2063,14 @@ function descargarSolicitudPdf(id) {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
+    html2pdf().from(element).set(opt).save();
+}
+
+// 4. Cierra el modal
+function cerrarVistaPreviaSolicitud() {
+    document.getElementById('modalVistaPreviaSolicitud').classList.add('hidden');
+    solicitudActualPdfId = null;
+}
     // 2. Damos 500ms para que el navegador dibuje el texto antes de capturar
     setTimeout(() => {
         html2pdf().from(element).set(opt).save().then(() => {
