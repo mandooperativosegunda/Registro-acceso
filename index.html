@@ -1519,26 +1519,48 @@
         db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
-      window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', () => {
     const accessView = document.getElementById('accessView');
-    const activeUserStr = localStorage.getItem('active_user_session');
+    const sessionStr = localStorage.getItem('active_user_session');
 
-    if (activeUserStr) {
+    if (sessionStr) {
         try {
-            const sessionData = JSON.parse(activeUserStr);
-            if (accessView) accessView.classList.add('hidden'); // Oculta acceso
-            
-            if (typeof activarSesion === 'function') {
-                activarSesion(sessionData); // Reactiva el perfil guardado
-            } else if (typeof renderPortalBomberoActivo === 'function' && sessionData.cargo === "Bombero") {
-                renderPortalBomberoActivo(sessionData);
+            const sessionData = JSON.parse(sessionStr);
+            if (accessView) accessView.classList.add('hidden');
+
+            if (sessionData && sessionData.cargo) {
+                if (typeof renderPortalBomberoActivo === 'function') {
+                    renderPortalBomberoActivo(sessionData);
+                }
+                if (typeof activarSesion === 'function') {
+                    activarSesion(sessionData);
+                }
+
+                const roleViewMap = {
+                    'Ayudante': 'ayudanteView',
+                    'Teniente Segundo': 'tenienteSegundoView',
+                    'Teniente Primero': 'tenientePrimeroView',
+                    'Teniente Tercero': 'tenienteTerceroView',
+                    'Capitán': 'capitanView',
+                    'Directora': 'directoraView',
+                    'Secretaria': 'secretariaView',
+                    'Tesorero': 'tesoreroView',
+                    'Aspirante': 'aspiranteView',
+                    'Bombero': 'bomberoView'
+                };
+
+                const targetViewId = roleViewMap[sessionData.cargo];
+                if (targetViewId) {
+                    const targetEl = document.getElementById(targetViewId);
+                    if (targetEl) targetEl.classList.remove('hidden');
+                }
             }
         } catch (e) {
             console.error("Error al restaurar sesión:", e);
             if (accessView) accessView.classList.remove('hidden');
         }
     } else {
-        if (accessView) accessView.classList.remove('hidden'); // Muestra acceso si no hay sesión
+        if (accessView) accessView.classList.remove('hidden');
     }
 });
 window.addEventListener('popstate', (event) => {
@@ -3577,40 +3599,38 @@ function guardarEditorGlobalFichas() {
             if (!emailRecuperacion) return;
 
             // Usamos la función nativa de Firebase Authentication para enviar el correo de reseteo
-            firebase.auth().sendPasswordResetEmail(emailRecuperacion.trim())
-                .then(() => {
-                    alert("✅ ¡Correo enviado con éxito!\n\nRevisa tu bandeja de entrada (o carpeta de spam) para restablecer tu contraseña.");
-                })
-                .catch((error) => {
-                    console.error(error);
-                    let mensajeError = "No se pudo enviar el correo.";
-                    if (error.code === 'auth/user-not-found') {
-                        mensajeError = "No existe ninguna cuenta registrada con este correo.";
-                    } else if (error.code === 'auth/invalid-email') {
-                        mensajeError = "El formato del correo electrónico no es válido.";
-                    }
-                    alert("❌ Error: " + mensajeError);
-                });
-        };
+           if (typeof firebase !== 'undefined' && typeof firebase.auth === 'function') {
+    firebase.auth().sendPasswordResetEmail(emailRecuperacion.trim())
+        .then(() => {
+            alert("✅ ¡Correo enviado con éxito!\n\nRevisa tu bandeja de entrada (o carpeta de spam).");
+        })
+        .catch((error) => {
+            console.error(error);
+            let mensajeError = "No se pudo enviar el correo.";
+            if (error.code === 'auth/user-not-found') {
+                mensajeError = "No existe ninguna cuenta registrada con este correo.";
+            } else if (error.code === 'auth/invalid-email') {
+                mensajeError = "El formato del correo electrónico no es válido.";
+            }
+            alert("❌ Error: " + mensajeError);
+        });
+} else {
+    alert("⚠️ El sistema de recuperación por correo no está habilitado en esta versión.");
+}
                 // Configuración de Inactividad (10 minutos = 600,000 milisegundos)
         let timeoutInactividad;
-        const TIEMPO_LIMITE = 10 * 60 * 1000; 
+const TIEMPO_LIMITE = 10 * 60 * 1000;
 
-        function reiniciarTemporizadorInactividad() {
-            clearTimeout(timeoutInactividad);
-            
-            // Solo activamos el contador si hay una sesión iniciada
-            if (firebase.auth().currentUser) {
-                timeoutInactividad = setTimeout(() => {
-                    firebase.auth().signOut().then(() => {
-                        alert("⚠️ La sesión se ha cerrado automáticamente por 10 minutos de inactividad.");
-                        location.reload(); // Recarga la página para volver al login
-                    }).catch((error) => {
-                        console.error("Error al cerrar sesión automáticamente:", error);
-                    });
-                }, TIEMPO_LIMITE);
-            }
+function reiniciarTemporizadorInactividad() {
+    clearTimeout(timeoutInactividad);
+    timeoutInactividad = setTimeout(() => {
+        if (localStorage.getItem('active_user_session')) {
+            localStorage.removeItem('active_user_session');
+            alert("⏳ Sesión cerrada por inactividad (10 minutos).");
+            location.reload();
         }
+    }, TIEMPO_LIMITE);
+}
 
         // Eventos que detectan actividad del usuario en la app (pantalla táctil, clics, teclado)
         window.onload = reiniciarTemporizadorInactividad;
