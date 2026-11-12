@@ -1512,24 +1512,45 @@ window.addEventListener('popstate', (event) => {
     if (typeof hideAllViews === 'function') {
         hideAllViews();
     }
+
     const sessionStr = localStorage.getItem('active_user_session');
     if (sessionStr) {
         try {
             const sessionData = JSON.parse(sessionStr);
-            if (sessionData && sessionData.cargo === 'Ayudante') {
+            if (sessionData && sessionData.cargo) {
                 if (typeof renderPortalBomberoActivo === 'function') {
                     renderPortalBomberoActivo(sessionData);
                 }
-            } else {
-                const accessView = document.getElementById('accessView');
-                if (accessView) accessView.classList.remove('hidden');
+                if (typeof activarSesion === 'function') {
+                    activarSesion(sessionData);
+                }
+                const roleViewMap = {
+                    'Ayudante': 'ayudanteView',
+                    'Teniente Segundo': 'tenienteSegundoView',
+                    'Teniente Primero': 'tenientePrimeroView',
+                    'Teniente Tercero': 'tenienteTerceroView',
+                    'Capitán': 'capitanView',
+                    'Directora': 'directoraView',
+                    'Secretaria': 'secretariaView',
+                    'Tesorero': 'tesoreroView',
+                    'Aspirante': 'aspiranteView',
+                    'Bombero': 'bomberoView'
+                };
+                const targetViewId = roleViewMap[sessionData.cargo];
+                if (targetViewId) {
+                    const targetEl = document.getElementById(targetViewId);
+                    if (targetEl) targetEl.classList.remove('hidden');
+                }
+                return;
             }
         } catch (e) {
-            console.error("Error al restaurar sesión:", e);
+            console.error('Error al restaurar sesión:', e);
         }
-    } else {
-        const accessView = document.getElementById('accessView');
-        if (accessView) accessView.classList.remove('hidden');
+    }
+
+    const accessView = document.getElementById('accessView');
+    if (accessView) {
+        accessView.classList.remove('hidden');
     }
 });
 
@@ -1971,24 +1992,47 @@ function descargarSolicitudPdf(id) {
 
 
 
-   function backToMainPanel() {
+  function backToMainPanel() {
     hideAllViews();
 
     const sessionStr = localStorage.getItem('active_user_session');
     if (sessionStr) {
-        const user = JSON.parse(sessionStr);
-        document.getElementById('activeUserBadge').textContent = user.nombre;
-        document.getElementById('loginBtnContainer').classList.add('hidden');
-        document.getElementById('profileBtnContainer').classList.remove('hidden');
+        try {
+            const sessionData = JSON.parse(sessionStr);
+            if (sessionData && sessionData.cargo) {
+                if (typeof activateSession === 'function') {
+                    activateSession(sessionData);
+                }
+                const roleViewMap = {
+                    'Ayudante': 'ayudanteView',
+                    'Teniente Segundo': 'tenienteSegundoView',
+                    'Teniente Primero': 'tenientePrimeroView',
+                    'Teniente Tercero': 'tenienteTerceroView',
+                    'Capitán': 'capitanView',
+                    'Directora': 'directoraView',
+                    'Secretaria': 'secretariaView',
+                    'Tesorero': 'tesoreroView',
+                    'Aspirante': 'aspiranteView',
+                    'Bombero': 'bomberoView'
+                };
+                const targetViewId = roleViewMap[sessionData.cargo];
+                if (targetViewId) {
+                    const targetEl = document.getElementById(targetViewId);
+                    if (targetEl) targetEl.classList.remove('hidden');
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+        } catch (e) {
+            console.error('Error al restaurar el panel principal:', e);
+        }
     }
 
-    // Aseguramos que accessView se muestre AL FINAL, después de cualquier otra validación
     const accessView = document.getElementById('accessView');
     if (accessView) {
         accessView.classList.remove('hidden');
     }
 }
-
 
         function inscribirseGuardia(tipo) {
             const user = JSON.parse(localStorage.getItem('active_user_session'));
