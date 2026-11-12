@@ -1509,7 +1509,7 @@
         db.ref('guardias').on('value', snap => { guardiasData = snap.val() || { diurna: [], nocturna: [] }; renderGuardiasView(); });
         db.ref('blockedList').on('value', snap => { blockedList = snap.val() || {}; renderBloqueadosTable(); actualizarBadgeBloqueados(); });
         db.ref('tareas').on('value', snap => { tareas = snap.val() || []; renderBadgeTareas(); });
-        db.ref('solicitudesPermisos').on('value', snap => { solicitudesPermisos = snap.val() || []; renderBadgeSolicitudes(); });
+        db.ref('solicitudesPermisos').on('value', snap => { const val = snap.val(); solicitudesPermisos = val ? (Array.isArray(val) ? val : Object.values(val)) : []; if (typeof renderBadgeSolicitudes === 'function') renderBadgeSolicitudes(); if (typeof renderGestionSolicitudes === 'function') renderGestionSolicitudes(); });
         db.ref('novedades').on('value', snap => { novedades = snap.val() || []; renderNovedades(); });
         db.ref('estadoGuardia').on('value', snap => { if(snap.val()) estadoGuardia = snap.val(); document.getElementById('lblTenienteGuardia').textContent = formatCargoStr(estadoGuardia.activo); });
         db.ref('bodegaEpp').on('value', snap => { bodegaEpp = snap.val() || []; renderBodegaEpp(); verificarAlertasAutomaticas(); });
