@@ -1519,15 +1519,26 @@
         db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
-        window.addEventListener('DOMContentLoaded', () => {
-    // Forzamos que el panel principal esté visible siempre al cargar la página
+      window.addEventListener('DOMContentLoaded', () => {
     const accessView = document.getElementById('accessView');
-    if (accessView) accessView.classList.remove('hidden');
-
     const activeUserStr = localStorage.getItem('active_user_session');
+
     if (activeUserStr) {
-        const sessionData = JSON.parse(activeUserStr);
-        // Aquí puedes mantener las funciones que activan la sesión del usuario si las necesitas
+        try {
+            const sessionData = JSON.parse(activeUserStr);
+            if (accessView) accessView.classList.add('hidden'); // Oculta acceso
+            
+            if (typeof activarSesion === 'function') {
+                activarSesion(sessionData); // Reactiva el perfil guardado
+            } else if (typeof renderPortalBomberoActivo === 'function' && sessionData.cargo === "Bombero") {
+                renderPortalBomberoActivo(sessionData);
+            }
+        } catch (e) {
+            console.error("Error al restaurar sesión:", e);
+            if (accessView) accessView.classList.remove('hidden');
+        }
+    } else {
+        if (accessView) accessView.classList.remove('hidden'); // Muestra acceso si no hay sesión
     }
 });
 window.addEventListener('popstate', (event) => {
