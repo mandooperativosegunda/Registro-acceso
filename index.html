@@ -1519,21 +1519,25 @@
         db.ref('remorsiones').on('value', snap => { remorsionesLog = snap.val() || []; renderRemorsionesLog(); });
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
-    window.addEventListener('DOMContentLoaded', () => {
+ window.addEventListener('DOMContentLoaded', () => {
     const accessView = document.getElementById('accessView');
+    const badge = document.getElementById('activeUserBadge');
     const sessionStr = localStorage.getItem('active_user_session');
 
     if (sessionStr) {
         try {
             const sessionData = JSON.parse(sessionStr);
+            if (typeof hideAllViews === 'function') hideAllViews();
             if (accessView) accessView.classList.add('hidden');
+            if (badge && sessionData.nombre) {
+                badge.textContent = `${sessionData.nombre} (${sessionData.cargo})`;
+            }
 
             if (sessionData && sessionData.cargo) {
-                if (typeof renderPortalBomberoActivo === 'function') {
-                    renderPortalBomberoActivo(sessionData);
-                }
                 if (typeof activarSesion === 'function') {
                     activarSesion(sessionData);
+                } else if (typeof renderPortalBomberoActivo === 'function' && sessionData.cargo === 'Bombero') {
+                    renderPortalBomberoActivo(sessionData);
                 }
 
                 const roleViewMap = {
@@ -1547,70 +1551,32 @@
                     'Tesorero': 'tesoreroView',
                     'Aspirante': 'aspiranteView',
                     'Bombero': 'voluntarioRasoView'
-            };
-
-            const targetViewId = roleViewMap[sessionData.cargo];
-            if (targetViewId) {
-                const targetEl = document.getElementById(targetViewId);
-                if (targetEl) targetEl.classList.remove('hidden');
-            }
-        }
-    } catch (e) {
-        console.error("Error al restaurar sesión:", e);
-        if (typeof hideAllViews === 'function') hideAllViews();
-        if (accessView) accessView.classList.remove('hidden');
-    }
-} else {
-    if (typeof hideAllViews === 'function') hideAllViews();
-    if (accessView) accessView.classList.remove('hidden');
-}
-});
-window.addEventListener('popstate', (event) => {
-    if (typeof hideAllViews === 'function') {
-        hideAllViews();
-    }
-
-    const sessionStr = localStorage.getItem('active_user_session');
-    if (sessionStr) {
-        try {
-            const sessionData = JSON.parse(sessionStr);
-            if (sessionData && sessionData.cargo) {
-                if (typeof renderPortalBomberoActivo === 'function') {
-                    renderPortalBomberoActivo(sessionData);
-                }
-                if (typeof activarSesion === 'function') {
-                    activarSesion(sessionData);
-                }
-                const roleViewMap = {
-                    'Ayudante': 'ayudanteView',
-                    'Teniente Segundo': 'tenienteSegundoView',
-                    'Teniente Primero': 'tenientePrimeroView',
-                    'Teniente Tercero': 'tenienteTerceroView',
-                    'Capitán': 'capitanView',
-                    'Directora': 'directoraView',
-                    'Secretaria': 'secretariaView',
-                    'Tesorero': 'tesoreroView',
-                    'Aspirante': 'aspiranteView',
-                    'Bombero': 'bomberoView'
                 };
+
                 const targetViewId = roleViewMap[sessionData.cargo];
                 if (targetViewId) {
                     const targetEl = document.getElementById(targetViewId);
                     if (targetEl) targetEl.classList.remove('hidden');
                 }
-                return;
             }
         } catch (e) {
-            console.error('Error al restaurar sesión:', e);
+            console.error("Error al restaurar sesión:", e);
+            localStorage.removeItem('active_user_session');
+            if (typeof hideAllViews === 'function') hideAllViews();
+            if (accessView) accessView.classList.remove('hidden');
+            if (badge) badge.textContent = 'Ninguno';
         }
-    }
-
-    const accessView = document.getElementById('accessView');
-    if (accessView) {
-        accessView.classList.remove('hidden');
+    } else {
+        if (typeof hideAllViews === 'function') hideAllViews();
+        if (accessView) accessView.classList.remove('hidden');
+        if (badge) badge.textContent = 'Ninguno';
     }
 });
-
+window.addEventListener('popstate', (event) => {
+    if (typeof hideAllViews === 'function') {
+        hideAllViews();
+    }
+});
 
         setInterval(() => {
             const clock = document.getElementById('currentTime');
