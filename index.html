@@ -1424,6 +1424,9 @@
             if(c==='Ayudante') return 'Ayudante';
             if(c==='Bombero') return 'Bombero'; if(c==='Aspirante') return 'Aspirante'; return c;
         }
+        function registrarVistaAbierta() {
+            history.pushState({ vistaAbierta: true }, '');
+        }
 
         // CONTROL DEL MENÚ DE TRES PUNTOS
         function toggleMenuTresPuntos(e) {
@@ -1503,6 +1506,15 @@
     if (activeUserStr) {
         const sessionData = JSON.parse(activeUserStr);
         // Aquí puedes mantener las funciones que activan la sesión del usuario si las necesitas
+    }
+});
+        window.addEventListener('popstate', (event) => {
+    if (typeof hideAllViews === 'function') {
+        hideAllViews();
+    }
+    const accessView = document.getElementById('accessView');
+    if (accessView) {
+        accessView.classList.remove('hidden');
     }
 });
 
