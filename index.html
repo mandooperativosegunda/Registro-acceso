@@ -1271,33 +1271,35 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PDF SOLICITUD / PERMISO -->
-    <div id="pdfSolicitudContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans text-xs">
+  <div id="pdfSolicitudContainer" class="hidden p-8 bg-white text-slate-900 max-w-2xl mx-auto font-sans">
     <div class="text-center border-b-2 border-indigo-900 pb-4 mb-4">
         <h2 class="text-lg font-bold uppercase tracking-wide text-indigo-900">Segunda Compañía Presidente Balmaceda</h2>
         <p class="text-xs text-slate-600">Cuerpo de Bomberos de Collipulli</p>
-        <h3 class="text-md font-bold mt-3 text-slate-800 uppercase" id="pdfSolTituloDoc">SOLICITUD OFICIAL DE PERMISO</h3>
-        <p class="text-[10px] text-slate-500" id="pdfSolFechaEmision"></p>
+        <h3 class="text-md font-bold mt-3 text-slate-800 uppercase" id="pdfSolicitudTitulo">SOLICITUD OFICIAL</h3>
+        <p class="text-[10px] text-slate-500" id="pdfSolicitudFechaEmision"></p>
     </div>
+    
     <div class="space-y-4">
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
             <div><strong>Bombero Solicitante:</strong> <span id="pdfSolNombreBombero"></span></div>
             <div><strong>Tipo de Trámite:</strong> <span id="pdfSolTipoTramite"></span></div>
             <div><strong>Fecha de Envío:</strong> <span id="pdfSolFechaEnvio"></span></div>
-            <div class="pt-2 border-t border-slate-200">
-                <strong class="block mb-1">Detalle / Motivo:</strong>
-                <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200"></p>
-            </div>
         </div>
-        <div class="pt-20 flex justify-between text-center">
-            <div class="border-t border-slate-400 w-48 pt-2">
-                <div id="pdfSolFirmaBombero" class="h-10 flex items-center justify-center font-serif italic text-base text-slate-900">Firma Bombero</div>
-                <p class="text-[10px] text-slate-500 mt-1">Solicitante</p>
-            </div>
-            <div class="border-t border-slate-400 w-48 pt-2">
-                <div id="pdfSolFirmaCapitanContainer" class="h-10 flex items-center justify-center font-serif italic text-base text-slate-900">Pendiente V°B°</div>
-                <p class="text-[10px] text-slate-500 mt-1">Capitán / V°B°</p>
-            </div>
+        
+        <div class="pt-2 border-t border-slate-200">
+            <strong class="block mb-1">Detalle / Motivo:</strong>
+            <p id="pdfSolDetalleTexto" class="text-slate-700 bg-white p-3 rounded border border-slate-200"></p>
+        </div>
+    </div>
+
+    <div class="pt-20 flex justify-between text-center">
+        <div class="border-t border-slate-400 w-48 pt-2">
+            <div id="pdfSolFirmaBombero" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
+            <p class="text-[10px] text-slate-500 mt-1">Solicitante</p>
+        </div>
+        <div class="border-t border-slate-400 w-48 pt-2">
+            <div id="pdfSolFirmaCapitanContainer" class="h-10 flex items-center justify-center font-serif italic text-lg"></div>
+            <p class="text-[10px] text-slate-500 mt-1">Capitán / V°B°</p>
         </div>
     </div>
 </div>
