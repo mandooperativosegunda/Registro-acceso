@@ -1508,13 +1508,28 @@
         // Aquí puedes mantener las funciones que activan la sesión del usuario si las necesitas
     }
 });
-        window.addEventListener('popstate', (event) => {
+window.addEventListener('popstate', (event) => {
     if (typeof hideAllViews === 'function') {
         hideAllViews();
     }
-    const accessView = document.getElementById('accessView');
-    if (accessView) {
-        accessView.classList.remove('hidden');
+    const sessionStr = localStorage.getItem('active_user_session');
+    if (sessionStr) {
+        try {
+            const sessionData = JSON.parse(sessionStr);
+            if (sessionData && sessionData.cargo === 'Ayudante') {
+                if (typeof renderPortalBomberoActivo === 'function') {
+                    renderPortalBomberoActivo(sessionData);
+                }
+            } else {
+                const accessView = document.getElementById('accessView');
+                if (accessView) accessView.classList.remove('hidden');
+            }
+        } catch (e) {
+            console.error("Error al restaurar sesión:", e);
+        }
+    } else {
+        const accessView = document.getElementById('accessView');
+        if (accessView) accessView.classList.remove('hidden');
     }
 });
 
