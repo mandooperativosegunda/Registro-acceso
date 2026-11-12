@@ -4164,6 +4164,22 @@ function mostrarVista(idVista) {
 }
 
 // Adaptadores para hacer limpiar la pantalla desde las tarjetas existentes
+function openGuardiasView() {
+    if (typeof hideAllViews === 'function') {
+        hideAllViews();
+    }
+    const guardiasEl = document.getElementById('guardiasView');
+    if (guardiasEl) {
+        guardiasEl.classList.remove('hidden');
+    }
+    if (typeof renderGuardias === 'function') {
+        renderGuardias();
+    }
+    if (typeof registrarVistaAbierta === 'function') {
+        registrarVistaAbierta();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 function openCertificadosView() { mostrarVista('certificadosView'); }
 function openBodegaEppView() { mostrarVista('bodegaEppView'); }
 function openEppVoluntariosView() { mostrarVista('eppVoluntariosView'); }
