@@ -1959,22 +1959,26 @@ window.addEventListener('popstate', (event) => {
 
 function descargarSolicitudPdf(id) {
     let sol = solicitudesPermisos.find(s => s.id === id);
-    if(!sol) return;
+    if (!sol) return;
 
-    document.getElementById('pdfSolTituloDoc').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
-    document.getElementById('pdfSolFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleString('es-CL')}`;
+    document.getElementById('pdfSolicitudTitulo').textContent = `SOLICITUD OFICIAL DE ${sol.tipo.toUpperCase()}`;
+    document.getElementById('pdfSolicitudFechaEmision').textContent = `Fecha de emisión: ${new Date().toLocaleDateString('es-CL')}`;
     document.getElementById('pdfSolNombreBombero').textContent = sol.nombreBombero;
     document.getElementById('pdfSolTipoTramite').textContent = sol.tipo;
     document.getElementById('pdfSolFechaEnvio').textContent = sol.fecha;
     document.getElementById('pdfSolDetalleTexto').textContent = sol.detalle;
-    
+
     // Firma por teclado del bombero
-    document.getElementById('pdfSolFirmaBombero').innerHTML = `<span class="signature-font">${sol.firmaBombero || sol.nombreBombero}</span>`;
-    
+    document.getElementById('pdfSolFirmaBombero').innerHTML = `<span class="signature-font">${sol.nombreBombero}</span>`;
+
     // Firma por teclado del capitán (si ya fue aprobada)
     const contenedorFirmaCap = document.getElementById('pdfSolFirmaCapitanContainer');
-    if(contenedorFirmaCap) {
-        contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan || 'Pendiente de V°B°'}</span>`;
+    if (contenedorFirmaCap) {
+        if (sol.estado === 'Aprobada' && sol.firmaCapitan) {
+            contenedorFirmaCap.innerHTML = `<span class="signature-font">${sol.firmaCapitan}</span>`;
+        } else {
+            contenedorFirmaCap.innerHTML = `<span class="text-xs text-slate-400 italic">Pendiente de V°B°</span>`;
+        }
     }
 
     const element = document.getElementById('pdfSolicitudContainer');
@@ -1991,6 +1995,7 @@ function descargarSolicitudPdf(id) {
     setTimeout(() => {
         html2pdf().from(element).set(opt).save().then(() => element.classList.add('hidden'));
     }, 300);
+}
 
 
   function backToMainPanel() {
