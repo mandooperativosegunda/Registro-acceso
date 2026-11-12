@@ -1546,22 +1546,24 @@
                     'Secretaria': 'secretariaView',
                     'Tesorero': 'tesoreroView',
                     'Aspirante': 'aspiranteView',
-                    'Bombero': 'bomberoView'
-                };
+                    'Bombero': 'voluntarioRasoView'
+            };
 
-                const targetViewId = roleViewMap[sessionData.cargo];
-                if (targetViewId) {
-                    const targetEl = document.getElementById(targetViewId);
-                    if (targetEl) targetEl.classList.remove('hidden');
-                }
+            const targetViewId = roleViewMap[sessionData.cargo];
+            if (targetViewId) {
+                const targetEl = document.getElementById(targetViewId);
+                if (targetEl) targetEl.classList.remove('hidden');
             }
-        } catch (e) {
-            console.error("Error al restaurar sesión:", e);
-            if (accessView) accessView.classList.remove('hidden');
         }
-    } else {
+    } catch (e) {
+        console.error("Error al restaurar sesión:", e);
+        if (typeof hideAllViews === 'function') hideAllViews();
         if (accessView) accessView.classList.remove('hidden');
     }
+} else {
+    if (typeof hideAllViews === 'function') hideAllViews();
+    if (accessView) accessView.classList.remove('hidden');
+}
 });
 window.addEventListener('popstate', (event) => {
     if (typeof hideAllViews === 'function') {
