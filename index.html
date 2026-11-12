@@ -1495,12 +1495,17 @@
         db.ref('nombreCapitanFirma').on('value', snap => { if(snap.val()) nombreCapitánGuardado = snap.val(); });
 
         window.addEventListener('DOMContentLoaded', () => {
-            const activeUserStr = localStorage.getItem('active_user_session');
-            if (activeUserStr) activateSession(JSON.parse(activeUserStr));
-            verificarBloqueoSalida();
-            verificarAlertasAutomaticas();
-            setTimeout(actualizarGraficoAsistencia, 300);
-        });
+    // Forzamos que el panel principal esté visible siempre al cargar la página
+    const accessView = document.getElementById('accessView');
+    if (accessView) accessView.classList.remove('hidden');
+
+    const activeUserStr = localStorage.getItem('active_user_session');
+    if (activeUserStr) {
+        const sessionData = JSON.parse(activeUserStr);
+        // Aquí puedes mantener las funciones que activan la sesión del usuario si las necesitas
+    }
+});
+
 
         setInterval(() => {
             const clock = document.getElementById('currentTime');
@@ -1727,6 +1732,8 @@
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews();
+            document.getElementById('accessView').classList.remove('hidden');
+        
             
             const cargo = user.cargo;
 
@@ -1937,16 +1944,24 @@ function descargarSolicitudPdf(id) {
 
 
 
-   function backToMainPanel() { 
+   function backToMainPanel() {
+    hideAllViews();
+
     const sessionStr = localStorage.getItem('active_user_session');
     if (sessionStr) {
-        activateSession(JSON.parse(sessionStr));
-    } else {
-        hideAllViews();
-        const accessView = document.getElementById('accessView');
-        if (accessView) accessView.classList.remove('hidden');
+        const user = JSON.parse(sessionStr);
+        document.getElementById('activeUserBadge').textContent = user.nombre;
+        document.getElementById('loginBtnContainer').classList.add('hidden');
+        document.getElementById('profileBtnContainer').classList.remove('hidden');
+    }
+
+    // Aseguramos que accessView se muestre AL FINAL, después de cualquier otra validación
+    const accessView = document.getElementById('accessView');
+    if (accessView) {
+        accessView.classList.remove('hidden');
     }
 }
+
 
         function inscribirseGuardia(tipo) {
             const user = JSON.parse(localStorage.getItem('active_user_session'));
