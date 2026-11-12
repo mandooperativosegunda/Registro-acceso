@@ -1528,12 +1528,10 @@
         try {
             const sessionData = JSON.parse(sessionStr);
             if (typeof hideAllViews === 'function') hideAllViews();
-            if (accessView) accessView.classList.add('hidden');
+            if (accessView) accessView.style.display = 'none';
             if (badge && sessionData.nombre) {
                 badge.textContent = `${sessionData.nombre} (${sessionData.cargo})`;
             }
-            const mainContainer = document.querySelector('main');
-            if (mainContainer) mainContainer.classList.add('hidden');
             const loginBtn = document.getElementById('loginBtnContainer');
             const profileBtn = document.getElementById('profileBtnContainer');
             if (loginBtn) loginBtn.classList.add('hidden');
@@ -1573,10 +1571,11 @@
         }
     } else {
         if (typeof hideAllViews === 'function') hideAllViews();
-        if (accessView) accessView.classList.remove('hidden');
+        if (accessView) {
+            accessView.classList.remove('hidden');
+            accessView.style.display = '';
+        }
         if (badge) badge.textContent = 'Ninguno';
-        const mainContainer = document.querySelector('main');
-        if (mainContainer) mainContainer.classList.remove('hidden');
         const loginBtn = document.getElementById('loginBtnContainer');
         const profileBtn = document.getElementById('profileBtnContainer');
         if (loginBtn) loginBtn.classList.remove('hidden');
@@ -1815,8 +1814,8 @@ window.addEventListener('popstate', (event) => {
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews();
             document.getElementById('accessView').classList.add('hidden');
-            const mainContainer = document.querySelector('main');
-            if (mainContainer) mainContainer.classList.add('hidden');
+            const accessView = document.getElementById('accessView');
+            if (accessView) accessView.style.display = 'none';
         
             
             const cargo = user.cargo;
