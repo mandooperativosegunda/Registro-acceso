@@ -1814,7 +1814,9 @@ window.addEventListener('popstate', (event) => {
             document.getElementById('loginBtnContainer').classList.add('hidden');
             document.getElementById('profileBtnContainer').classList.remove('hidden');
             hideAllViews();
-            document.getElementById('accessView').classList.remove('hidden');
+            document.getElementById('accessView').classList.add('hidden');
+            const mainContainer = document.querySelector('main');
+            if (mainContainer) mainContainer.classList.add('hidden');
         
             
             const cargo = user.cargo;
