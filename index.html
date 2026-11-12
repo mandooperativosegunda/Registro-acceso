@@ -1995,7 +1995,7 @@ function descargarSolicitudPdf(id) {
     setTimeout(() => {
         html2pdf().from(element).set(opt).save().then(() => element.classList.add('hidden'));
     }, 300);
-
+}
 
 
   function backToMainPanel() {
