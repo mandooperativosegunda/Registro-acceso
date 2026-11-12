@@ -1523,7 +1523,7 @@
     const accessView = document.getElementById('accessView');
     const badge = document.getElementById('activeUserBadge');
     const sessionStr = localStorage.getItem('active_user_session');
-
+     
     if (sessionStr) {
         try {
             const sessionData = JSON.parse(sessionStr);
@@ -1532,7 +1532,8 @@
             if (badge && sessionData.nombre) {
                 badge.textContent = `${sessionData.nombre} (${sessionData.cargo})`;
             }
-
+            const mainContainer = document.querySelector('main');
+            if (mainContainer) mainContainer.classList.add('hidden');
             if (sessionData && sessionData.cargo) {
                 if (typeof activarSesion === 'function') {
                     activarSesion(sessionData);
@@ -1570,6 +1571,8 @@
         if (typeof hideAllViews === 'function') hideAllViews();
         if (accessView) accessView.classList.remove('hidden');
         if (badge) badge.textContent = 'Ninguno';
+        const mainContainer = document.querySelector('main');
+        if (mainContainer) mainContainer.classList.remove('hidden');
     }
 });
 window.addEventListener('popstate', (event) => {
