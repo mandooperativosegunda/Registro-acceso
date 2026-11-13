@@ -759,6 +759,38 @@
 
     <!-- CONTENEDOR PRINCIPAL DEL MÓDULO DE TESORERÍA -->
 <div id="moduloTesoreria" class="space-y-4 text-white hidden">
+     <!-- TARJETAS RESUMEN FINANCIERO TESORERÍA -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- INGRESOS -->
+      <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Ingresos Totales</span>
+          <i class="ph ph-trend-up text-emerald-400 text-xl"></i>
+        </div>
+        <p id="tesoreriaTotalIngresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Cuotas sociales + Boletas pagadas</p>
+      </div>
+
+      <!-- EGRESOS -->
+      <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Egresos / Gastos</span>
+          <i class="ph ph-trend-down text-rose-400 text-xl"></i>
+        </div>
+        <p id="tesoreriaTotalEgresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Gastos y rendiciones registradas</p>
+      </div>
+
+      <!-- CAJA CHICA / SALDO -->
+      <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Caja Chica / Saldo</span>
+          <i class="ph ph-wallet text-cyan-400 text-xl"></i>
+        </div>
+        <p id="tesoreriaSaldoActual" class="text-2xl font-extrabold text-cyan-300 mt-2">$0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Balance disponible en caja</p>
+      </div>
+    </div>
     <!-- Barra de Navegación / Pestañas del Tesorero -->
     <div class="flex space-x-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
         <button onclick="cambiarVistaTesoreria('cuotas')" id="btnTabCuotas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition">
@@ -846,38 +878,7 @@
 <!-- CONTENEDOR EXCLUSIVO DEL TESORERO -->
 <div id="tesoreroView" class="hidden space-y-4 text-white">
     <div id="moduloTesoreria" class="space-y-4 text-white">
-        <!-- TARJETAS RESUMEN FINANCIERO TESORERÍA -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- INGRESOS -->
-          <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-lg">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Ingresos Totales</span>
-              <i class="ph ph-trend-up text-emerald-400 text-xl"></i>
-            </div>
-            <p id="tesoreriaTotalIngresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
-            <p class="text-[11px] text-slate-400 mt-1">Cuotas sociales + Boletas pagadas</p>
-          </div>
-
-          <!-- EGRESOS -->
-          <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-4 shadow-lg">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Egresos / Gastos</span>
-              <i class="ph ph-trend-down text-rose-400 text-xl"></i>
-            </div>
-            <p id="tesoreriaTotalEgresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
-            <p class="text-[11px] text-slate-400 mt-1">Gastos y rendiciones registradas</p>
-          </div>
-
-          <!-- CAJA CHICA / SALDO -->
-          <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 shadow-lg">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Caja Chica / Saldo</span>
-              <i class="ph ph-wallet text-cyan-400 text-xl"></i>
-            </div>
-            <p id="tesoreriaSaldoActual" class="text-2xl font-extrabold text-cyan-300 mt-2">$0</p>
-            <p class="text-[11px] text-slate-400 mt-1">Balance disponible en caja</p>
-          </div>
-        </div>
+      
         <!-- Barra de Navegación / Pestañas del Tesorero -->
         <div class="flex space-x-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
             <button onclick="cambiarVistaTesoreria('cuotas')" id="btnTabCuotas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition">
