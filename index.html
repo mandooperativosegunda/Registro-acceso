@@ -4325,7 +4325,6 @@ function aplicarRolesYPermisosDinamicos(usuario) {
     }
 
 // 2. Mostrar vista principal y controles de Mando según el cargo al recargar
-   // 2. Mostrar vista principal y controles de Mando solo para Capitán o Teniente 1°
     if (cargo.includes('capitan') || cargo.includes('teniente 1') || cargo.includes('teniente primero')) {
         const panelMando = document.getElementById('capitanTenientePrimeroView');
         if (panelMando) panelMando.classList.remove('hidden');
@@ -4334,7 +4333,10 @@ function aplicarRolesYPermisosDinamicos(usuario) {
             const el = document.getElementById(id);
             if (el) el.classList.remove('hidden');
         });
-    }
+   } else if (cargo.includes('teniente 2') || cargo.includes('teniente segundo') || cargo.includes('tenientesegundo')) {
+     const panelT2 = document.getElementById('tenienteSegundoView');
+     if (panelT2) panelT2.classList.remove('hidden');
+ }
 }
         // --- FUNCION CENTRAL PARA LIMPIAR Y CAMBIAR DE VISTA ---
 function mostrarVista(idVista) {
