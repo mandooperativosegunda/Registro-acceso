@@ -4306,7 +4306,7 @@ function guardarPerfilUsuario(event) {
 function aplicarRolesYPermisosDinamicos(usuario) {
     if (!usuario) return;
 
-    const cargo = (usuario.cargo || 'Bombero').toLowerCase();
+   const cargo = (usuario.cargo || 'Bombero').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     
     // Contenedores principales de vistas
     const moduloTesoreria = document.getElementById('moduloTesoreria');
@@ -4324,9 +4324,12 @@ function aplicarRolesYPermisosDinamicos(usuario) {
         }
     }
 
-    // 2. Controlar permisos especiales de Oficial / Teniente / Bombero
-    console.log(`Permisos aplicados para el cargo: ${usuario.cargo}`);
-        }
+   // 2. Mostrar vista principal según el cargo al recargar
+    if (cargo.includes('capitan') || cargo.includes('teniente') || cargo.includes('oficial')) {
+        const panelOficial = document.getElementById('oficialView') || document.getElementById('capitanView') || document.getElementById('mandoView');
+        if (panelOficial) panelOficial.classList.remove('hidden');
+    }
+}
         // --- FUNCION CENTRAL PARA LIMPIAR Y CAMBIAR DE VISTA ---
 function mostrarVista(idVista) {
     if (typeof hideAllViews === 'function') {
