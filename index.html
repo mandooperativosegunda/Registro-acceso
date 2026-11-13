@@ -1501,7 +1501,29 @@
         db.ref('roster').on('value', snap => {
     const data = snap.val();
     roster = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-    
+            // Sincronizar RUT desde usersAccounts o profiles hacia roster si falta
+        if (Array.isArray(roster) && roster.length > 0) {
+            let huboCambiosRut = false;
+            const cuentasArr = typeof usersAccounts !== 'undefined' && usersAccounts ? Object.values(usersAccounts) : [];
+            const perfilesArr = typeof profiles !== 'undefined' && profiles ? Object.values(profiles) : [];
+            const fuentes = [...cuentasArr, ...perfilesArr];
+
+            roster.forEach(m => {
+                if (!m.rut && m.name) {
+                    const encontrado = fuentes.find(u =>
+                        u && (u.name || u.nombre) &&
+                        (u.name || u.nombre).toLowerCase().trim() === m.name.toLowerCase().trim() &&
+                        (u.rut || u.documentId)
+                    );
+                    if (encontrado) {
+                        m.rut = encontrado.rut || encontrado.documentId;
+                        huboCambiosRut = true;
+                    }
+                }
+            });
+            if (huboCambiosRut) db.ref('roster').set(roster);
+        }
+            
     if (typeof renderRoster === 'function') renderRoster();
     if (typeof renderFichas === 'function') renderFichas();
     if (typeof renderEppVoluntarios === 'function') renderEppVoluntarios();
