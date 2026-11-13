@@ -4137,12 +4137,12 @@ function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, m
             alert(`¡Cuota de ${mesNombre} registrada exitosamente para ${nombreVoluntario} por $${montoUnico.toLocaleString('es-CL')}!`);
             if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
         })
-        .catch(error => {
+                .catch(error => {
             console.error("Error al procesar pago individual:", error);
             alert("Ocurrió un error al registrar el pago.");
         });
+    });
 }
-
 // 3. Actualiza el color del botón en pantalla instantáneamente
 function actualizarBotonDOM(rutLimpio, mes, nuevoEstado) {
     const btn = document.getElementById(`cuota_${rutLimpio}_${mes}`);
