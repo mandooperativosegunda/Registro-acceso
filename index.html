@@ -4131,7 +4131,7 @@ function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, m
                 registradoPor: registradoPor
             };
             db.ref('tesoreria').push(registroPago);
-            return db.ref('historialMovimientos').push(registroPago);
+            return db.ref('historialMovimientos').push(registroPago)
         .then(() => {
             actualizarBotonDOM(rutLimpio, mes, 'pagado');
             alert(`¡Cuota de ${mesNombre} registrada exitosamente para ${nombreVoluntario} por $${montoUnico.toLocaleString('es-CL')}!`);
