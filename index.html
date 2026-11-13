@@ -846,7 +846,38 @@
 <!-- CONTENEDOR EXCLUSIVO DEL TESORERO -->
 <div id="tesoreroView" class="hidden space-y-4 text-white">
     <div id="moduloTesoreria" class="space-y-4 text-white">
-        
+        <!-- TARJETAS RESUMEN FINANCIERO TESORERÍA -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- INGRESOS -->
+          <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Ingresos Totales</span>
+              <i class="ph ph-trend-up text-emerald-400 text-xl"></i>
+            </div>
+            <p id="tesoreriaTotalIngresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
+            <p class="text-[11px] text-slate-400 mt-1">Cuotas sociales + Boletas pagadas</p>
+          </div>
+
+          <!-- EGRESOS -->
+          <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Egresos / Gastos</span>
+              <i class="ph ph-trend-down text-rose-400 text-xl"></i>
+            </div>
+            <p id="tesoreriaTotalEgresos" class="text-2xl font-extrabold text-white mt-2">$0</p>
+            <p class="text-[11px] text-slate-400 mt-1">Gastos y rendiciones registradas</p>
+          </div>
+
+          <!-- CAJA CHICA / SALDO -->
+          <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Caja Chica / Saldo</span>
+              <i class="ph ph-wallet text-cyan-400 text-xl"></i>
+            </div>
+            <p id="tesoreriaSaldoActual" class="text-2xl font-extrabold text-cyan-300 mt-2">$0</p>
+            <p class="text-[11px] text-slate-400 mt-1">Balance disponible en caja</p>
+          </div>
+        </div>
         <!-- Barra de Navegación / Pestañas del Tesorero -->
         <div class="flex space-x-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
             <button onclick="cambiarVistaTesoreria('cuotas')" id="btnTabCuotas" class="flex-1 py-2 px-4 rounded-xl font-bold bg-cyan-600 text-white transition">
@@ -3715,7 +3746,8 @@ function cargarDatosTesoreria() {
         } else {
             Object.values(data).forEach(t => {
                 const monto = Number(t.monto) || 0;
-                const esIngreso = t.tipo === 'ingreso';
+                const tipoNorm = (t.tipo || '').toString().toLowerCase().trim();
+                const esIngreso = tipoNorm === 'ingreso';
 
                 if (esIngreso) {
                     saldo += monto;
@@ -3730,8 +3762,8 @@ function cargarDatosTesoreria() {
                 fila.innerHTML = `
                     <td class="py-3 text-slate-400">${t.fecha || 'Reciente'}</td>
                     <td class="py-3">
-                        <div class="font-bold text-white">${t.descripcion || 'Sin descripción'}</div>
-                        <div class="text-[10px] text-slate-400">${t.voluntario || 'General'}</div>
+                        <div class="font-bold text-white">${t.descripcion || t.detalle || 'Sin descripción'}</div>
+                        <div class="text-[10px] text-slate-400">${t.voluntario || t.categoria || 'General'}</div>
                     </td>
                     <td class="py-3">
                         <span class="px-2 py-1 rounded-full text-[10px] font-bold ${esIngreso ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
@@ -3746,9 +3778,9 @@ function cargarDatosTesoreria() {
             });
         }
 
-        const elSaldo = document.getElementById('saldoActual');
-        const elIngresos = document.getElementById('ingresosMes');
-        const elEgresos = document.getElementById('egresosMes');
+       const elSaldo = document.getElementById('tesoreriaSaldoActual');
+       const elIngresos = document.getElementById('tesoreriaTotalIngresos');
+       const elEgresos = document.getElementById('tesoreriaTotalEgresos');
 
         if (elSaldo) elSaldo.textContent = `$${saldo.toLocaleString('es-CL')} CLP`;
         if (elIngresos) elIngresos.textContent = `$${ingresosMes.toLocaleString('es-CL')}`;
