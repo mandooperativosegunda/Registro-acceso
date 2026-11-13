@@ -2956,9 +2956,11 @@ function cambiarEstadoMiembro(id) {
             let miembro = roster.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim());
             let fechaHoy = new Date().toLocaleDateString('es-CL');
             if (miembro) {
-                if(!miembro.historialMotivos) miembro.historialMotivos = [];
+                miembro.rut = rut;
+            if(!miembro.historialMotivos) miembro.historialMotivos = [];
                 miembro.historialMotivos.unshift({ fecha: fechaHoy, detalle: reason });
             } else {
+
                 roster.push({ id: Date.now() + 1, category: "Bombero", role: "Bombero", name: name, status: 'A', count3m: 0, count1y: 0, garitaHours: 0, historialMotivos: [{ fecha: fechaHoy, detalle: reason }], epp: [], certificados: [], medico: { sangre: 'No registrado', contacto: 'No registrado', alergias: 'Ninguna', cert: 'Ninguna' } });
             }
             db.ref('roster').set(roster);
