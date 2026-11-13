@@ -4119,19 +4119,19 @@ function procesarPagoIndividualMes(nombreVoluntario, rutVoluntario, rutLimpio, m
         .then(() => {
             const sesionActual = JSON.parse(localStorage.getItem('active_user_session'));
             const registradoPor = sesionActual ? (sesionActual.nombre || sesionActual.name) : firmaTesorero;
-
-            return db.ref('historialMovimientos').push({
+            const registroPago = {
                 id: Date.now(),
                 fecha: fechaActual,
                 hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
-                tipo: 'Ingreso',
+                tipo: 'ingreso',
                 categoria: 'Cuotas Sociales',
-                detalle: `Pago Cuota (${mesNombre}) - ${nombreVoluntario} (${rutVoluntario})`,
+                descripcion: `Pago Cuota (${mesNombre}) - ${nombreVoluntario}`,
+                voluntario: nombreVoluntario,
                 monto: montoUnico,
-                registradoPor: registradoPor,
-                firma: firmaTesorero
-            });
-        })
+                registradoPor: registradoPor
+            };
+            db.ref('tesoreria').push(registroPago);
+            return db.ref('historialMovimientos').push(registroPago);
         .then(() => {
             actualizarBotonDOM(rutLimpio, mes, 'pagado');
             alert(`¡Cuota de ${mesNombre} registrada exitosamente para ${nombreVoluntario} por $${montoUnico.toLocaleString('es-CL')}!`);
