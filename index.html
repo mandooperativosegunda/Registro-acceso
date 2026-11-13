@@ -4324,12 +4324,16 @@ function aplicarRolesYPermisosDinamicos(usuario) {
         }
     }
 
-   // 2. Mostrar vista principal según el cargo al recargar
+// 2. Mostrar vista principal y controles de Mando según el cargo al recargar
     if (cargo.includes('capitan') || cargo.includes('teniente') || cargo.includes('oficial')) {
-        const panelOficial = document.getElementById('oficialView') || document.getElementById('capitanView') || document.getElementById('mandoView');
-        if (panelOficial) panelOficial.classList.remove('hidden');
+        const panelMando = document.getElementById('capitanTenientePrimeroView');
+        if (panelMando) panelMando.classList.remove('hidden');
+
+        ['btnGestionarAspirantes', 'cardAsignarTarea', 'cardNovedades', 'cardCertificados'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
+        });
     }
-}
         // --- FUNCION CENTRAL PARA LIMPIAR Y CAMBIAR DE VISTA ---
 function mostrarVista(idVista) {
     if (typeof hideAllViews === 'function') {
