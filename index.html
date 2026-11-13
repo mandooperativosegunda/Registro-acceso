@@ -4325,7 +4325,8 @@ function aplicarRolesYPermisosDinamicos(usuario) {
     }
 
 // 2. Mostrar vista principal y controles de Mando según el cargo al recargar
-    if (cargo.includes('capitan') || cargo.includes('teniente') || cargo.includes('oficial')) {
+   // 2. Mostrar vista principal y controles de Mando solo para Capitán o Teniente 1°
+    if (cargo.includes('capitan') || cargo.includes('teniente 1') || cargo.includes('teniente primero')) {
         const panelMando = document.getElementById('capitanTenientePrimeroView');
         if (panelMando) panelMando.classList.remove('hidden');
 
