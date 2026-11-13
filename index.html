@@ -3817,6 +3817,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const fInput = document.getElementById('boletaFecha');
     if (fInput) fInput.value = new Date().toLocaleDateString('es-CL');
     cargarMatrizCuotas();
+    if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
+    setTimeout(() => {
+        if (typeof cargarDatosTesoreria === 'function') cargarDatosTesoreria();
+    }, 1500);
 });
 
 function cargarSelectVoluntariosBoleta() {
